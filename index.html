@@ -221,6 +221,10 @@ details.grp>summary:hover{color:var(--ink)}
 .pitem .meta small{color:var(--muted)}
 .empty{color:var(--muted);text-align:center;padding:18px;border:1px dashed var(--line);border-radius:12px}
 .links{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.mtable{width:100%;border-collapse:collapse}
+.mtable th{text-align:left;font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);padding:8px 10px;border-bottom:1px solid var(--line)}
+.mtable td{padding:9px 10px;border-bottom:1px solid var(--line);font-size:13.5px}
+.mtable tr:hover td{background:var(--panel2)}
 .toast{position:fixed;left:50%;bottom:48px;transform:translateX(-50%) translateY(20px);background:color-mix(in srgb, var(--ink) 92%, transparent);backdrop-filter:blur(12px) saturate(150%);-webkit-backdrop-filter:blur(12px) saturate(150%);color:var(--panel);padding:10px 16px;border-radius:10px;font-weight:600;opacity:0;transition:.2s;pointer-events:none;z-index:60;box-shadow:0 10px 40px -10px rgba(0,0,0,.5)}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
@@ -462,6 +466,7 @@ const ICONS = {
   heart: "M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7z",
   chest: "M3 12h18v8H3zM3 12V10a9 6 0 0 1 18 0v2M11 12v3h2v-3",
   layers: "M12 2l10 5-10 5L2 7l10-5zM2 17l10 5 10-5M2 12l10 5 10-5",
+  flame: "M8.5 14.5A2.5 2.5 0 0 0 11 17a2.5 2.5 0 0 0 2.5-2.5c0-1.38-.5-2-1-3 1.072-.144 2.054.063 3 1 1.5 1.5 2 3.5 2 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z",
 };
 const icon = (n, s = 18) => `<svg class="ic" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${ICONS[n]}"/></svg>`;
 const MODELS = {
@@ -481,6 +486,7 @@ function buildActions() {
     <button class="tb lbl" id="aLib" title="Mes projets">${icon("lib")}<span>Mes projets</span></button>
     <span class="sep"></span>
     <button class="tb" id="aTheme" title="Thème clair / sombre">${icon("moon")}</button>
+    <button class="tb" id="aMat" title="Réglages laser recommandés (puissance/vitesse par matériau)">${icon("flame")}</button>
     <button class="tb" id="aHelp" title="À propos">${icon("help")}</button>
     <button class="tb primary" id="aExport" aria-haspopup="menu">${icon("download")}<span>Exporter</span></button>
     <div class="menu" id="exportMenu" role="menu" hidden>
@@ -493,6 +499,7 @@ function buildActions() {
   $("#aSave").onclick = saveToLib;
   $("#aLib").onclick = openLib;
   $("#aTheme").onclick = toggleTheme;
+  $("#aMat").onclick = openMaterials;
   $("#aHelp").onclick = openAbout;
   $("#aExport").onclick = e => { e.stopPropagation(); $("#exportMenu").hidden = !$("#exportMenu").hidden; };
   $("#exportMenu").querySelectorAll("[data-x]").forEach(b => b.onclick = () => { $("#exportMenu").hidden = true; doExport(b.dataset.x); });
@@ -710,6 +717,47 @@ function openGuide() {
   openModal(`<h2>${g.title}</h2><p>Schéma de principe (épaisseurs exagérées pour la lisibilité), suivi de la notice de ton projet.</p>
     <div class="gd"><svg viewBox="0 0 640 345" role="img" aria-label="${esc(g.title)}">${G_DEFS}${g.svg}</svg></div>
     <h3 class="gd-h">Notice de montage</h3><ul class="notice">${lastInfo.map(i => `<li>${esc(i)}</li>`).join("")}</ul>`, true);
+}
+const MATERIALS = [
+  // mode, matériau, épaisseur (mm), puissance (%), vitesse (mm/min), passes — laser diode 20W
+  ["g","Tilleul",2.8,40,24000,1], ["g","Hêtre rouge",3.5,40,24000,1], ["g","Chêne blanc",3.6,40,24000,1],
+  ["g","Cerisier rouge",3.2,20,24000,1], ["g","Chêne rouge",3.5,30,24000,1], ["g","Palissandre",3.3,20,24000,1],
+  ["g","Bouleau",3,80,24000,1], ["g","Hévéa (bois de caoutchouc)",3.2,50,21000,1], ["g","Noyer",3.6,80,21000,1],
+  ["g","Érable",3,40,24000,1], ["g","Cuir brun foncé",1.4,100,16500,1], ["g","Cuir bleu ciel",1.0,70,16500,1],
+  ["g","Cuir brun clair",1.8,60,24000,1], ["g","Cuir vert",1.0,100,24000,1], ["g","Cuir orange",1.8,100,16500,1],
+  ["g","Acrylique noir",2.6,60,21000,1], ["g","Aluminium",0.9,100,6000,1], ["g","Acier inoxydable",0.9,100,3000,1],
+  ["c","Tilleul",2.8,100,500,1], ["c","Hêtre rouge",3.5,100,400,1], ["c","Chêne blanc",3.6,100,400,1],
+  ["c","Cerisier rouge",3.2,100,700,1], ["c","Chêne rouge",3.5,100,300,1], ["c","Palissandre",3.3,100,100,1],
+  ["c","Bouleau",3,100,400,1], ["c","Hévéa (bois de caoutchouc)",3.2,100,300,1], ["c","Noyer",3.6,100,400,1],
+  ["c","Érable",3,100,500,1], ["c","Cuir brun foncé",1.4,50,900,1], ["c","Cuir bleu ciel",1.0,50,900,1],
+  ["c","Cuir brun clair",1.8,50,500,1], ["c","Cuir vert",1.0,50,900,1], ["c","Cuir orange",1.8,50,500,1],
+  ["c","Acrylique noir",2.6,100,200,1],
+];
+let matMode = "g", matQuery = "";
+function openMaterials() {
+  openModal(`<h2>Réglages laser recommandés</h2>
+    <p>Point de départ pour un laser diode <b>20W</b> — toujours valider sur une chute avant la pièce finale, chaque lot de bois/cuir varie un peu.</p>
+    <div class="sheettabs" id="matTabs" style="margin-bottom:10px">
+      <button class="chip" data-m="g" aria-pressed="${matMode === "g"}">Gravure</button>
+      <button class="chip" data-m="c" aria-pressed="${matMode === "c"}">Découpe</button>
+    </div>
+    <label class="hint" style="display:block;margin-bottom:6px">Filtrer un matériau</label>
+    <input type="text" id="matSearch" placeholder="Ex. noyer, cuir, acrylique…" value="${esc(matQuery)}" style="width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--field);color:var(--ink);font:inherit;margin-bottom:12px">
+    <div id="matTableWrap"></div>`, true);
+  renderMatTable();
+  $("#matTabs").querySelectorAll("button").forEach(b => b.onclick = () => {
+    matMode = b.dataset.m;
+    $("#matTabs").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x.dataset.m === matMode));
+    renderMatTable();
+  });
+  $("#matSearch").oninput = e => { matQuery = e.target.value; renderMatTable(); };
+}
+function renderMatTable() {
+  const q = matQuery.trim().toLowerCase();
+  const rows = MATERIALS.filter(r => r[0] === matMode && (!q || r[1].toLowerCase().includes(q)));
+  $("#matTableWrap").innerHTML = rows.length ? `<table class="mtable"><thead><tr><th>Matériau</th><th>Épaisseur</th><th>Puissance</th><th>Vitesse</th><th>Passes</th></tr></thead>
+    <tbody>${rows.map(r => `<tr><td>${esc(r[1])}</td><td>${f1(r[2])} mm</td><td>${r[3]}%</td><td>${r[4]} mm/min</td><td>${r[5]}</td></tr>`).join("")}</tbody></table>`
+    : `<div class="empty">Aucun matériau ne correspond.</div>`;
 }
 $("#modal").addEventListener("click", e => { if (e.target.id === "modal") closeModal(); });
 document.addEventListener("keydown", e => {
@@ -1641,6 +1689,7 @@ $("#projName").value = state.name;
 if (state.tab === "tray") currentSheet = -2;
 buildModels(); buildForm(); render();
 if (hp.get("guide")) setTimeout(openGuide, 1500);
+if (hp.get("materiaux")) setTimeout(openMaterials, 1200);
 window.addEventListener("resize", () => { clearTimeout(window._rz); window._rz = setTimeout(() => fit(currentSheet === -1 ? null : $(`#canvas .sheet[data-si="${currentSheet}"]`)), 150); });
 
 if ("serviceWorker" in navigator) {
