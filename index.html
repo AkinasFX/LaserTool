@@ -287,7 +287,7 @@ const COMMON = [
   ["Matériau et machine"],
   ["t", "Épaisseur du bois", 3, "mm", {step: 0.1, min: 1}],
   ["kerf", "Kerf (serrage)", 0.1, "mm", {step: 0.01, min: 0}],
-  ["bed", "Plateau", "297x210", "", {options: BEDS}],
+  ["bed", "Machine", "297x210", "", {options: BEDS}],
   ["bedW", "Largeur plateau", 297, "mm", {show: v => v.bed === "custom"}],
   ["bedH", "Profondeur plateau", 210, "mm", {show: v => v.bed === "custom"}],
   ["reperes", "Repères de montage (bleu)", true, "", {}],
