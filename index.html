@@ -75,6 +75,12 @@ button{font:inherit;color:inherit}
 .tb.primary:hover{background:linear-gradient(180deg,var(--accent2),var(--accent2));transform:translateY(-1px);
   box-shadow:0 2px 3px rgba(0,0,0,.12),0 0 0 1px color-mix(in srgb, var(--accent) 45%, transparent),0 12px 28px -6px color-mix(in srgb, var(--accent) 80%, transparent)}
 .tb.primary:active{transform:translateY(0)}
+.tb.dark{background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,0)) #181b22;color:#f1f2f5;padding:8px 14px;
+  border:1px solid rgba(255,255,255,.08);
+  box-shadow:0 1px 1px rgba(0,0,0,.2),0 10px 22px -14px rgba(0,0,0,.65),0 0 0 1px rgba(255,255,255,.04) inset}
+.tb.dark:hover{background:linear-gradient(180deg,rgba(255,255,255,.1),rgba(255,255,255,0)) #20242d;transform:translateY(-1px);
+  box-shadow:0 2px 3px rgba(0,0,0,.25),0 14px 28px -12px rgba(0,0,0,.7),0 0 0 1px rgba(255,255,255,.06) inset}
+.tb.dark:active{transform:translateY(0)}
 .sep{width:1px;height:24px;background:var(--line);margin:0 4px}
 .menu{position:absolute;right:40px;top:46px;background:color-mix(in srgb, var(--panel) 92%, transparent);backdrop-filter:blur(18px) saturate(150%);-webkit-backdrop-filter:blur(18px) saturate(150%);border:1px solid var(--glass-border);border-radius:12px;box-shadow:var(--shadow),0 0 0 1px rgba(255,255,255,.03) inset;padding:6px;min-width:250px;z-index:30}
 .menu button{display:flex;gap:10px;align-items:flex-start;width:100%;text-align:left;border:0;background:transparent;padding:9px 10px;border-radius:8px;cursor:pointer}
@@ -480,14 +486,14 @@ const RIGHT = new Set(["Gravure", "Décor / habillage", "Matériau et machine", 
 
 function buildActions() {
   $("#actions").innerHTML = `
-    <button class="tb lbl" id="aNew" title="Nouveau projet">${icon("plus")}<span>Nouveau</span></button>
-    <button class="tb lbl" id="aOpen" title="Ouvrir un fichier projet (.json)">${icon("open")}<span>Ouvrir</span></button>
-    <button class="tb lbl" id="aSave" title="Enregistrer dans Mes projets (Ctrl+S)">${icon("save")}<span>Enregistrer</span></button>
-    <button class="tb lbl" id="aLib" title="Mes projets">${icon("lib")}<span>Mes projets</span></button>
+    <button class="tb dark lbl" id="aNew" title="Nouveau projet">${icon("plus")}<span>Nouveau</span></button>
+    <button class="tb dark lbl" id="aOpen" title="Ouvrir un fichier projet (.json)">${icon("open")}<span>Ouvrir</span></button>
+    <button class="tb dark lbl" id="aSave" title="Enregistrer dans Mes projets (Ctrl+S)">${icon("save")}<span>Enregistrer</span></button>
+    <button class="tb dark lbl" id="aLib" title="Mes projets">${icon("lib")}<span>Mes projets</span></button>
     <span class="sep"></span>
-    <button class="tb" id="aTheme" title="Thème clair / sombre">${icon("moon")}</button>
-    <button class="tb" id="aMat" title="Réglages laser recommandés (puissance/vitesse par matériau)">${icon("flame")}</button>
-    <button class="tb" id="aHelp" title="À propos">${icon("help")}</button>
+    <button class="tb dark lbl" id="aTheme" title="Thème clair / sombre">${icon("moon")}<span>Thème</span></button>
+    <button class="tb dark lbl" id="aMat" title="Réglages laser recommandés (puissance/vitesse par matériau)">${icon("flame")}<span>Réglages laser</span></button>
+    <button class="tb dark lbl" id="aHelp" title="À propos">${icon("help")}<span>Aide</span></button>
     <button class="tb primary" id="aExport" aria-haspopup="menu">${icon("download")}<span>Exporter</span></button>
     <div class="menu" id="exportMenu" role="menu" hidden>
       <button data-x="zip">${icon("zip")}<span><b>Tout (ZIP)</b><small>Toutes les planches SVG + projet + notice</small></span></button>
