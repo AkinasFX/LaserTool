@@ -1,0 +1,18 @@
+{
+  "name": "LaserToolFX — par NeoprodFX",
+  "short_name": "LaserToolFX",
+  "description": "Générateur gratuit de boîtes, coffres et formes pour découpe laser : SVG prêts à découper.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone"],
+  "orientation": "any",
+  "background_color": "#eceef2",
+  "theme_color": "#f97316",
+  "lang": "fr",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
