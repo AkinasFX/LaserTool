@@ -762,7 +762,7 @@ function renderMatTable() {
   const q = matQuery.trim().toLowerCase();
   const rows = MATERIALS.filter(r => r[0] === matMode && (!q || r[1].toLowerCase().includes(q)));
   $("#matTableWrap").innerHTML = rows.length ? `<table class="mtable"><thead><tr><th>Matériau</th><th>Épaisseur</th><th>Puissance</th><th>Vitesse</th><th>Passes</th></tr></thead>
-    <tbody>${rows.map(r => `<tr><td>${esc(r[1])}</td><td>${f1(r[2])} mm</td><td>${r[3]}%</td><td>${r[4]} mm/min</td><td>${r[5]}</td></tr>`).join("")}</tbody></table>`
+    <tbody>${rows.map(r => `<tr><td>${esc(r[1])}</td><td>${f1(r[2])} mm</td><td>${r[3]}%</td><td>${r[4]} mm/min<br><small style="color:var(--muted)">${f1(r[4] / 60)} mm/s</small></td><td>${r[5]}</td></tr>`).join("")}</tbody></table>`
     : `<div class="empty">Aucun matériau ne correspond.</div>`;
 }
 $("#modal").addEventListener("click", e => { if (e.target.id === "modal") closeModal(); });
