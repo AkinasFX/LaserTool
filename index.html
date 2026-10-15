@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>LaserToolFX</title>
-<meta name="description" content="Générateur gratuit de boîtes, coffres et formes pour découpe laser : SVG prêts à découper.">
+<meta name="description" id="metaDesc" content="Générateur gratuit de boîtes, coffres et formes pour découpe laser : SVG prêts à découper.">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon-192.png" type="image/png">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -256,17 +256,17 @@ details.grp>summary:hover{color:var(--ink)}
 <header class="appbar">
   <div class="brand">
     <svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="var(--accent)"/><path d="M16 5v12" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/><path d="M8 24h16" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><circle cx="16" cy="20" r="2.8" fill="#fff"/><path d="M11 18.5l-2-1.5M21 18.5l2-1.5" stroke="#fff" stroke-width="1.6" stroke-linecap="round" opacity=".8"/></svg>
-    <div><b>LaserTool<em class="fx">FX</em></b><span>par <em>NeoprodFX</em></span></div>
+    <div><b>LaserTool<em class="fx">FX</em></b><span id="brandTag">par <em>NeoprodFX</em></span></div>
   </div>
-  <label class="projfield" title="Clique pour renommer ton projet">
-    <span class="projlbl">Projet</span>
+  <label class="projfield" id="projField" title="Clique pour renommer ton projet">
+    <span class="projlbl" id="projLbl">Projet</span>
     <span class="projrow"><input id="projName" class="projname" aria-label="Nom du projet" placeholder="Nomme ton projet…" spellcheck="false" maxlength="60"><svg class="ic pen" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></span>
   </label>
   <nav class="actions" id="actions"></nav>
 </header>
 <div class="app">
   <aside class="panel left">
-    <div class="panel-head">Modèle</div>
+    <div class="panel-head" id="modelPanelHead">Modèle</div>
     <div class="models" id="models"></div>
     <p class="model-desc" id="modelDesc"></p>
     <div id="formL"></div>
@@ -280,7 +280,7 @@ details.grp>summary:hover{color:var(--ink)}
   </main>
   <aside class="panel right">
     <div id="formR"></div>
-    <details class="grp" open><summary>Notice de montage</summary><div class="grp-body notice" id="info"></div></details>
+    <details class="grp" open><summary id="noticeSummary">Notice de montage</summary><div class="grp-body notice" id="info"></div></details>
   </aside>
 </div>
 <footer class="status" id="status"></footer>
@@ -307,135 +307,615 @@ const BEDS = {
   "385x300": "385×300 (xTool M1)",
   "300x300": "300×300",
   "600x400": "600×400",
-  "custom": "Personnalisé…",
+  "custom": "bed.custom",
 };
+
+// ---------- Traductions (FR par défaut, EN en option) ----------
+const I18N = {
+  // Meta / document
+  "meta.description": {fr: "Générateur gratuit de boîtes, coffres et formes pour découpe laser : SVG prêts à découper.", en: "Free box, chest and shape generator for laser cutting: ready-to-cut SVG files."},
+  // Marque / barre du haut
+  "brand.by": {fr: "par", en: "by"},
+  "brand.projTooltip": {fr: "Clique pour renommer ton projet", en: "Click to rename your project"},
+  "brand.projLabel": {fr: "Projet", en: "Project"},
+  "brand.projAria": {fr: "Nom du projet", en: "Project name"},
+  "brand.projPlaceholder": {fr: "Nomme ton projet…", en: "Name your project…"},
+  // Barre d'actions / export
+  "action.new": {fr: "Nouveau", en: "New"},
+  "action.newTitle": {fr: "Nouveau projet", en: "New project"},
+  "action.open": {fr: "Ouvrir", en: "Open"},
+  "action.openTitle": {fr: "Ouvrir un fichier projet (.json)", en: "Open a project file (.json)"},
+  "action.save": {fr: "Enregistrer", en: "Save"},
+  "action.saveTitle": {fr: "Enregistrer dans Mes projets (Ctrl+S)", en: "Save to My projects (Ctrl+S)"},
+  "action.lib": {fr: "Mes projets", en: "My projects"},
+  "action.libTitle": {fr: "Mes projets", en: "My projects"},
+  "action.theme": {fr: "Thème", en: "Theme"},
+  "action.themeTitle": {fr: "Thème clair / sombre", en: "Light / dark theme"},
+  "action.lang": {fr: "EN", en: "FR"},
+  "action.langLabel": {fr: "Langue", en: "Language"},
+  "action.langTitle": {fr: "Passer l'interface en anglais", en: "Switch the interface to French"},
+  "action.mat": {fr: "Réglages laser", en: "Laser settings"},
+  "action.matTitle": {fr: "Réglages laser recommandés (puissance/vitesse par matériau)", en: "Recommended laser settings (power/speed per material)"},
+  "action.help": {fr: "Aide", en: "Help"},
+  "action.helpTitle": {fr: "À propos", en: "About"},
+  "action.export": {fr: "Exporter", en: "Export"},
+  "export.zipTitle": {fr: "Tout (ZIP)", en: "Everything (ZIP)"},
+  "export.zipDesc": {fr: "Toutes les planches SVG + projet + notice", en: "All SVG sheets + project + instructions"},
+  "export.sheetTitle": {fr: "Planche sélectionnée (SVG)", en: "Selected sheet (SVG)"},
+  "export.sheetInfo": {fr: "Planche {n}", en: "Sheet {n}"},
+  "export.jsonTitle": {fr: "Fichier projet (.json)", en: "Project file (.json)"},
+  "export.jsonDesc": {fr: "Pour partager ou rouvrir plus tard", en: "To share or reopen later"},
+  // Panneau gauche
+  "panel.model": {fr: "Modèle", en: "Model"},
+  "panel.notice": {fr: "Notice de montage", en: "Assembly instructions"},
+  "modal.close": {fr: "Fermer", en: "Close"},
+  "form.reset": {fr: "Réinitialiser ce modèle", en: "Reset this model"},
+  "toast.modelReset": {fr: "Modèle réinitialisé", en: "Model reset"},
+  // Modèles (sidebar + descriptions)
+  "model.box.name": {fr: "Boîte", en: "Box"},
+  "model.box.desc": {fr: "Boîte à encoches : couvercle posé, coulissant ou fermé, décor en option.", en: "Finger-jointed box: resting, sliding or closed lid, optional decor."},
+  "model.shape.name": {fr: "Formes", en: "Shapes"},
+  "model.shape.desc": {fr: "Cœur, cercle, ovale, hexagone… paroi en bande flexible à tenons.", en: "Heart, circle, oval, hexagon… wall made of a flexible tabbed strip."},
+  "model.chest.name": {fr: "Coffre", en: "Chest"},
+  "model.chest.desc": {fr: "Coffre au couvercle bombé : cadres, sangles et fermoir décoratifs.", en: "Chest with a domed lid: decorative frames, straps and clasp."},
+  "model.orga.name": {fr: "Organiseur", en: "Organizer"},
+  "model.orga.desc": {fr: "Meuble à tiroirs ou casier à bacs, étiquettes gravées et compartiments.", en: "Drawer unit or bin tray, engraved labels and compartments."},
+  "model.tray.name": {fr: "Casier", en: "Tray"},
+  "model.tray.desc": {fr: "Casiers empilables : dessine tes cases vue de dessus, chaque case reçoit sa boîte sur mesure.", en: "Stackable trays: draw your cells from above, each cell gets its own custom-fit box."},
+  // Groupes de champs (titres des sections repliables)
+  "grp.material": {fr: "Matériau et machine", en: "Material and machine"},
+  "grp.hinge": {fr: "Charnière flexible", en: "Flexible hinge"},
+  "grp.tabsJoint": {fr: "Tenons d'assemblage", en: "Assembly tabs"},
+  "grp.decor": {fr: "Décor / habillage", en: "Decor / trim"},
+  "grp.engrave": {fr: "Gravure", en: "Engraving"},
+  "grp.outerDims": {fr: "Dimensions extérieures", en: "Outer dimensions"},
+  "grp.compartments": {fr: "Compartiments", en: "Compartments"},
+  "grp.shapeKind": {fr: "Forme", en: "Shape"},
+  "grp.organizer": {fr: "Organiseur", en: "Organizer"},
+  "grp.drawersBins": {fr: "Tiroirs et bacs", en: "Drawers and bins"},
+  "grp.labels": {fr: "Étiquettes", en: "Labels"},
+  "grp.trayKind": {fr: "Casier", en: "Tray"},
+  "grp.layers": {fr: "Étages", en: "Layers"},
+  "grp.boxes": {fr: "Boîtes", en: "Boxes"},
+  "grp.stacking": {fr: "Empilage", en: "Stacking"},
+  // Champs communs (COMMON)
+  "field.thickness": {fr: "Épaisseur du bois", en: "Wood thickness"},
+  "field.kerf": {fr: "Kerf (serrage)", en: "Kerf (laser width)"},
+  "field.machine": {fr: "Machine", en: "Machine"},
+  "field.bedW": {fr: "Largeur plateau", en: "Bed width"},
+  "field.bedH": {fr: "Profondeur plateau", en: "Bed depth"},
+  "field.reperes": {fr: "Repères de montage (bleu)", en: "Assembly markers (blue)"},
+  "bed.custom": {fr: "Personnalisé…", en: "Custom…"},
+  // Charnière flexible (HINGE)
+  "field.hSpace": {fr: "Espacement des lignes", en: "Line spacing"},
+  "field.hCut": {fr: "Longueur de coupe", en: "Cut length"},
+  "field.hBridge": {fr: "Pont (bois gardé)", en: "Bridge (wood kept)"},
+  // Tenons d'assemblage (TABS_JOINT)
+  "field.tabW": {fr: "Largeur des tenons", en: "Tab width"},
+  "field.tabPitch": {fr: "Espacement des tenons", en: "Tab spacing"},
+  "field.rebord": {fr: "Débord (rebord)", en: "Overhang (lip)"},
+  // Décor (DECOR)
+  "field.decoStyle": {fr: "Style", en: "Style"},
+  "deco.aucun": {fr: "Aucun", en: "None"},
+  "deco.cadre": {fr: "Cadre festonné", en: "Scalloped frame"},
+  "deco.cadreMotif": {fr: "Cadre + motif gravé", en: "Frame + engraved motif"},
+  "deco.ajoure": {fr: "Plaque ajourée", en: "Openwork plate"},
+  "deco.coins": {fr: "Coins seuls", en: "Corners only"},
+  "field.motif": {fr: "Motif", en: "Motif"},
+  "motif.flocon": {fr: "Flocon ❄", en: "Snowflake ❄"},
+  "motif.etoile": {fr: "Étoile ★", en: "Star ★"},
+  "motif.coeur": {fr: "Cœur ♥", en: "Heart ♥"},
+  "motif.sapin": {fr: "Sapin", en: "Fir tree"},
+  "field.bord": {fr: "Largeur du cadre", en: "Frame width"},
+  "field.feston": {fr: "Arrondi des coins", en: "Corner rounding"},
+  // Gravure (TEXT)
+  "field.texte": {fr: "Texte", en: "Text"},
+  "field.texte2": {fr: "2e ligne", en: "2nd line"},
+  "field.police": {fr: "Police", en: "Font"},
+  "font.localBtn": {fr: "🖥️ Polices du PC", en: "🖥️ Fonts on this PC"},
+  "font.importBtn": {fr: "📁 Importer .ttf/.otf", en: "📁 Import .ttf/.otf"},
+  "font.reloadSuffix": {fr: " (recharger)", en: " (reload)"},
+  "field.taille": {fr: "Taille ligne 1", en: "Line 1 size"},
+  "field.taille2": {fr: "Taille ligne 2", en: "Line 2 size"},
+  "hint.textPlace": {fr: "Astuce : glisse chaque texte sur le plan de travail pour le placer, molette dessus pour changer sa taille. <a href=\"#\" id=\"recenter\">Recentrer</a>", en: "Tip: drag each text on the worktop to position it, scroll over it to resize. <a href=\"#\" id=\"recenter\">Recenter</a>"},
+  // Champs partagés entre modèles
+  "field.longueur": {fr: "Longueur", en: "Length"},
+  "field.largeur": {fr: "Largeur", en: "Width"},
+  "field.hauteur": {fr: "Hauteur", en: "Height"},
+  "field.largeurExt": {fr: "Largeur extérieure", en: "Outer width"},
+  "field.profondeurExt": {fr: "Profondeur extérieure", en: "Outer depth"},
+  "field.doigt": {fr: "Largeur des encoches", en: "Finger width"},
+  "field.couvercle": {fr: "Couvercle", en: "Lid"},
+  "field.prise": {fr: "Prise", en: "Grip"},
+  "prise.trou": {fr: "Trou oblong", en: "Oblong hole"},
+  "prise.aucune": {fr: "Aucune", en: "None"},
+  // Boîte (box)
+  "field.box.couvercle.pose": {fr: "Posé avec lèvre", en: "Resting with lip"},
+  "field.box.couvercle.coulissant": {fr: "Coulissant", en: "Sliding"},
+  "field.box.couvercle.ferme": {fr: "Fermé à encoches", en: "Closed with fingers"},
+  "field.box.couvercle.aucun": {fr: "Aucun (boîte ouverte)", en: "None (open box)"},
+  "field.compX": {fr: "Cases en longueur", en: "Cells lengthwise"},
+  "field.compY": {fr: "Cases en largeur", en: "Cells widthwise"},
+  // Formes (shape)
+  "field.forme": {fr: "Forme", en: "Shape"},
+  "forme.coeur": {fr: "Cœur", en: "Heart"},
+  "forme.cercle": {fr: "Cercle", en: "Circle"},
+  "forme.ovale": {fr: "Ovale", en: "Oval"},
+  "forme.rect": {fr: "Rectangle arrondi", en: "Rounded rectangle"},
+  "forme.hexa": {fr: "Hexagone arrondi", en: "Rounded hexagon"},
+  "shapeName.coeur": {fr: "cœur", en: "heart"},
+  "shapeName.cercle": {fr: "cercle", en: "circle"},
+  "shapeName.ovale": {fr: "ovale", en: "oval"},
+  "shapeName.rect": {fr: "rectangle arrondi", en: "rounded rectangle"},
+  "shapeName.hexa": {fr: "hexagone", en: "hexagon"},
+  "shapeName.default": {fr: "forme", en: "shape"},
+  "field.shapeH": {fr: "Hauteur de la boîte", en: "Box height"},
+  "field.allong": {fr: "Allongement du cœur", en: "Heart elongation"},
+  "field.pointe": {fr: "Arrondi de la pointe", en: "Tip rounding"},
+  "field.rayon": {fr: "Rayon des coins", en: "Corner radius"},
+  "field.bandes": {fr: "Nombre de bandes (0 = auto)", en: "Number of strips (0 = auto)"},
+  "field.shape.couvS.levre": {fr: "Amovible avec lèvre", en: "Removable with lip"},
+  "field.shape.couvS.tenons": {fr: "Fixé à tenons (fermé)", en: "Fixed with tabs (closed)"},
+  "field.jeu": {fr: "Jeu de la lèvre", en: "Lip clearance"},
+  // Coffre (chest)
+  "field.chestH": {fr: "Hauteur du corps", en: "Body height"},
+  "field.hb": {fr: "Hauteur droite du couvercle", en: "Lid straight height"},
+  "field.S": {fr: "Bombé du couvercle", en: "Lid dome"},
+  "field.sangles": {fr: "Sangles sur le couvercle", en: "Straps on the lid"},
+  "field.fermoir": {fr: "Fermoir déco", en: "Decorative clasp"},
+  // Organiseur (orga)
+  "field.type": {fr: "Type", en: "Type"},
+  "type.tiroirs": {fr: "Meuble à tiroirs", en: "Drawer unit"},
+  "type.bacs": {fr: "Casier à bacs", en: "Bin tray"},
+  "field.orgaH": {fr: "Hauteur du casier", en: "Tray height"},
+  "field.rows": {fr: "Rangées", en: "Rows"},
+  "field.cols": {fr: "Colonnes", en: "Columns"},
+  "field.rowH": {fr: "Hauteur des rangées", en: "Row height"},
+  "field.rowsCustom": {fr: "Hauteurs perso (haut → bas)", en: "Custom heights (top → bottom)"},
+  "hint.rowsCustom": {fr: "Hauteurs perso : ex. « 30, 30, 60 » pour des petits tiroirs en haut et un grand en bas. Vide = toutes identiques.", en: "Custom heights: e.g. “30, 30, 60” for small drawers on top and a big one at the bottom. Empty = all identical."},
+  "field.tiroirs": {fr: "Générer", en: "Generate"},
+  "tiroirs.tous": {fr: "Tous", en: "All"},
+  "tiroirs.unique": {fr: "Un exemplaire par taille", en: "One copy per size"},
+  "tiroirs.aucun": {fr: "Aucun (rangement seul)", en: "None (storage only)"},
+  "field.jeuT.orga": {fr: "Jeu (coulissement)", en: "Clearance (sliding)"},
+  "field.compXsmall": {fr: "Compartiments (largeur)", en: "Compartments (width)"},
+  "field.compYsmall": {fr: "Compartiments (profondeur)", en: "Compartments (depth)"},
+  "field.etiquettes": {fr: "Textes", en: "Texts"},
+  "hint.etiquettes": {fr: "Séparés par des virgules, dans l'ordre de lecture (rangée du haut, de gauche à droite).", en: "Comma-separated, in reading order (top row, left to right)."},
+  "field.tailleEtiq": {fr: "Taille", en: "Size"},
+  // Casier empilable (tray)
+  "field.gridX": {fr: "Colonnes de la grille", en: "Grid columns"},
+  "field.gridY": {fr: "Rangées de la grille", en: "Grid rows"},
+  "field.jeuT.tray": {fr: "Jeu autour des boîtes", en: "Clearance around the boxes"},
+  "field.genLayers": {fr: "Générer", en: "Generate"},
+  "genLayers.tous": {fr: "Tous les étages", en: "All layers"},
+  "genLayers.actuel": {fr: "Étage affiché seulement", en: "Displayed layer only"},
+  "field.couvercleT": {fr: "Couvercle sur le dernier étage", en: "Lid on the last layer"},
+  "field.texteC": {fr: "Texte du couvercle", en: "Lid text"},
+  "hint.stacking": {fr: "Un cadre collé sous chaque étage (et sous le couvercle) s'emboîte dans l'étage du dessous : les casiers s'empilent sans glisser.", en: "A frame glued under each layer (and under the lid) fits into the layer below: the trays stack without sliding."},
+  "hint.trayLabels": {fr: "Clique (ou touche) une case du plan pour la nommer : le nom est gravé sur sa boîte.", en: "Click (or tap) a cell on the plan to name it: the name is engraved on its box."},
+  // Étages (layersHtml)
+  "layer.chip": {fr: "Étage {n} · {h} mm", en: "Layer {n} · {h} mm"},
+  "layer.heightLabel": {fr: "Hauteur de l'étage {n}", en: "Height of layer {n}"},
+  "layer.add": {fr: "＋ Ajouter un étage", en: "＋ Add a layer"},
+  "layer.dup": {fr: "Dupliquer", en: "Duplicate"},
+  "layer.del": {fr: "Supprimer", en: "Delete"},
+  "confirm.deleteLayer": {fr: "Supprimer l'étage {n} ?", en: "Delete layer {n}?"},
+  // Schémas de montage (GUIDE)
+  "guide.panelTitle": {fr: "Schéma", en: "Diagram"},
+  "guide.panelBtnTitle": {fr: "Schéma de montage du modèle", en: "Model's assembly diagram"},
+  "guide.heading": {fr: "Schéma de principe (épaisseurs exagérées pour la lisibilité), suivi de la notice de ton projet.", en: "Principle diagram (thicknesses exaggerated for clarity), followed by your project's instructions."},
+  "guide.notice": {fr: "Notice de montage", en: "Assembly instructions"},
+  "guide.box.sliding.title": {fr: "Boîte à couvercle coulissant (vue de côté)", en: "Box with sliding lid (side view)"},
+  "guide.box.lid.title": {fr: "Boîte à couvercle posé (vue en coupe)", en: "Box with resting lid (cross-section)"},
+  "guide.box.closed.title": {fr: "Boîte fermée (vue en coupe)", en: "Closed box (cross-section)"},
+  "guide.box.open.title": {fr: "Boîte ouverte (vue en coupe)", en: "Open box (cross-section)"},
+  "guide.box.frame": {fr: "Cadre en U", en: "U-shaped frame"},
+  "guide.box.frameSub1": {fr: "ouvert côté façade, s'emboîte", en: "open on the front side, fits"},
+  "guide.box.frameSub2": {fr: "en haut des côtés et du dos", en: "onto the top of the sides and back"},
+  "guide.box.slidLid": {fr: "Couvercle coulissant", en: "Sliding lid"},
+  "guide.box.slidLidSub": {fr: "glisse vers l'avant (fente pour le doigt)", en: "slides toward the front (finger slot)"},
+  "guide.box.rails": {fr: "Rails à tenons", en: "Tabbed rails"},
+  "guide.box.railsSub1": {fr: "plantés dans les mortaises des côtés,", en: "planted in the mortises of the sides,"},
+  "guide.box.railsSub2": {fr: "au niveau du haut de la façade", en: "level with the top of the front"},
+  "guide.box.lowFront": {fr: "Façade basse", en: "Low front"},
+  "guide.box.lowFrontSub": {fr: "le couvercle passe au-dessus", en: "the lid passes above it"},
+  "guide.box.bottomLast": {fr: "Fond (posé en dernier)", en: "Bottom (fitted last)"},
+  "guide.box.engravedLid": {fr: "couvercle gravé", en: "engraved lid"},
+  "guide.box.lipGlued": {fr: "Lèvre collée sous le couvercle", en: "Lip glued under the lid"},
+  "guide.box.lipGluedSub": {fr: "centrée : elle s'emboîte dans la boîte", en: "centered: it fits inside the box"},
+  "guide.box.closedTop": {fr: "Dessus à encoches", en: "Finger-jointed top"},
+  "guide.box.closedTopSub": {fr: "idéal tirelire / boîte scellée", en: "ideal for a piggy bank / sealed box"},
+  "guide.box.walls": {fr: "Parois assemblées à encoches", en: "Walls joined with finger joints"},
+  "guide.box.wallsSub": {fr: "façade, arrière, côtés", en: "front, back, sides"},
+  "guide.box.bottomFinger": {fr: "Fond à encoches", en: "Finger-jointed bottom"},
+  "guide.box.fingerDetail": {fr: "encoches", en: "finger joints"},
+  "guide.box.dividers": {fr: "Séparateurs à mi-bois", en: "Half-lap dividers"},
+  "guide.box.dividersSub": {fr: "posés dans la boîte", en: "dropped into the box"},
+  "guide.shape.title": {fr: "Boîte en forme ({shape})", en: "Shaped box ({shape})"},
+  "guide.shape.mortiseNote": {fr: "Pointillés foncés = mortises dans le fond.", en: "Dark dashes = mortises in the bottom."},
+  "guide.shape.bottomLabel": {fr: "fond", en: "bottom"},
+  "guide.shape.flexStrip": {fr: "Bande flexible (charnière)", en: "Flexible strip (hinge)"},
+  "guide.shape.tabsBottom": {fr: "tenons en bas", en: "tabs at the bottom"},
+  "guide.shape.tabsBottomTop": {fr: " et en haut", en: " and top"},
+  "guide.shape.wraps1": {fr: "La bande s'enroule autour du fond,", en: "The strip wraps around the bottom,"},
+  "guide.shape.wraps2": {fr: "ses tenons se plantent dans les mortaises.", en: "its tabs fit into the mortises."},
+  "guide.shape.heartStart": {fr: "Commence dans l'échancrure du cœur.", en: "Start in the notch of the heart."},
+  "guide.shape.glueAsYouGo": {fr: "Colle au fur et à mesure.", en: "Glue as you go."},
+  "guide.shape.lidFixed1": {fr: "Couvercle fixé : mêmes mortaises", en: "Fixed lid: same mortises"},
+  "guide.shape.lidFixed2": {fr: "que le fond.", en: "as the bottom."},
+  "guide.shape.lidLoose1": {fr: "Couvercle : la lèvre collée dessous", en: "Lid: the lip glued underneath"},
+  "guide.shape.lidLoose2": {fr: "s'emboîte dans la bande.", en: "fits into the strip."},
+  "guide.shape.overhangNote": {fr: "Le fond déborde (rebord) : les mortaises restent fermées.", en: "The bottom overhangs (lip): the mortises stay closed."},
+  "guide.chest.title": {fr: "Coffre bombé", en: "Domed chest"},
+  "guide.chest.sideView": {fr: "vue de côté", en: "side view"},
+  "guide.chest.frontView": {fr: "vue de face", en: "front view"},
+  "guide.chest.panel": {fr: "Panneau flexible", en: "Flexible panel"},
+  "guide.chest.panelSub1": {fr: "tenons dans les", en: "tabs into the"},
+  "guide.chest.panelSub2": {fr: "mortaises des flancs", en: "mortises of the flanks"},
+  "guide.chest.flank": {fr: "Flanc du couvercle", en: "Lid flank"},
+  "guide.chest.flankSub": {fr: "déborde un peu", en: "overhangs slightly"},
+  "guide.chest.body": {fr: "Corps à encoches", en: "Finger-jointed body"},
+  "guide.chest.bodySub": {fr: "texte gravé en façade", en: "text engraved on the front"},
+  "guide.chest.frameNote1": {fr: "cadres de décor (bois foncé)", en: "decor frames (dark wood)"},
+  "guide.chest.frameNote2": {fr: "collés sur les faces", en: "glued onto the faces"},
+  "guide.chest.straps": {fr: "sangles collées en travers", en: "straps glued across"},
+  "guide.chest.claspGlued": {fr: "fermoir collé sur le couvercle", en: "clasp glued on the lid"},
+  "guide.orga.bins.title": {fr: "Casier à bacs (vue de dessus)", en: "Bin tray (top view)"},
+  "guide.orga.binsOpen": {fr: "Casier ouvert à encoches", en: "Open finger-jointed tray"},
+  "guide.orga.binsRemovable": {fr: "Bacs amovibles", en: "Removable bins"},
+  "guide.orga.binsRemovableSub1": {fr: "une étiquette gravée chacun,", en: "each with an engraved label,"},
+  "guide.orga.binsRemovableSub2": {fr: "on les sort par le dessus", en: "lifted out from the top"},
+  "guide.orga.compartNote": {fr: "Compartiments à mi-bois dans chaque bac.", en: "Half-lap compartments in each bin."},
+  "guide.orga.compartNoteOpt": {fr: "Option : compartiments dans les bacs.", en: "Option: compartments in the bins."},
+  "guide.orga.drawers.title": {fr: "Meuble à tiroirs (vue de face)", en: "Drawer unit (front view)"},
+  "guide.orga.carcass": {fr: "Caisson à encoches", en: "Finger-jointed carcass"},
+  "guide.orga.carcassSub": {fr: "ouvert devant, fermé par le dos", en: "open at the front, closed by the back"},
+  "guide.orga.shelves": {fr: "Étagères à tenons", en: "Tabbed shelves"},
+  "guide.orga.shelvesSub": {fr: "plantées dans le dos et les côtés", en: "fitted into the back and sides"},
+  "guide.orga.dividers": {fr: "Séparateurs à tenons", en: "Tabbed dividers"},
+  "guide.orga.dividersSub": {fr: "plantés dans les étagères", en: "fitted into the shelves"},
+  "guide.orga.drawersLabeled": {fr: "Tiroirs étiquetés", en: "Labeled drawers"},
+  "guide.orga.gripYes": {fr: "avec prise pour le doigt", en: "with a finger grip"},
+  "guide.orga.gripNo": {fr: "sans prise", en: "without a grip"},
+  "guide.tray.title": {fr: "Casier empilable (vue en coupe)", en: "Stackable tray (cross-section)"},
+  "guide.tray.lidFrame": {fr: "Cadre du couvercle", en: "Lid frame"},
+  "guide.tray.layer2": {fr: "Étage 2", en: "Layer 2"},
+  "guide.tray.layer2Sub": {fr: "son propre plan de cases", en: "its own cell layout"},
+  "guide.tray.stackFrame": {fr: "Cadre d'empilage", en: "Stacking frame"},
+  "guide.tray.stackFrameSub1": {fr: "collé sous le fond, rentre", en: "glued under the bottom, sits"},
+  "guide.tray.stackFrameSub2": {fr: "de 3 mm dans l'étage 1", en: "3 mm into layer 1"},
+  "guide.tray.layer1": {fr: "Étage 1", en: "Layer 1"},
+  "guide.tray.layer1Sub": {fr: "posé sur la table", en: "resting on the table"},
+  "guide.tray.footnote": {fr: "Les boîtes sont un peu plus basses que le casier pour laisser la place au cadre du dessus.", en: "The boxes are a little lower than the tray to leave room for the frame above."},
+  // Réglages laser / matériaux
+  "materials.title": {fr: "Réglages laser recommandés", en: "Recommended laser settings"},
+  "materials.intro": {fr: "Point de départ pour un laser diode <b>20W</b> — toujours valider sur une chute avant la pièce finale, chaque lot de bois/cuir varie un peu.", en: "Starting point for a <b>20W</b> diode laser — always test on an offcut before the final piece, every batch of wood/leather varies a little."},
+  "materials.engrave": {fr: "Gravure", en: "Engraving"},
+  "materials.cut": {fr: "Découpe", en: "Cutting"},
+  "materials.filterLabel": {fr: "Filtrer un matériau", en: "Filter a material"},
+  "materials.searchPlaceholder": {fr: "Ex. noyer, cuir, acrylique…", en: "E.g. walnut, leather, acrylic…"},
+  "materials.th.material": {fr: "Matériau", en: "Material"},
+  "materials.th.thickness": {fr: "Épaisseur", en: "Thickness"},
+  "materials.th.power": {fr: "Puissance", en: "Power"},
+  "materials.th.speed": {fr: "Vitesse", en: "Speed"},
+  "materials.th.passes": {fr: "Passes", en: "Passes"},
+  "materials.empty": {fr: "Aucun matériau ne correspond.", en: "No material matches."},
+  "material.Tilleul": {fr: "Tilleul", en: "Basswood"},
+  "material.Hêtre rouge": {fr: "Hêtre rouge", en: "Red Beech"},
+  "material.Chêne blanc": {fr: "Chêne blanc", en: "White Oak"},
+  "material.Cerisier rouge": {fr: "Cerisier rouge", en: "Red Cherry Wood"},
+  "material.Chêne rouge": {fr: "Chêne rouge", en: "Red Oak"},
+  "material.Palissandre": {fr: "Palissandre", en: "Rosewood"},
+  "material.Bouleau": {fr: "Bouleau", en: "Birch"},
+  "material.Hévéa (bois de caoutchouc)": {fr: "Hévéa (bois de caoutchouc)", en: "Rubber Wood"},
+  "material.Noyer": {fr: "Noyer", en: "Walnut Wood"},
+  "material.Érable": {fr: "Érable", en: "Maple"},
+  "material.Cuir brun foncé": {fr: "Cuir brun foncé", en: "Dark Brown Leather"},
+  "material.Cuir bleu ciel": {fr: "Cuir bleu ciel", en: "Sky Blue Leather"},
+  "material.Cuir brun clair": {fr: "Cuir brun clair", en: "Light Brown Leather"},
+  "material.Cuir vert": {fr: "Cuir vert", en: "Green Leather"},
+  "material.Cuir orange": {fr: "Cuir orange", en: "Orange Leather"},
+  "material.Acrylique noir": {fr: "Acrylique noir", en: "Black Acrylic"},
+  "material.Aluminium": {fr: "Aluminium", en: "Aluminum"},
+  "material.Acier inoxydable": {fr: "Acier inoxydable", en: "Stainless Steel"},
+  // À propos
+  "about.tagline": {fr: "Générateur gratuit de boîtes, coffres et formes pour la découpe laser, offert par <b>NeoprodFX</b>.", en: "Free box, chest and shape generator for laser cutting, brought to you by <b>NeoprodFX</b>."},
+  "about.li1": {fr: "<b style=\"color:#e11d48\">Rouge</b> = découpe, <b>noir</b> = gravure, <b style=\"color:#2563eb\">bleu</b> = repères de montage (à désactiver dans ton logiciel).", en: "<b style=\"color:#e11d48\">Red</b> = cutting, <b>black</b> = engraving, <b style=\"color:#2563eb\">blue</b> = assembly markers (turn off in your software)."},
+  "about.li2": {fr: "Fichiers SVG en millimètres, compatibles LightBurn, LaserGRBL, xTool Creative Space, Inkscape…", en: "SVG files in millimeters, compatible with LightBurn, LaserGRBL, xTool Creative Space, Inkscape…"},
+  "about.li3": {fr: "Règle le <b>kerf</b> avec un premier test sur carton : si ça flotte, augmente-le ; si ça force, diminue-le.", en: "Set the <b>kerf</b> with a first test on cardboard: if it's loose, increase it; if it forces, reduce it."},
+  "about.li4": {fr: "Sur le plan de travail : glisse pour te déplacer, molette pour zoomer. Glisse un texte pour le placer, molette dessus pour sa taille.", en: "On the worktop: drag to pan, scroll to zoom. Drag a text to place it, scroll over it to resize."},
+  // Mes projets
+  "lib.title": {fr: "Mes projets", en: "My projects"},
+  "lib.intro": {fr: "Enregistrés dans ce navigateur. Pour les garder ailleurs ou les partager, exporte le fichier projet.", en: "Saved in this browser. To keep them elsewhere or share them, export the project file."},
+  "lib.saveBtn": {fr: "Enregistrer « {name} »", en: "Save “{name}”"},
+  "lib.open": {fr: "Ouvrir", en: "Open"},
+  "lib.downloadTitle": {fr: "Télécharger", en: "Download"},
+  "lib.deleteTitle": {fr: "Supprimer", en: "Delete"},
+  "lib.empty": {fr: "Aucun projet enregistré pour l'instant.", en: "No project saved yet."},
+  // Toasts / dialogues
+  "toast.projectSaved": {fr: "« {name} » enregistré dans Mes projets", en: "“{name}” saved to My projects"},
+  "toast.saveFailed": {fr: "Impossible d'enregistrer dans ce navigateur : utilise Exporter > Fichier projet", en: "Could not save in this browser: use Export > Project file instead"},
+  "toast.projectOpened": {fr: "« {name} » ouvert", en: "“{name}” opened"},
+  "toast.nothingToExport": {fr: "Rien à exporter : corrige d'abord les alertes", en: "Nothing to export: fix the alerts first"},
+  "toast.zipDownloaded": {fr: "ZIP téléchargé", en: "ZIP downloaded"},
+  "toast.sheetsDownloading": {fr: "Téléchargement des planches une par une", en: "Downloading sheets one by one"},
+  "export.notice": {fr: "LASERTOOLFX — par NeoprodFX\nProjet : {name}\n\nRouge = découpe · Noir = gravure · Bleu = repères (à désactiver)\nFaites un test sur carton avant le bois.\n\nMONTAGE\n- {steps}\n\nYouTube : https://www.youtube.com/@NeoProdFX\n", en: "LASERTOOLFX — by NeoprodFX\nProject: {name}\n\nRed = cutting · Black = engraving · Blue = assembly markers (turn off)\nTest on cardboard before the wood.\n\nASSEMBLY\n- {steps}\n\nYouTube: https://www.youtube.com/@NeoProdFX\n"},
+  "confirm.newProject": {fr: "Démarrer un nouveau projet ? Les réglages non enregistrés seront perdus.", en: "Start a new project? Unsaved settings will be lost."},
+  "confirm.deleteProject": {fr: "Supprimer « {name} » ?", en: "Delete “{name}”?"},
+  "project.defaultName": {fr: "Mon projet", en: "My project"},
+  "project.newName": {fr: "Nouveau projet", en: "New project"},
+  "alert.invalidFile": {fr: "Ce fichier n'est pas un projet LaserToolFX.", en: "This file is not a LaserToolFX project."},
+  "alert.fontsAccessDenied": {fr: "Accès aux polices refusé ou impossible", en: "Font access denied or unavailable"},
+  "alert.fontUnreadable": {fr: "Police illisible (formats acceptés : .ttf, .otf, .woff)", en: "Unreadable font (accepted formats: .ttf, .otf, .woff)"},
+  // Zoom / plan de travail
+  "zoom.guide": {fr: "Schéma", en: "Diagram"},
+  "zoom.out": {fr: "Dézoomer", en: "Zoom out"},
+  "zoom.in": {fr: "Zoomer", en: "Zoom in"},
+  "zoom.fit": {fr: "Tout voir", en: "Fit to view"},
+  "sheet.plan": {fr: "✏️ Plan", en: "✏️ Plan"},
+  "sheet.all": {fr: "Tout", en: "All"},
+  "sheet.n": {fr: "Planche {n}", en: "Sheet {n}"},
+  "sheet.topView": {fr: "Plan vu de dessus", en: "Top view plan"},
+  "sheet.layerOf": {fr: "étage {cur}/{total}", en: "layer {cur}/{total}"},
+  "sheet.planHelp": {fr: "glisse = fusionner · touche une case = la nommer · ✂ = séparer", en: "drag = merge · tap a cell = name it · ✂ = split"},
+  "sheet.card": {fr: "Planche {n}", en: "Sheet {n}"},
+  "sheet.pieceCount": {fr: "{n} pièce{s}", en: "{n} part{s}"},
+  "sheet.decorTag": {fr: "Décor · bois contrasté", en: "Decor · contrasting wood"},
+  "sheet.svgBtn": {fr: "SVG", en: "SVG"},
+  "sheet.cellName": {fr: "Case {n}", en: "Cell {n}"},
+  "sheet.cellRename": {fr: "Nom de la case", en: "Cell name"},
+  // Barre d'état
+  "status.pieces": {fr: "{n} pièces", en: "{n} parts"},
+  "status.sheets": {fr: "{n} planche{s} {bw}×{bh} mm", en: "{n} sheet{s} {bw}×{bh} mm"},
+  "status.woodUsed": {fr: "bois utilisé ≈ {pct} %", en: "wood used ≈ {pct}%"},
+  "status.alerts": {fr: "⚠ {n} alerte{s}", en: "⚠ {n} alert{s}"},
+  "status.ready": {fr: "✓ Prêt à découper", en: "✓ Ready to cut"},
+  "status.toFix": {fr: "⚠ À corriger : {msg}", en: "⚠ To fix: {msg}"},
+  "status.legend.cut": {fr: "Découpe", en: "Cutting"},
+  "status.legend.engrave": {fr: "Gravure", en: "Engraving"},
+  "status.legend.marks": {fr: "Repères", en: "Markers"},
+  "status.offeredBy": {fr: "Offert par NeoprodFX ♥", en: "Brought to you by NeoprodFX ♥"},
+  "info.kerfTip": {fr: "Épaisseur {t} mm · kerf {k} mm : si l'assemblage flotte, augmente le kerf ; s'il force, diminue-le.", en: "Thickness {t} mm · kerf {k} mm: if the assembly is loose, increase the kerf; if it forces, reduce it."},
+  "info.viewGuide": {fr: "Voir le schéma de montage", en: "View the assembly diagram"},
+  "warn.fontLocal": {fr: "Police du PC non chargée : clique sur « Polices du PC » pour la recharger.", en: "PC font not loaded: click “Fonts on this PC” to reload it."},
+  "warn.fontMissing": {fr: "Police non chargée (pas de connexion ?) : le texte est exporté en police système. Convertis-le en tracés dans ton logiciel avant de graver.", en: "Font not loaded (no connection?): the text is exported in the system font. Convert it to paths in your software before engraving."},
+  // Noms de pièces
+  "piece.bottom": {fr: "Fond", en: "Bottom"},
+  "piece.front": {fr: "Façade", en: "Front"},
+  "piece.frontLow": {fr: "Façade (basse)", en: "Front (low)"},
+  "piece.back": {fr: "Arrière", en: "Back"},
+  "piece.sideLeft": {fr: "Côté G", en: "Left side"},
+  "piece.sideRight": {fr: "Côté D", en: "Right side"},
+  "piece.side": {fr: "Côté", en: "Side"},
+  "piece.top": {fr: "Dessus", en: "Top"},
+  "piece.cabinetBack": {fr: "Dos", en: "Back"},
+  "piece.frameOpenFront": {fr: "Cadre (ouverture vers l'avant)", en: "Frame (opening toward the front)"},
+  "piece.slidingLid": {fr: "Couvercle coulissant", en: "Sliding lid"},
+  "piece.railLeft": {fr: "Rail côté G", en: "Left side rail"},
+  "piece.railRight": {fr: "Rail côté D", en: "Right side rail"},
+  "piece.railBack": {fr: "Rail arrière", en: "Back rail"},
+  "piece.lid": {fr: "Couvercle", en: "Lid"},
+  "piece.lip": {fr: "Lèvre (sous le couvercle)", en: "Lip (under the lid)"},
+  "piece.lidTabbed": {fr: "Couvercle (à tenons)", en: "Lid (with tabs)"},
+  "piece.strip": {fr: "Bande", en: "Strip"},
+  "piece.stripN": {fr: "Bande {i}/{n}", en: "Strip {i}/{n}"},
+  "piece.flankLeft": {fr: "Flanc couvercle G", en: "Left lid flank"},
+  "piece.flankRight": {fr: "Flanc couvercle D", en: "Right lid flank"},
+  "piece.flexLid": {fr: "Couvercle flexible", en: "Flexible lid"},
+  "piece.strap": {fr: "Sangle {n}", en: "Strap {n}"},
+  "piece.clasp": {fr: "Fermoir", en: "Clasp"},
+  "piece.frameOf": {fr: "Cadre {label}", en: "{label} frame"},
+  "piece.plateOf": {fr: "Plaque {label}", en: "{label} plate"},
+  "piece.cornerOf": {fr: "Coin {label}", en: "{label} corner"},
+  "piece.cornerFlank": {fr: "Coin flanc {side}", en: "Flank corner {side}"},
+  "piece.plateFlank": {fr: "Plaque flanc {side}", en: "Flank plate {side}"},
+  "piece.frameFlank": {fr: "Cadre flanc {side}", en: "Flank frame {side}"},
+  "side.left": {fr: "G", en: "L"},
+  "side.right": {fr: "D", en: "R"},
+  "piece.divider": {fr: "séparateur", en: "divider"},
+  "piece.cellPrefix": {fr: "Case", en: "Cell"},
+  "axis.len": {fr: "L", en: "L"},
+  "axis.depth": {fr: "P", en: "D"},
+  "piece.shelf": {fr: "Étagère {n}", en: "Shelf {n}"},
+  "piece.separator": {fr: "Séparateur {letter}{n}", en: "Divider {letter}{n}"},
+  "piece.drawerH": {fr: "Tiroir h{h}", en: "Drawer h{h}"},
+  "piece.drawer": {fr: "Tiroir {letter}{n}", en: "Drawer {letter}{n}"},
+  "piece.bin": {fr: "Bac", en: "Bin"},
+  "piece.binLetter": {fr: "Bac {letter}{n}", en: "Bin {letter}{n}"},
+  "piece.crate": {fr: "Casier", en: "Tray"},
+  "piece.stackFrame": {fr: "Cadre d'empilage", en: "Stacking frame"},
+  "piece.lidStackFrame": {fr: "Cadre du couvercle", en: "Lid frame"},
+  "piece.boxN": {fr: "Boîte {n}", en: "Box {n}"},
+  "piece.boxNNamed": {fr: "Boîte {n} « {name} »", en: "Box {n} “{name}”"},
+  "piece.layerPrefix": {fr: "É{n} ", en: "L{n} "},
+  // Notices (instructions de montage dynamiques)
+  "notice.box.dims": {fr: "Boîte {L}×{W}×{H} mm (extérieur), intérieur {iL}×{iW}×{iH} mm.", en: "Box {L}×{W}×{H} mm (outside), inside {iL}×{iW}×{iH} mm."},
+  "notice.box.lid.steps": {fr: "Montage : fond + façades + côtés, puis colle la lèvre centrée sous le couvercle.", en: "Assembly: bottom + front/back + sides, then glue the lip centered under the lid."},
+  "notice.box.sliding.dims": {fr: "Boîte {L}×{W}×{H} mm, couvercle coulissant {lw}×{ld} mm.", en: "Box {L}×{W}×{H} mm, sliding lid {lw}×{ld} mm."},
+  "notice.box.sliding.steps": {fr: "Montage : 1) emboîte les rails dans les mortaises des côtés et de l'arrière (tenons vers l'extérieur, ils affleurent la paroi). 2) Assemble côtés + arrière + façade basse. 3) Emboîte le cadre sur le dessus, ouverture côté façade. 4) Pose le fond en dernier. Le couvercle glisse entre les rails et le cadre.", en: "Assembly: 1) Fit the rails into the mortises on the sides and back (tabs facing outward, flush with the wall). 2) Assemble the sides + back + low front. 3) Fit the frame on top, opening toward the front. 4) Fit the bottom last. The lid slides between the rails and the frame."},
+  "notice.box.closed.dims": {fr: "Boîte fermée {L}×{W}×{H} mm : le dessus s'emboîte comme le fond (idéal tirelire ou boîte scellée).", en: "Closed box {L}×{W}×{H} mm: the top fits together like the bottom (ideal for a piggy bank or a sealed box)."},
+  "notice.box.compartments": {fr: "Compartiments : {cx} × {cy} cases, séparateurs à mi-bois de {h} mm de haut à poser dans la boîte.", en: "Compartments: {cx} × {cy} cells, half-lap dividers {h} mm tall to drop into the box."},
+  "notice.decor.plates": {fr: "Décor : colle chaque plaque sur la face du même nom, bords affleurants. Découpe-les dans un bois plus foncé pour le contraste.", en: "Decor: glue each plate onto the face of the same name, edges flush. Cut them from a darker wood for contrast."},
+  "notice.shape.strip": {fr: "Bande flexible : {P} mm au total{multi}, hauteur {Hb} mm + tenons, {tabs} tenons.", en: "Flexible strip: {P} mm in total{multi}, height {Hb} mm + tabs, {tabs} tabs."},
+  "notice.shape.stripMulti": {fr: ", en {n} morceaux de {seg} mm", en: ", in {n} pieces of {seg} mm"},
+  "notice.shape.assembly.heart": {fr: "Montage : plante la bande dans les mortaises du fond en partant de l'échancrure du cœur (jointure à la pointe si 2 bandes). Colle au fur et à mesure.", en: "Assembly: fit the strip into the mortises of the bottom starting from the heart's notch (joint at the tip if 2 strips). Glue as you go."},
+  "notice.shape.assembly.generic": {fr: "Montage : plante la bande dans les mortaises du fond en faisant le tour, colle au fur et à mesure.", en: "Assembly: fit the strip into the mortises of the bottom all the way around, glue as you go."},
+  "notice.shape.lid.fixed": {fr: "Couvercle fixé : pose-le dans le même sens que le fond (gravure vers le haut) et plante les tenons du haut de la bande dans ses mortaises.", en: "Fixed lid: fit it the same way up as the bottom (engraving facing up) and fit the top tabs of the strip into its mortises."},
+  "notice.shape.lid.loose": {fr: "Colle la lèvre centrée sous le couvercle : il s'emboîte dans la bande.", en: "Glue the lip centered under the lid: it fits into the strip."},
+  "warn.shape.heartTip": {fr: "Pointe du cœur très serrée : la bande risque de casser. Augmente l'arrondi de la pointe ou réduis l'espacement des lignes.", en: "Heart tip very tight: the strip may break. Increase the tip rounding or reduce the line spacing."},
+  "warn.shape.hingeSpacing": {fr: "Espacement des lignes large par rapport à l'épaisseur : la bande sera raide. Essaie 1,5 à 2 mm pour du 3 mm.", en: "Line spacing wide relative to the thickness: the strip will be stiff. Try 1.5 to 2 mm for 3 mm stock."},
+  "notice.chest.dims": {fr: "Corps {L}×{W}×{H} mm. Couvercle : {hs} mm de haut, panneau flexible {Lp}×{L} mm avec {tabs} tenons.", en: "Body {L}×{W}×{H} mm. Lid: {hs} mm tall, flexible panel {Lp}×{L} mm with {tabs} tabs."},
+  "notice.chest.assembly": {fr: "Montage : assemble le corps, puis plante les tenons du panneau dans les mortaises des deux flancs (les flancs débordent de {m} mm). Fixe le couvercle au corps avec deux petites charnières.", en: "Assembly: assemble the body, then fit the panel's tabs into the mortises of the two flanks (the flanks overhang by {m} mm). Attach the lid to the body with two small hinges."},
+  "notice.chest.straps": {fr: "Sangles : {n} bande(s) de {Ls} mm à coller en travers du couvercle (réparties sur la longueur), du bas avant au bas arrière.", en: "Straps: {n} strap(s) {Ls} mm long to glue across the lid (spread along the length), from front bottom to back bottom."},
+  "notice.chest.clasp": {fr: "Fermoir : colle-le uniquement sur l'avant du couvercle, centré ; il retombe sur la façade sans l'empêcher de s'ouvrir.", en: "Clasp: glue it only on the front of the lid, centered; it falls onto the front without preventing it from opening."},
+  "notice.chest.decor": {fr: "Décor : pièces sur planche(s) séparée(s), à découper dans un bois plus foncé et à coller face par face.", en: "Decor: parts on separate sheet(s), to cut from a darker wood and glue face by face."},
+  "warn.chest.radius": {fr: "Rayon du couvercle serré : réduis l'espacement des lignes si le bois résiste.", en: "Lid radius tight: reduce the line spacing if the wood resists."},
+  "notice.orga.bins.dims": {fr: "Casier {W}×{D}×{H} mm avec {n} bacs de {bw}×{bd}×{bh} mm.", en: "Tray {W}×{D}×{H} mm with {n} bins of {bw}×{bd}×{bh} mm."},
+  "notice.orga.bins.single": {fr: "Un seul bac généré : découpe-le {n} fois (étiquettes désactivées dans ce mode).", en: "Only one bin generated: cut it {n} times (labels disabled in this mode)."},
+  "notice.orga.bins.assembly": {fr: "Montage : assemble le casier comme une boîte à encoches, puis les bacs ; ils se posent côte à côte et se sortent par le dessus.", en: "Assembly: assemble the tray like a finger-jointed box, then the bins; they sit side by side and lift out from the top."},
+  "notice.orga.drawers.dims": {fr: "Tiroirs : {dw} mm de large, {dd} mm de profondeur, hauteur selon la rangée (jeu {j} mm de chaque côté).", en: "Drawers: {dw} mm wide, {dd} mm deep, height depending on the row (clearance {j} mm on each side)."},
+  "notice.orga.drawers.single": {fr: "Un tiroir par hauteur de rangée : découpe chacun autant de fois qu'il y a de cases dans la rangée (étiquettes désactivées dans ce mode).", en: "One drawer per row height: cut each one as many times as there are cells in the row (labels disabled in this mode)."},
+  "notice.orga.dims": {fr: "Meuble {W}×{D}×{Htot} mm : {rows} rangée(s) × {cols} colonne(s), cases de {cw} mm de large.", en: "Unit {W}×{D}×{Htot} mm: {rows} row(s) × {cols} column(s), cells {cw} mm wide."},
+  "notice.orga.assembly": {fr: "Montage : 1) plante les séparateurs dans les étagères (et le fond / le dessus). 2) Emboîte les étagères dans le dos puis dans les côtés. 3) Ferme avec le fond et le dessus. 4) Assemble les tiroirs et glisse-les dans les cases.", en: "Assembly: 1) Fit the dividers into the shelves (and the bottom / top). 2) Fit the shelves into the back then the sides. 3) Close with the bottom and top. 4) Assemble the drawers and slide them into the cells."},
+  "notice.orga.compartments": {fr: "Compartiments : les séparateurs s'emboîtent à mi-bois pour former la grille, puis se posent dans le tiroir ou le bac.", en: "Compartments: the dividers fit together half-lap to form the grid, then drop into the drawer or bin."},
+  "notice.tray.layer": {fr: "Étage {n} : casier {W}×{D}×{H} mm, {count} boîtes de {bh} mm de haut.", en: "Layer {n}: tray {W}×{D}×{H} mm, {count} boxes {bh} mm tall."},
+  "notice.tray.assembly": {fr: "Montage : assemble chaque casier comme une boîte ouverte, colle le cadre d'empilage centré sous le fond des étages supérieurs (et sous le couvercle), puis assemble les boîtes et range-les selon le plan.", en: "Assembly: assemble each tray like an open box, glue the stacking frame centered under the bottom of the upper layers (and under the lid), then assemble the boxes and arrange them according to the plan."},
+  "notice.tray.grid": {fr: "Grille {gx} × {gy} : une case de base mesure {px} × {py} mm (jeu de {j} mm autour de chaque boîte).", en: "Grid {gx} × {gy}: a base cell measures {px} × {py} mm (clearance of {j} mm around each box)."},
+  // Erreurs
+  "err.dimsTooSmall": {fr: "Dimensions trop petites pour cette épaisseur.", en: "Dimensions too small for this thickness."},
+  "err.box.tooSmallForThickness": {fr: "Dimensions trop petites pour cette épaisseur.", en: "Dimensions too small for this thickness."},
+  "err.box.tooLowForSliding": {fr: "Boîte trop basse pour un couvercle coulissant.", en: "Box too low for a sliding lid."},
+  "err.box.tooNarrowForRails": {fr: "Boîte trop étroite pour les rails du couvercle coulissant.", en: "Box too narrow for the sliding lid rails."},
+  "err.shape.heartTooSmall": {fr: "Cœur trop petit pour cette épaisseur.", en: "Heart too small for this thickness."},
+  "err.shape.heartTipInvalid": {fr: "Pointe du cœur incohérente.", en: "Inconsistent heart tip."},
+  "err.shape.heightTooLow": {fr: "Hauteur de boîte trop faible.", en: "Box height too low."},
+  "err.chest.domeTooWide": {fr: "Le bombé ne peut pas dépasser la moitié de la largeur (demi-cercle).", en: "The dome cannot exceed half the width (semicircle)."},
+  "err.chest.straightTooLow": {fr: "Hauteur droite du couvercle trop faible pour ce bombé.", en: "Lid straight height too low for this dome."},
+  "err.orga.tooManyBins": {fr: "Trop de bacs pour cette taille de casier.", en: "Too many bins for this tray size."},
+  "err.orga.rowTooSmall": {fr: "Une rangée fait moins de 15 mm.", en: "A row is less than 15 mm."},
+  "err.orga.colsTooNarrow": {fr: "Colonnes trop étroites.", en: "Columns too narrow."},
+  "err.tray.layerTooSmall": {fr: "Étage {n} : dimensions trop petites pour cette épaisseur.", en: "Layer {n}: dimensions too small for this thickness."},
+  "err.tray.layerTooLow": {fr: "Étage {n} trop bas pour des boîtes.", en: "Layer {n} too low for boxes."},
+  "err.tray.cellTooSmall": {fr: "Étage {n}, case {k} : trop petite pour une boîte ({w}×{d} mm). Fusionne-la ou réduis la grille.", en: "Layer {n}, cell {k}: too small for a box ({w}×{d} mm). Merge it or reduce the grid."},
+  "err.layout.pieceTooBig": {fr: "« {name} » ({w}×{h} mm) ne tient pas sur le plateau {bw}×{bh}.", en: "“{name}” ({w}×{h} mm) does not fit on the {bw}×{bh} bed."},
+  "export.svgComment": {fr: "LaserToolFX par NeoprodFX — {name} — planche {idx}/{total} — rouge=découpe noir=gravure bleu=repères", en: "LaserToolFX by NeoprodFX — {name} — sheet {idx}/{total} — red=cutting black=engraving blue=markers"},
+};
+function tt(key, vars) {
+  const e = I18N[key];
+  let s = e ? (e[ui.lang] || e.fr) : key;
+  if (vars) for (const k in vars) s = s.split("{" + k + "}").join(vars[k]);
+  return s;
+}
+const fontsHtml = () => `<div class="fontbtns">${"queryLocalFonts" in window ? `<button class="btn ghost sm" id="btnLocalFonts" type="button">${tt("font.localBtn")}</button>` : ""}<label class="btn ghost sm">${tt("font.importBtn")}<input type="file" id="fontFile" accept=".ttf,.otf,.woff" hidden></label></div>`;
 const COMMON = [
-  ["Matériau et machine"],
-  ["t", "Épaisseur du bois", 3, "mm", {step: 0.1, min: 1}],
-  ["kerf", "Kerf (serrage)", 0.1, "mm", {step: 0.01, min: 0}],
-  ["bed", "Machine", "297x210", "", {options: BEDS}],
-  ["bedW", "Largeur plateau", 297, "mm", {show: v => v.bed === "custom"}],
-  ["bedH", "Profondeur plateau", 210, "mm", {show: v => v.bed === "custom"}],
-  ["reperes", "Repères de montage (bleu)", true, "", {}],
+  ["grp.material"],
+  ["t", "field.thickness", 3, "mm", {step: 0.1, min: 1}],
+  ["kerf", "field.kerf", 0.1, "mm", {step: 0.01, min: 0}],
+  ["bed", "field.machine", "297x210", "", {options: () => ({...BEDS, custom: tt("bed.custom")})}],
+  ["bedW", "field.bedW", 297, "mm", {show: v => v.bed === "custom"}],
+  ["bedH", "field.bedH", 210, "mm", {show: v => v.bed === "custom"}],
+  ["reperes", "field.reperes", true, "", {}],
 ];
 const HINGE = [
-  ["Charnière flexible"],
-  ["hSpace", "Espacement des lignes", 1.8, "mm", {step: 0.1, min: 0.8}],
-  ["hCut", "Longueur de coupe", 16, "mm", {step: 1, min: 4}],
-  ["hBridge", "Pont (bois gardé)", 3, "mm", {step: 0.5, min: 1}],
+  ["grp.hinge"],
+  ["hSpace", "field.hSpace", 1.8, "mm", {step: 0.1, min: 0.8}],
+  ["hCut", "field.hCut", 16, "mm", {step: 1, min: 4}],
+  ["hBridge", "field.hBridge", 3, "mm", {step: 0.5, min: 1}],
 ];
 const TABS_JOINT = [
-  ["Tenons d'assemblage"],
-  ["tabW", "Largeur des tenons", 8, "mm", {min: 3}],
-  ["tabPitch", "Espacement des tenons", 25, "mm", {min: 8}],
-  ["rebord", "Débord (rebord)", 3, "mm", {step: 0.5, min: 1.5}],
+  ["grp.tabsJoint"],
+  ["tabW", "field.tabW", 8, "mm", {min: 3}],
+  ["tabPitch", "field.tabPitch", 25, "mm", {min: 8}],
+  ["rebord", "field.rebord", 3, "mm", {step: 0.5, min: 1.5}],
 ];
 const decoShown = v => v.deco === "cadre" || v.deco === "cadreMotif" || v.deco === "coins";
 const DECOR = [
-  ["Décor / habillage"],
-  ["deco", "Style", "aucun", "", {options: {aucun: "Aucun", cadre: "Cadre festonné", cadreMotif: "Cadre + motif gravé", ajoure: "Plaque ajourée", coins: "Coins seuls"}}],
-  ["motif", "Motif", "flocon", "", {options: {flocon: "Flocon ❄", etoile: "Étoile ★", coeur: "Cœur ♥", sapin: "Sapin"}, show: v => v.deco === "cadreMotif" || v.deco === "ajoure"}],
-  ["bord", "Largeur du cadre", 7, "mm", {min: 3, show: decoShown}],
-  ["feston", "Arrondi des coins", 6, "mm", {min: 0, show: decoShown}],
+  ["grp.decor"],
+  ["deco", "field.decoStyle", "aucun", "", {options: () => ({aucun: tt("deco.aucun"), cadre: tt("deco.cadre"), cadreMotif: tt("deco.cadreMotif"), ajoure: tt("deco.ajoure"), coins: tt("deco.coins")})}],
+  ["motif", "field.motif", "flocon", "", {options: () => ({flocon: tt("motif.flocon"), etoile: tt("motif.etoile"), coeur: tt("motif.coeur"), sapin: tt("motif.sapin")}), show: v => v.deco === "cadreMotif" || v.deco === "ajoure"}],
+  ["bord", "field.bord", 7, "mm", {min: 3, show: decoShown}],
+  ["feston", "field.feston", 6, "mm", {min: 0, show: decoShown}],
 ];
 const TEXT = [
-  ["Gravure"],
-  ["texte", "Texte", "NeoprodFX", "", {text: true}],
-  ["texte2", "2e ligne", "", "", {text: true}],
-  ["police", "Police", "Pacifico", "", {options: () => fontOptions()}],
-  ["_fonts", "", "", "", {html: () => `<div class="fontbtns">${"queryLocalFonts" in window ? `<button class="btn ghost sm" id="btnLocalFonts" type="button">🖥️ Polices du PC</button>` : ""}<label class="btn ghost sm">📁 Importer .ttf/.otf<input type="file" id="fontFile" accept=".ttf,.otf,.woff" hidden></label></div>`}],
-  ["taille", "Taille ligne 1", 10, "mm", {step: 0.5, min: 2}],
-  ["taille2", "Taille ligne 2", 6, "mm", {step: 0.5, min: 2, show: v => !!v.texte && !!v.texte2}],
-  ["_hint", "", "", "", {html: () => `<p class="hint">Astuce : glisse chaque texte sur le plan de travail pour le placer, molette dessus pour changer sa taille. <a href="#" id="recenter">Recentrer</a></p>`}],
+  ["grp.engrave"],
+  ["texte", "field.texte", "NeoprodFX", "", {text: true}],
+  ["texte2", "field.texte2", "", "", {text: true}],
+  ["police", "field.police", "Pacifico", "", {options: () => fontOptions()}],
+  ["_fonts", "", "", "", {html: fontsHtml}],
+  ["taille", "field.taille", 10, "mm", {step: 0.5, min: 2}],
+  ["taille2", "field.taille2", 6, "mm", {step: 0.5, min: 2, show: v => !!v.texte && !!v.texte2}],
+  ["_hint", "", "", "", {html: () => `<p class="hint">${tt("hint.textPlace")}</p>`}],
 ];
 const TABS = {
   box: {label: "Boîte à encoches", fields: [
-    ["Dimensions extérieures"],
-    ["L", "Longueur", 120, "mm"], ["W", "Largeur", 80, "mm"], ["H", "Hauteur", 60, "mm"],
-    ["doigt", "Largeur des encoches", 10, "mm", {min: 3}],
-    ["couvercle", "Couvercle", "pose", "", {options: {pose: "Posé avec lèvre", coulissant: "Coulissant", ferme: "Fermé à encoches", aucun: "Aucun (boîte ouverte)"}}],
-    ["Compartiments"],
-    ["compX", "Cases en longueur", 1, "", {min: 1, step: 1}],
-    ["compY", "Cases en largeur", 1, "", {min: 1, step: 1}],
+    ["grp.outerDims"],
+    ["L", "field.longueur", 120, "mm"], ["W", "field.largeur", 80, "mm"], ["H", "field.hauteur", 60, "mm"],
+    ["doigt", "field.doigt", 10, "mm", {min: 3}],
+    ["couvercle", "field.couvercle", "pose", "", {options: () => ({pose: tt("field.box.couvercle.pose"), coulissant: tt("field.box.couvercle.coulissant"), ferme: tt("field.box.couvercle.ferme"), aucun: tt("field.box.couvercle.aucun")})}],
+    ["grp.compartments"],
+    ["compX", "field.compX", 1, "", {min: 1, step: 1}],
+    ["compY", "field.compY", 1, "", {min: 1, step: 1}],
     ...TEXT, ...DECOR, ...COMMON]},
   shape: {label: "Boîte en forme (cœur…)", fields: [
-    ["Forme"],
-    ["forme", "Forme", "coeur", "", {options: {coeur: "Cœur", cercle: "Cercle", ovale: "Ovale", rect: "Rectangle arrondi", hexa: "Hexagone arrondi"}}],
-    ["W", "Largeur extérieure", 110, "mm"],
-    ["D", "Profondeur extérieure", 80, "mm", {show: v => v.forme === "ovale" || v.forme === "rect"}],
-    ["H", "Hauteur de la boîte", 45, "mm"],
-    ["allong", "Allongement du cœur", 0.62, "", {step: 0.02, min: 0.4, max: 1, show: v => v.forme === "coeur"}],
-    ["pointe", "Arrondi de la pointe", 6, "mm", {step: 0.5, min: 2, show: v => v.forme === "coeur"}],
-    ["rayon", "Rayon des coins", 12, "mm", {min: 2, show: v => v.forme === "rect" || v.forme === "hexa"}],
-    ["bandes", "Nombre de bandes (0 = auto)", 0, "", {min: 0, step: 1}],
-    ["couvS", "Couvercle", "levre", "", {options: {levre: "Amovible avec lèvre", tenons: "Fixé à tenons (fermé)"}}],
-    ["jeu", "Jeu de la lèvre", 0.4, "mm", {step: 0.1, min: 0, show: v => v.couvS !== "tenons"}],
+    ["grp.shapeKind"],
+    ["forme", "field.forme", "coeur", "", {options: () => ({coeur: tt("forme.coeur"), cercle: tt("forme.cercle"), ovale: tt("forme.ovale"), rect: tt("forme.rect"), hexa: tt("forme.hexa")})}],
+    ["W", "field.largeurExt", 110, "mm"],
+    ["D", "field.profondeurExt", 80, "mm", {show: v => v.forme === "ovale" || v.forme === "rect"}],
+    ["H", "field.shapeH", 45, "mm"],
+    ["allong", "field.allong", 0.62, "", {step: 0.02, min: 0.4, max: 1, show: v => v.forme === "coeur"}],
+    ["pointe", "field.pointe", 6, "mm", {step: 0.5, min: 2, show: v => v.forme === "coeur"}],
+    ["rayon", "field.rayon", 12, "mm", {min: 2, show: v => v.forme === "rect" || v.forme === "hexa"}],
+    ["bandes", "field.bandes", 0, "", {min: 0, step: 1}],
+    ["couvS", "field.couvercle", "levre", "", {options: () => ({levre: tt("field.shape.couvS.levre"), tenons: tt("field.shape.couvS.tenons")})}],
+    ["jeu", "field.jeu", 0.4, "mm", {step: 0.1, min: 0, show: v => v.couvS !== "tenons"}],
     ...TABS_JOINT, ...TEXT, ...HINGE, ...COMMON]},
   chest: {label: "Coffre bombé", fields: [
-    ["Dimensions extérieures"],
-    ["L", "Longueur", 140, "mm"], ["W", "Largeur", 90, "mm"],
-    ["H", "Hauteur du corps", 60, "mm"],
-    ["hb", "Hauteur droite du couvercle", 10, "mm", {min: 5}],
-    ["S", "Bombé du couvercle", 45, "mm", {min: 5}],
-    ["doigt", "Largeur des encoches", 10, "mm", {min: 3}],
+    ["grp.outerDims"],
+    ["L", "field.longueur", 140, "mm"], ["W", "field.largeur", 90, "mm"],
+    ["H", "field.chestH", 60, "mm"],
+    ["hb", "field.hb", 10, "mm", {min: 5}],
+    ["S", "field.S", 45, "mm", {min: 5}],
+    ["doigt", "field.doigt", 10, "mm", {min: 3}],
     ...TABS_JOINT, ...TEXT,
-    ...DECOR.map(f => f[0] === "deco" ? ["deco", "Style", "cadre", "", f[4]] : f),
-    ["sangles", "Sangles sur le couvercle", 2, "", {min: 0, step: 1}],
-    ["fermoir", "Fermoir déco", true, "", {}],
+    ...DECOR.map(f => f[0] === "deco" ? ["deco", "field.decoStyle", "cadre", "", f[4]] : f),
+    ["sangles", "field.sangles", 2, "", {min: 0, step: 1}],
+    ["fermoir", "field.fermoir", true, "", {}],
     ...HINGE, ...COMMON]},
   orga: {label: "Organiseur", fields: [
-    ["Organiseur"],
-    ["type", "Type", "tiroirs", "", {options: {tiroirs: "Meuble à tiroirs", bacs: "Casier à bacs"}}],
-    ["W", "Largeur extérieure", 240, "mm"], ["D", "Profondeur extérieure", 150, "mm"],
-    ["H", "Hauteur du casier", 50, "mm", {show: v => v.type === "bacs"}],
-    ["rows", "Rangées", 2, "", {min: 1, step: 1}], ["cols", "Colonnes", 3, "", {min: 1, step: 1}],
-    ["rowH", "Hauteur des rangées", 45, "mm", {min: 15, show: v => v.type !== "bacs"}],
-    ["rowsCustom", "Hauteurs perso (haut → bas)", "", "", {text: true, show: v => v.type !== "bacs"}],
-    ["_hr", "", "", "", {html: () => `<p class="hint">Hauteurs perso : ex. « 30, 30, 60 » pour des petits tiroirs en haut et un grand en bas. Vide = toutes identiques.</p>`, show: v => v.type !== "bacs"}],
-    ["Tiroirs et bacs"],
-    ["tiroirs", "Générer", "tous", "", {options: {tous: "Tous", unique: "Un exemplaire par taille", aucun: "Aucun (rangement seul)"}}],
-    ["jeuT", "Jeu (coulissement)", 0.8, "mm", {step: 0.1, min: 0}],
-    ["doigt", "Largeur des encoches", 8, "mm", {min: 3}],
-    ["prise", "Prise", "trou", "", {options: {trou: "Trou oblong", aucune: "Aucune"}}],
-    ["compX", "Compartiments (largeur)", 1, "", {min: 1, step: 1}],
-    ["compY", "Compartiments (profondeur)", 1, "", {min: 1, step: 1}],
-    ["Étiquettes"],
-    ["etiquettes", "Textes", "Perles, Strass, Pinceaux, Vis, Outils, Divers", "", {text: true}],
-    ["_he", "", "", "", {html: () => `<p class="hint">Séparés par des virgules, dans l'ordre de lecture (rangée du haut, de gauche à droite).</p>`}],
-    ["police", "Police", "Pacifico", "", {options: () => fontOptions()}],
-    ["_fonts", "", "", "", {html: () => `<div class="fontbtns">${"queryLocalFonts" in window ? `<button class="btn ghost sm" id="btnLocalFonts" type="button">🖥️ Polices du PC</button>` : ""}<label class="btn ghost sm">📁 Importer .ttf/.otf<input type="file" id="fontFile" accept=".ttf,.otf,.woff" hidden></label></div>`}],
-    ["tailleEtiq", "Taille", 5, "mm", {step: 0.5, min: 2}],
+    ["grp.organizer"],
+    ["type", "field.type", "tiroirs", "", {options: () => ({tiroirs: tt("type.tiroirs"), bacs: tt("type.bacs")})}],
+    ["W", "field.largeurExt", 240, "mm"], ["D", "field.profondeurExt", 150, "mm"],
+    ["H", "field.orgaH", 50, "mm", {show: v => v.type === "bacs"}],
+    ["rows", "field.rows", 2, "", {min: 1, step: 1}], ["cols", "field.cols", 3, "", {min: 1, step: 1}],
+    ["rowH", "field.rowH", 45, "mm", {min: 15, show: v => v.type !== "bacs"}],
+    ["rowsCustom", "field.rowsCustom", "", "", {text: true, show: v => v.type !== "bacs"}],
+    ["_hr", "", "", "", {html: () => `<p class="hint">${tt("hint.rowsCustom")}</p>`, show: v => v.type !== "bacs"}],
+    ["grp.drawersBins"],
+    ["tiroirs", "field.tiroirs", "tous", "", {options: () => ({tous: tt("tiroirs.tous"), unique: tt("tiroirs.unique"), aucun: tt("tiroirs.aucun")})}],
+    ["jeuT", "field.jeuT.orga", 0.8, "mm", {step: 0.1, min: 0}],
+    ["doigt", "field.doigt", 8, "mm", {min: 3}],
+    ["prise", "field.prise", "trou", "", {options: () => ({trou: tt("prise.trou"), aucune: tt("prise.aucune")})}],
+    ["compX", "field.compXsmall", 1, "", {min: 1, step: 1}],
+    ["compY", "field.compYsmall", 1, "", {min: 1, step: 1}],
+    ["grp.labels"],
+    ["etiquettes", "field.etiquettes", "Perles, Strass, Pinceaux, Vis, Outils, Divers", "", {text: true}],
+    ["_he", "", "", "", {html: () => `<p class="hint">${tt("hint.etiquettes")}</p>`}],
+    ["police", "field.police", "Pacifico", "", {options: () => fontOptions()}],
+    ["_fonts", "", "", "", {html: fontsHtml}],
+    ["tailleEtiq", "field.tailleEtiq", 5, "mm", {step: 0.5, min: 2}],
     ...COMMON]},
   tray: {label: "Casier empilable", fields: [
-    ["Casier"],
-    ["W", "Largeur extérieure", 240, "mm"], ["D", "Profondeur extérieure", 160, "mm"],
-    ["gridX", "Colonnes de la grille", 4, "", {min: 1, step: 1}],
-    ["gridY", "Rangées de la grille", 3, "", {min: 1, step: 1}],
-    ["doigt", "Largeur des encoches", 10, "mm", {min: 3}],
-    ["Étages"],
+    ["grp.trayKind"],
+    ["W", "field.largeurExt", 240, "mm"], ["D", "field.profondeurExt", 160, "mm"],
+    ["gridX", "field.gridX", 4, "", {min: 1, step: 1}],
+    ["gridY", "field.gridY", 3, "", {min: 1, step: 1}],
+    ["doigt", "field.doigt", 10, "mm", {min: 3}],
+    ["grp.layers"],
     ["_layers", "", "", "", {html: () => layersHtml()}],
-    ["Boîtes"],
-    ["jeuT", "Jeu autour des boîtes", 1, "mm", {step: 0.1, min: 0}],
-    ["prise", "Prise", "trou", "", {options: {trou: "Trou oblong", aucune: "Aucune"}}],
-    ["genLayers", "Générer", "tous", "", {options: {tous: "Tous les étages", actuel: "Étage affiché seulement"}}],
-    ["Empilage"],
-    ["couvercleT", "Couvercle sur le dernier étage", true, "", {}],
-    ["texteC", "Texte du couvercle", "NeoprodFX", "", {text: true, show: v => v.couvercleT}],
-    ["_hs", "", "", "", {html: () => `<p class="hint">Un cadre collé sous chaque étage (et sous le couvercle) s'emboîte dans l'étage du dessous : les casiers s'empilent sans glisser.</p>`}],
-    ["Étiquettes"],
-    ["_ht", "", "", "", {html: () => `<p class="hint">Clique (ou touche) une case du plan pour la nommer : le nom est gravé sur sa boîte.</p>`}],
-    ["police", "Police", "Pacifico", "", {options: () => fontOptions()}],
-    ["_fonts", "", "", "", {html: () => `<div class="fontbtns">${"queryLocalFonts" in window ? `<button class="btn ghost sm" id="btnLocalFonts" type="button">🖥️ Polices du PC</button>` : ""}<label class="btn ghost sm">📁 Importer .ttf/.otf<input type="file" id="fontFile" accept=".ttf,.otf,.woff" hidden></label></div>`}],
-    ["tailleEtiq", "Taille", 5, "mm", {step: 0.5, min: 2}],
+    ["grp.boxes"],
+    ["jeuT", "field.jeuT.tray", 1, "mm", {step: 0.1, min: 0}],
+    ["prise", "field.prise", "trou", "", {options: () => ({trou: tt("prise.trou"), aucune: tt("prise.aucune")})}],
+    ["genLayers", "field.genLayers", "tous", "", {options: () => ({tous: tt("genLayers.tous"), actuel: tt("genLayers.actuel")})}],
+    ["grp.stacking"],
+    ["couvercleT", "field.couvercleT", true, "", {}],
+    ["texteC", "field.texteC", "NeoprodFX", "", {text: true, show: v => v.couvercleT}],
+    ["_hs", "", "", "", {html: () => `<p class="hint">${tt("hint.stacking")}</p>`}],
+    ["grp.labels"],
+    ["_ht", "", "", "", {html: () => `<p class="hint">${tt("hint.trayLabels")}</p>`}],
+    ["police", "field.police", "Pacifico", "", {options: () => fontOptions()}],
+    ["_fonts", "", "", "", {html: fontsHtml}],
+    ["tailleEtiq", "field.tailleEtiq", 5, "mm", {step: 0.5, min: 2}],
     ...COMMON]},
 };
 
 // ---------- État ----------
 const STORE = "neoprodfx-atelier-v1", LIB = "neoprodfx-atelier-projets", UIKEY = "neoprodfx-atelier-ui";
-let state = {tab: "box", values: {}, name: "Mon projet"};
-try { const s = JSON.parse(localStorage.getItem(STORE)); if (s && TABS[s.tab]) state = Object.assign(state, s); } catch (e) {}
-let ui = {theme: null, closed: {}};
+let ui = {theme: null, closed: {}, lang: "fr"};
 try { ui = Object.assign(ui, JSON.parse(localStorage.getItem(UIKEY)) || {}); } catch (e) {}
+if (ui.lang !== "en") ui.lang = "fr";
+let state = {tab: "box", values: {}, name: tt("project.defaultName")};
+try { const s = JSON.parse(localStorage.getItem(STORE)); if (s && TABS[s.tab]) state = Object.assign(state, s); } catch (e) {}
 // Lien direct vers un modèle : #tab=shape&forme=coeur&W=120&texte=Léa
 const hp = new URLSearchParams(location.hash.slice(1));
 if (TABS[hp.get("tab")]) {
@@ -476,35 +956,37 @@ const ICONS = {
 };
 const icon = (n, s = 18) => `<svg class="ic" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${ICONS[n]}"/></svg>`;
 const MODELS = {
-  box: {icon: "box", name: "Boîte", desc: "Boîte à encoches : couvercle posé, coulissant ou fermé, décor en option."},
-  shape: {icon: "heart", name: "Formes", desc: "Cœur, cercle, ovale, hexagone… paroi en bande flexible à tenons."},
-  chest: {icon: "chest", name: "Coffre", desc: "Coffre au couvercle bombé : cadres, sangles et fermoir décoratifs."},
-  orga: {icon: "lib", name: "Organiseur", desc: "Meuble à tiroirs ou casier à bacs, étiquettes gravées et compartiments."},
-  tray: {icon: "layers", name: "Casier", desc: "Casiers empilables : dessine tes cases vue de dessus, chaque case reçoit sa boîte sur mesure."},
+  box: {icon: "box", name: "model.box.name", desc: "model.box.desc"},
+  shape: {icon: "heart", name: "model.shape.name", desc: "model.shape.desc"},
+  chest: {icon: "chest", name: "model.chest.name", desc: "model.chest.desc"},
+  orga: {icon: "lib", name: "model.orga.name", desc: "model.orga.desc"},
+  tray: {icon: "layers", name: "model.tray.name", desc: "model.tray.desc"},
 };
-const RIGHT = new Set(["Gravure", "Décor / habillage", "Matériau et machine", "Étiquettes"]);
+const RIGHT = new Set(["grp.engrave", "grp.decor", "grp.material", "grp.labels"]);
 
 function buildActions() {
   $("#actions").innerHTML = `
-    <button class="tb dark lbl" id="aNew" title="Nouveau projet">${icon("plus")}<span>Nouveau</span></button>
-    <button class="tb dark lbl" id="aOpen" title="Ouvrir un fichier projet (.json)">${icon("open")}<span>Ouvrir</span></button>
-    <button class="tb dark lbl" id="aSave" title="Enregistrer dans Mes projets (Ctrl+S)">${icon("save")}<span>Enregistrer</span></button>
-    <button class="tb dark lbl" id="aLib" title="Mes projets">${icon("lib")}<span>Mes projets</span></button>
+    <button class="tb dark lbl" id="aNew" title="${tt("action.newTitle")}">${icon("plus")}<span>${tt("action.new")}</span></button>
+    <button class="tb dark lbl" id="aOpen" title="${tt("action.openTitle")}">${icon("open")}<span>${tt("action.open")}</span></button>
+    <button class="tb dark lbl" id="aSave" title="${tt("action.saveTitle")}">${icon("save")}<span>${tt("action.save")}</span></button>
+    <button class="tb dark lbl" id="aLib" title="${tt("action.libTitle")}">${icon("lib")}<span>${tt("action.lib")}</span></button>
     <span class="sep"></span>
-    <button class="tb dark lbl" id="aTheme" title="Thème clair / sombre">${icon("moon")}<span>Thème</span></button>
-    <button class="tb dark lbl" id="aMat" title="Réglages laser recommandés (puissance/vitesse par matériau)">${icon("flame")}<span>Réglages laser</span></button>
-    <button class="tb dark lbl" id="aHelp" title="À propos">${icon("help")}<span>Aide</span></button>
-    <button class="tb primary" id="aExport" aria-haspopup="menu">${icon("download")}<span>Exporter</span></button>
+    <button class="tb dark lbl" id="aTheme" title="${tt("action.themeTitle")}">${icon("moon")}<span>${tt("action.theme")}</span></button>
+    <button class="tb dark lbl" id="aLang" title="${tt("action.langTitle")}"><span class="ic" aria-hidden="true" style="width:18px;height:18px;flex:none;display:inline-flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:700;letter-spacing:.2px;border:1.5px solid currentColor;border-radius:5px">${tt("action.lang")}</span><span>${tt("action.langLabel")}</span></button>
+    <button class="tb dark lbl" id="aMat" title="${tt("action.matTitle")}">${icon("flame")}<span>${tt("action.mat")}</span></button>
+    <button class="tb dark lbl" id="aHelp" title="${tt("action.helpTitle")}">${icon("help")}<span>${tt("action.help")}</span></button>
+    <button class="tb primary" id="aExport" aria-haspopup="menu">${icon("download")}<span>${tt("action.export")}</span></button>
     <div class="menu" id="exportMenu" role="menu" hidden>
-      <button data-x="zip">${icon("zip")}<span><b>Tout (ZIP)</b><small>Toutes les planches SVG + projet + notice</small></span></button>
-      <button data-x="sheet">${icon("file")}<span><b>Planche sélectionnée (SVG)</b><small id="xSheetInfo">Planche 1</small></span></button>
-      <button data-x="json">${icon("save")}<span><b>Fichier projet (.json)</b><small>Pour partager ou rouvrir plus tard</small></span></button>
+      <button data-x="zip">${icon("zip")}<span><b>${tt("export.zipTitle")}</b><small>${tt("export.zipDesc")}</small></span></button>
+      <button data-x="sheet">${icon("file")}<span><b>${tt("export.sheetTitle")}</b><small id="xSheetInfo">${tt("export.sheetInfo", {n: 1})}</small></span></button>
+      <button data-x="json">${icon("save")}<span><b>${tt("export.jsonTitle")}</b><small>${tt("export.jsonDesc")}</small></span></button>
     </div>`;
   $("#aNew").onclick = newProject;
   $("#aOpen").onclick = () => $("#openFile").click();
   $("#aSave").onclick = saveToLib;
   $("#aLib").onclick = openLib;
   $("#aTheme").onclick = toggleTheme;
+  $("#aLang").onclick = toggleLang;
   $("#aMat").onclick = openMaterials;
   $("#aHelp").onclick = openAbout;
   $("#aExport").onclick = e => { e.stopPropagation(); $("#exportMenu").hidden = !$("#exportMenu").hidden; };
@@ -512,8 +994,8 @@ function buildActions() {
   document.addEventListener("click", e => { if (!e.target.closest("#exportMenu")) $("#exportMenu").hidden = true; });
 }
 function buildModels() {
-  $("#models").innerHTML = Object.entries(MODELS).map(([k, m]) => `<button class="model" data-tab="${k}" aria-pressed="${k === state.tab}">${icon(m.icon, 26)}${m.name}</button>`).join("");
-  $("#modelDesc").textContent = MODELS[state.tab].desc;
+  $("#models").innerHTML = Object.entries(MODELS).map(([k, m]) => `<button class="model" data-tab="${k}" aria-pressed="${k === state.tab}">${icon(m.icon, 26)}${tt(m.name)}</button>`).join("");
+  $("#modelDesc").textContent = tt(MODELS[state.tab].desc);
   $("#models").querySelectorAll("[data-tab]").forEach(b => b.onclick = () => { state.tab = b.dataset.tab; save(); buildModels(); buildForm(); needFit = true; currentSheet = state.tab === "tray" ? -2 : 0; render(); });
 }
 function fieldRow(f, v) {
@@ -526,7 +1008,7 @@ function fieldRow(f, v) {
   else if (typeof def === "boolean") input = `<label class="sw"><input type="checkbox" id="${id}" data-k="${key}"${v[key] ? " checked" : ""}><i></i></label>`;
   else if (o.text) input = `<input type="text" id="${id}" data-k="${key}" value="${esc(v[key])}">`;
   else input = `<div class="u"><input type="number" id="${id}" data-k="${key}" value="${v[key]}" step="${o.step || 1}"${o.min !== undefined ? ` min="${o.min}"` : ""}${o.max !== undefined ? ` max="${o.max}"` : ""}>${unit ? `<span>${unit}</span>` : ""}</div>`;
-  return `<div class="row"><label for="${id}">${label}</label>${input}</div>`;
+  return `<div class="row"><label for="${id}">${tt(label)}</label>${input}</div>`;
 }
 function buildForm() {
   const v = vals(), groups = []; let g = null;
@@ -538,10 +1020,10 @@ function buildForm() {
   for (const gr of groups) {
     if (!gr.rows) continue;
     const id = state.tab + ":" + gr.title;
-    const html = `<details class="grp" data-g="${esc(id)}"${ui.closed[id] ? "" : " open"}><summary>${gr.title}</summary><div class="grp-body">${gr.rows}</div></details>`;
+    const html = `<details class="grp" data-g="${esc(id)}"${ui.closed[id] ? "" : " open"}><summary>${tt(gr.title)}</summary><div class="grp-body">${gr.rows}</div></details>`;
     if (RIGHT.has(gr.title)) R += html; else L += html;
   }
-  $("#formL").innerHTML = L + `<button class="btn ghost wide" id="reset">${icon("reset", 16)}Réinitialiser ce modèle</button>`;
+  $("#formL").innerHTML = L + `<button class="btn ghost wide" id="reset">${icon("reset", 16)}${tt("form.reset")}</button>`;
   $("#formR").innerHTML = R;
   document.querySelectorAll("#formL details.grp, #formR details.grp").forEach(d => d.addEventListener("toggle", () => { ui.closed[d.dataset.g] = !d.open; saveUi(); }));
   document.querySelectorAll("#formL [data-k], #formR [data-k]").forEach(el => {
@@ -556,7 +1038,7 @@ function buildForm() {
       schedule();
     });
   });
-  $("#reset").onclick = () => { delete state.values[state.tab]; save(); buildForm(); needFit = true; render(); toast("Modèle réinitialisé"); };
+  $("#reset").onclick = () => { delete state.values[state.tab]; save(); buildForm(); needFit = true; render(); toast(tt("toast.modelReset")); };
   const bl = $("#btnLocalFonts"); if (bl) bl.onclick = loadLocalFonts;
   const ff = $("#fontFile"); if (ff) ff.onchange = () => ff.files[0] && importFontFile(ff.files[0]);
   const rc = $("#recenter"); if (rc) rc.onclick = e => { e.preventDefault(); const cur = state.values[state.tab] || {}; for (const k of ["tx1", "ty1", "tx2", "ty2"]) delete cur[k]; save(); render(); };
@@ -568,7 +1050,7 @@ function refreshVisibility() {
   if (has !== !!el) { const focused = document.activeElement && document.activeElement.id; buildForm(); if (focused) { const f = document.getElementById(focused); if (f) { f.focus(); const l = f.value.length; try { f.setSelectionRange(l, l); } catch (e) {} } } }
 }
 function buildZoom() {
-  $("#zoom").innerHTML = `<button class="tb guidebtn" id="guideBtn" title="Schéma de montage du modèle">${icon("book", 17)}<span>Schéma</span></button><span class="sep"></span><button class="tb" id="zOut" title="Dézoomer">${icon("zout", 17)}</button><output id="zoomPct">100%</output><button class="tb" id="zIn" title="Zoomer">${icon("zin", 17)}</button><button class="tb" id="zFit" title="Tout voir">${icon("fit", 17)}</button>`;
+  $("#zoom").innerHTML = `<button class="tb guidebtn" id="guideBtn" title="${tt("guide.panelBtnTitle")}">${icon("book", 17)}<span>${tt("guide.panelTitle")}</span></button><span class="sep"></span><button class="tb" id="zOut" title="${tt("zoom.out")}">${icon("zout", 17)}</button><output id="zoomPct">100%</output><button class="tb" id="zIn" title="${tt("zoom.in")}">${icon("zin", 17)}</button><button class="tb" id="zFit" title="${tt("zoom.fit")}">${icon("fit", 17)}</button>`;
   const c = () => { const r = $("#viewport").getBoundingClientRect(); return [r.width / 2, r.height / 2]; };
   // Loupes : pas de 5 %, calé sur le multiple de 5 suivant (87 % → 90 % ou 85 %)
   const step = dir => {
@@ -582,16 +1064,33 @@ function buildZoom() {
   $("#zFit").onclick = () => { currentSheet = -1; markTabs(); fit(); };
 }
 
-// ---------- Thème, messages, fenêtres ----------
+// ---------- Thème, langue, messages, fenêtres ----------
 function applyTheme() { if (ui.theme) document.documentElement.dataset.theme = ui.theme; else delete document.documentElement.dataset.theme; }
 function toggleTheme() {
   const dark = ui.theme ? ui.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
   ui.theme = dark ? "light" : "dark"; saveUi(); applyTheme();
 }
+function applyLang() {
+  document.documentElement.lang = ui.lang;
+  const md = $("#metaDesc"); if (md) md.setAttribute("content", tt("meta.description"));
+  const pf = $("#projField"); if (pf) pf.title = tt("brand.projTooltip");
+  const pl = $("#projLbl"); if (pl) pl.textContent = tt("brand.projLabel");
+  const pn = $("#projName"); if (pn) { pn.setAttribute("aria-label", tt("brand.projAria")); pn.setAttribute("placeholder", tt("brand.projPlaceholder")); }
+  const bt = $("#brandTag"); if (bt) bt.innerHTML = tt("brand.by") + ' <em>NeoprodFX</em>';
+  const mh = $("#modelPanelHead"); if (mh) mh.textContent = tt("panel.model");
+  const ns = $("#noticeSummary"); if (ns) ns.textContent = tt("panel.notice");
+}
+let modalRefresh = null;
+function toggleLang() {
+  ui.lang = ui.lang === "en" ? "fr" : "en"; saveUi(); applyLang();
+  buildModels(); buildForm(); buildActions(); buildZoom();
+  needFit = false; render();
+  if (!$("#modal").hidden && modalRefresh) modalRefresh();
+}
 let toastT = null;
-function toast(msg) { const t = $("#toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("show"), 2600); }
-function openModal(html, wide) { $("#modalCard").classList.toggle("wide", !!wide); $("#modalCard").innerHTML = `<button class="close" aria-label="Fermer" data-close>×</button>` + html; $("#modal").hidden = false; $("#modalCard").querySelectorAll("[data-close]").forEach(b => b.onclick = closeModal); }
-function closeModal() { $("#modal").hidden = true; }
+function toast(msg) { const el = $("#toast"); el.textContent = msg; el.classList.add("show"); clearTimeout(toastT); toastT = setTimeout(() => el.classList.remove("show"), 2600); }
+function openModal(html, wide) { $("#modalCard").classList.toggle("wide", !!wide); $("#modalCard").innerHTML = `<button class="close" aria-label="${tt("modal.close")}" data-close>×</button>` + html; $("#modal").hidden = false; $("#modalCard").querySelectorAll("[data-close]").forEach(b => b.onclick = closeModal); }
+function closeModal() { $("#modal").hidden = true; modalRefresh = null; }
 
 // ---------- Schémas de montage (un par modèle, adaptés aux options) ----------
 const G_DEFS = `<defs><marker id="gar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0L10,5L0,10z" fill="currentColor"/></marker></defs>`;
@@ -604,59 +1103,59 @@ function gFinger(x, y) { // détail : deux planches à encoches qui s'emboîtent
   for (let i = 0; i < 5; i++) { const yy = y + i * 16; a += i % 2 ? `H${x + 12}V${yy + 16}` : `H${x + 24}V${yy + 16}`; }
   a += `H${x}Z`;
   for (let i = 0; i < 5; i++) { const yy = y + i * 16; b += i % 2 ? `M${x + 12} ${yy}h58v16h-58z` : `M${x + 24} ${yy}h46v16h-46z`; }
-  return `<path d="${a}" class="gw"/><path d="${b}" class="gb"/><text x="${x + 35}" y="${y + 100}" text-anchor="middle" class="gm">encoches</text>`;
+  return `<path d="${a}" class="gw"/><path d="${b}" class="gb"/><text x="${x + 35}" y="${y + 100}" text-anchor="middle" class="gm">${tt("guide.box.fingerDetail")}</text>`;
 }
 const GUIDE = {
   box: v => {
     const comp = Math.round(v.compX || 1) > 1 || Math.round(v.compY || 1) > 1;
-    const divs = comp ? Array.from({length: Math.max(1, Math.round(v.compX) - 1)}, (_, i) => { const x = 72 + (i + 1) * 276 / Math.round(v.compX); return `<rect x="${x - 2}" y="150" width="4" height="98" class="gac"/>`; }).join("") + gCall(250, 190, 440, 150, "Séparateurs à mi-bois", ["posés dans la boîte"], true) : "";
-    if (v.couvercle === "coulissant") return {title: "Boîte à couvercle coulissant (vue de côté)", svg: `
+    const divs = comp ? Array.from({length: Math.max(1, Math.round(v.compX) - 1)}, (_, i) => { const x = 72 + (i + 1) * 276 / Math.round(v.compX); return `<rect x="${x - 2}" y="150" width="4" height="98" class="gac"/>`; }).join("") + gCall(250, 190, 440, 150, tt("guide.box.dividers"), [tt("guide.box.dividersSub")], true) : "";
+    if (v.couvercle === "coulissant") return {title: tt("guide.box.sliding.title"), svg: `
       <rect x="60" y="72" width="300" height="12" class="gac"/>
       <rect x="30" y="88" width="318" height="10" rx="2" class="gw"/><path d="M26 93h-18" class="gar2" marker-end="url(#gar)"/>
       <rect x="72" y="100" width="276" height="10" class="gdk"/>
       <rect x="60" y="112" width="12" height="148" class="gw"/><rect x="348" y="72" width="12" height="188" class="gw"/>
       <rect x="72" y="248" width="276" height="12" class="gbt"/>
       <rect x="60" y="72" width="300" height="188" class="gghost"/>
-      ${gCall(300, 78, 400, 60, "Cadre en U", ["ouvert côté façade, s'emboîte", "en haut des côtés et du dos"], true)}
-      ${gCall(200, 93, 400, 112, "Couvercle coulissant", ["glisse vers l'avant (fente pour le doigt)"])}
-      ${gCall(250, 105, 400, 158, "Rails à tenons", ["plantés dans les mortaises des côtés,", "au niveau du haut de la façade"])}
-      ${gCall(66, 190, 400, 214, "Façade basse", ["le couvercle passe au-dessus"])}
-      ${gCall(200, 254, 400, 262, "Fond (posé en dernier)")}`};
+      ${gCall(300, 78, 400, 60, tt("guide.box.frame"), [tt("guide.box.frameSub1"), tt("guide.box.frameSub2")], true)}
+      ${gCall(200, 93, 400, 112, tt("guide.box.slidLid"), [tt("guide.box.slidLidSub")])}
+      ${gCall(250, 105, 400, 158, tt("guide.box.rails"), [tt("guide.box.railsSub1"), tt("guide.box.railsSub2")])}
+      ${gCall(66, 190, 400, 214, tt("guide.box.lowFront"), [tt("guide.box.lowFrontSub")])}
+      ${gCall(200, 254, 400, 262, tt("guide.box.bottomLast"))}`};
     const lid = v.couvercle === "pose", closed = v.couvercle === "ferme";
-    return {title: lid ? "Boîte à couvercle posé (vue en coupe)" : closed ? "Boîte fermée (vue en coupe)" : "Boîte ouverte (vue en coupe)", svg: `
-      ${lid ? `<rect x="60" y="30" width="300" height="12" rx="2" class="gw"/><text x="210" y="40" text-anchor="middle" class="gbk">couvercle gravé</text><rect x="73" y="42" width="274" height="10" class="gac"/><path d="M210 60v22" class="gar2" stroke-dasharray="4 3" marker-end="url(#gar)"/>` : ""}
+    return {title: lid ? tt("guide.box.lid.title") : closed ? tt("guide.box.closed.title") : tt("guide.box.open.title"), svg: `
+      ${lid ? `<rect x="60" y="30" width="300" height="12" rx="2" class="gw"/><text x="210" y="40" text-anchor="middle" class="gbk">${tt("guide.box.engravedLid")}</text><rect x="73" y="42" width="274" height="10" class="gac"/><path d="M210 60v22" class="gar2" stroke-dasharray="4 3" marker-end="url(#gar)"/>` : ""}
       ${closed ? `<rect x="60" y="88" width="300" height="12" class="gw"/>` : ""}
       <rect x="60" y="${closed ? 100 : 90}" width="12" height="${closed ? 148 : 158}" class="gw"/><rect x="348" y="${closed ? 100 : 90}" width="12" height="${closed ? 148 : 158}" class="gw"/>
       <rect x="60" y="248" width="300" height="12" class="gbt"/>
       ${divs}
-      ${lid ? gCall(300, 47, 440, 42, "Lèvre collée sous le couvercle", ["centrée : elle s'emboîte dans la boîte"], true) : ""}
-      ${closed ? gCall(300, 94, 440, 70, "Dessus à encoches", ["idéal tirelire / boîte scellée"]) : ""}
-      ${gCall(354, 120, 440, 105, "Parois assemblées à encoches", ["façade, arrière, côtés"])}
-      ${gCall(300, 254, 440, 258, "Fond à encoches")}
+      ${lid ? gCall(300, 47, 440, 42, tt("guide.box.lipGlued"), [tt("guide.box.lipGluedSub")], true) : ""}
+      ${closed ? gCall(300, 94, 440, 70, tt("guide.box.closedTop"), [tt("guide.box.closedTopSub")]) : ""}
+      ${gCall(354, 120, 440, 105, tt("guide.box.walls"), [tt("guide.box.wallsSub")])}
+      ${gCall(300, 254, 440, 258, tt("guide.box.bottomFinger"))}
       <g transform="translate(470 170) scale(.8)">${gFinger(0, 0)}</g>`};
   },
-  shape: v => ({title: `Boîte en forme (${{coeur: "cœur", cercle: "cercle", ovale: "ovale", rect: "rectangle arrondi", hexa: "hexagone"}[v.forme] || "forme"})`, svg: `
+  shape: v => ({title: tt("guide.shape.title", {shape: tt("shapeName." + (v.forme || "default")) || tt("shapeName.default")}), svg: `
     <g transform="translate(170 165) scale(1.12) translate(-170 -160)"><path d="M170 250C60 170 60 80 120 70C150 65 165 85 170 100C175 85 190 65 220 70C280 80 280 170 170 250Z" class="gbt"/></g>
     <path d="M170 250C60 170 60 80 120 70C150 65 165 85 170 100C175 85 190 65 220 70C280 80 280 170 170 250Z" class="gstrip" transform="translate(0 5)"/>
     <path d="M170 250C60 170 60 80 120 70C150 65 165 85 170 100C175 85 190 65 220 70C280 80 280 170 170 250Z" class="gmort" transform="translate(0 5)"/>
-    <text x="40" y="300" class="gm">Pointillés foncés = mortises dans le fond.</text>
-    <text x="170" y="170" text-anchor="middle" class="gbk">fond</text>
+    <text x="40" y="300" class="gm">${tt("guide.shape.mortiseNote")}</text>
+    <text x="170" y="170" text-anchor="middle" class="gbk">${tt("guide.shape.bottomLabel")}</text>
     <rect x="360" y="70" width="240" height="64" class="gw"/>
     ${Array.from({length: 48}, (_, i) => `<line x1="${366 + i * 4.8}" y1="${i % 2 ? 76 : 84}" x2="${366 + i * 4.8}" y2="${i % 2 ? 122 : 128}" class="ghg"/>`).join("")}
     ${[400, 450, 500, 550].map(x => `<rect x="${x}" y="134" width="12" height="8" class="gw"/>`).join("")}
     ${v.couvS === "tenons" ? [400, 450, 500, 550].map(x => `<rect x="${x}" y="62" width="12" height="8" class="gw"/>`).join("") : ""}
     <path d="M480 160C480 200 360 210 290 190" class="gar2" stroke-dasharray="4 3" marker-end="url(#gar)"/>
-    <text x="360" y="60" class="go">Bande flexible (charnière)</text>
-    <text x="360" y="162" class="gm">tenons en bas${v.couvS === "tenons" ? " et en haut" : ""}</text>
-    <text x="360" y="232" class="gt">La bande s'enroule autour du fond,</text><text x="360" y="248" class="gt">ses tenons se plantent dans les mortaises.</text>
-    <text x="360" y="276" class="gm">${v.forme === "coeur" ? "Commence dans l'échancrure du cœur." : "Colle au fur et à mesure."}</text>
-    <text x="360" y="292" class="gm">${v.couvS === "tenons" ? "Couvercle fixé : mêmes mortaises" : "Couvercle : la lèvre collée dessous"}</text>
-    <text x="360" y="306" class="gm">${v.couvS === "tenons" ? "que le fond." : "s'emboîte dans la bande."}</text>
-    <text x="40" y="318" class="gm">Le fond déborde (rebord) : les mortaises restent fermées.</text>`}),
+    <text x="360" y="60" class="go">${tt("guide.shape.flexStrip")}</text>
+    <text x="360" y="162" class="gm">${tt("guide.shape.tabsBottom")}${v.couvS === "tenons" ? tt("guide.shape.tabsBottomTop") : ""}</text>
+    <text x="360" y="232" class="gt">${tt("guide.shape.wraps1")}</text><text x="360" y="248" class="gt">${tt("guide.shape.wraps2")}</text>
+    <text x="360" y="276" class="gm">${v.forme === "coeur" ? tt("guide.shape.heartStart") : tt("guide.shape.glueAsYouGo")}</text>
+    <text x="360" y="292" class="gm">${v.couvS === "tenons" ? tt("guide.shape.lidFixed1") : tt("guide.shape.lidLoose1")}</text>
+    <text x="360" y="306" class="gm">${v.couvS === "tenons" ? tt("guide.shape.lidFixed2") : tt("guide.shape.lidLoose2")}</text>
+    <text x="40" y="318" class="gm">${tt("guide.shape.overhangNote")}</text>`}),
   chest: v => {
     const deco = v.deco && v.deco !== "aucun", ns = Math.round(v.sangles || 0), F = 450, FW = 160;
-    return {title: "Coffre bombé", svg: `
-      <text x="135" y="22" text-anchor="middle" class="gm">vue de côté</text>
+    return {title: tt("guide.chest.title"), svg: `
+      <text x="135" y="22" text-anchor="middle" class="gm">${tt("guide.chest.sideView")}</text>
       <g transform="translate(10 22) scale(.82)">
         <path d="M52 180V165A128 128 0 0 1 308 165V180Z" class="gbt"/>
         <path d="M60 180V165A120 120 0 0 1 300 165V180" class="gpanel"/>
@@ -664,19 +1163,19 @@ const GUIDE = {
         <rect x="60" y="182" width="240" height="120" class="gw"/>
         ${deco ? `<rect x="68" y="190" width="224" height="104" rx="3" class="gdkline"/><path d="M68 178V165A112 112 0 0 1 292 165V178Z" class="gdkline"/>` : ""}
       </g>
-      ${gCall(215, 80, 285, 60, "Panneau flexible", ["tenons dans les", "mortaises des flancs"], true)}
-      ${gCall(92, 146, 285, 140, "Flanc du couvercle", ["déborde un peu"])}
-      ${gCall(215, 228, 285, 226, "Corps à encoches", ["texte gravé en façade"])}
-      ${deco ? `<text x="135" y="300" text-anchor="middle" class="gm">cadres de décor (bois foncé)</text><text x="135" y="314" text-anchor="middle" class="gm">collés sur les faces</text>` : ""}
-      <text x="${F + FW / 2}" y="22" text-anchor="middle" class="gm">vue de face</text>
+      ${gCall(215, 80, 285, 60, tt("guide.chest.panel"), [tt("guide.chest.panelSub1"), tt("guide.chest.panelSub2")], true)}
+      ${gCall(92, 146, 285, 140, tt("guide.chest.flank"), [tt("guide.chest.flankSub")])}
+      ${gCall(215, 228, 285, 226, tt("guide.chest.body"), [tt("guide.chest.bodySub")])}
+      ${deco ? `<text x="135" y="300" text-anchor="middle" class="gm">${tt("guide.chest.frameNote1")}</text><text x="135" y="314" text-anchor="middle" class="gm">${tt("guide.chest.frameNote2")}</text>` : ""}
+      <text x="${F + FW / 2}" y="22" text-anchor="middle" class="gm">${tt("guide.chest.frontView")}</text>
       <rect x="${F}" y="40" width="${FW}" height="112" rx="4" class="gw"/>
       ${Array.from({length: 24}, (_, i) => `<line x1="${F}" y1="${44 + i * 4.4}" x2="${F + FW}" y2="${44 + i * 4.4}" class="ghg" opacity=".5"/>`).join("")}
       <rect x="${F}" y="154" width="${FW}" height="112" class="gw"/>
       ${deco ? `<rect x="${F + 8}" y="162" width="${FW - 16}" height="96" rx="3" class="gdkline"/>` : ""}
       ${Array.from({length: ns}, (_, k) => { const x = F + (k + 1) * FW / (ns + 1) - 5; return `<rect x="${x}" y="38" width="10" height="116" class="gdk"/>`; }).join("")}
       ${v.fermoir ? `<path d="M${F + FW / 2 - 10} 140h20v30a10 10 0 0 1-20 0z" class="gdk"/><circle cx="${F + FW / 2}" cy="168" r="2.4" fill="#2a1a0c"/>` : ""}
-      ${ns ? `<text x="${F + FW / 2}" y="290" text-anchor="middle" class="gm">sangles collées en travers</text>` : ""}
-      ${v.fermoir ? `<text x="${F + FW / 2}" y="${ns ? 305 : 290}" text-anchor="middle" class="gm">fermoir collé sur le couvercle</text>` : ""}`};
+      ${ns ? `<text x="${F + FW / 2}" y="290" text-anchor="middle" class="gm">${tt("guide.chest.straps")}</text>` : ""}
+      ${v.fermoir ? `<text x="${F + FW / 2}" y="${ns ? 305 : 290}" text-anchor="middle" class="gm">${tt("guide.chest.claspGlued")}</text>` : ""}`};
   },
   orga: v => {
     const labels = String(v.etiquettes || "").split(",").map(s => s.trim());
@@ -684,11 +1183,11 @@ const GUIDE = {
       const rows = Math.max(1, Math.round(v.rows)), cols = Math.max(1, Math.round(v.cols)), cw = 276 / cols, ch = 196 / rows;
       let bins = "";
       for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) bins += `<rect x="${72 + c * cw + 3}" y="${62 + r * ch + 3}" width="${cw - 6}" height="${ch - 6}" rx="3" class="gbx"/><text x="${72 + c * cw + cw / 2}" y="${62 + r * ch + ch / 2 + 4}" text-anchor="middle" class="gbk">${esc(labels[r * cols + c] || "")}</text>`;
-      return {title: "Casier à bacs (vue de dessus)", svg: `
+      return {title: tt("guide.orga.bins.title"), svg: `
         <rect x="60" y="50" width="300" height="220" rx="3" class="gw"/><rect x="72" y="62" width="276" height="196" class="gbt"/>${bins}
-        ${gCall(357, 90, 400, 90, "Casier ouvert à encoches")}
-        ${gCall(72 + (cols - 1) * cw + cw * 0.7, 62 + ch * 0.7, 400, 150, "Bacs amovibles", ["une étiquette gravée chacun,", "on les sort par le dessus"], true)}
-        <text x="406" y="220" class="gm">${Math.round(v.compX) > 1 || Math.round(v.compY) > 1 ? "Compartiments à mi-bois dans chaque bac." : "Option : compartiments dans les bacs."}</text>`};
+        ${gCall(357, 90, 400, 90, tt("guide.orga.binsOpen"))}
+        ${gCall(72 + (cols - 1) * cw + cw * 0.7, 62 + ch * 0.7, 400, 150, tt("guide.orga.binsRemovable"), [tt("guide.orga.binsRemovableSub1"), tt("guide.orga.binsRemovableSub2")], true)}
+        <text x="406" y="220" class="gm">${Math.round(v.compX) > 1 || Math.round(v.compY) > 1 ? tt("guide.orga.compartNote") : tt("guide.orga.compartNoteOpt")}</text>`};
     }
     const rows = Math.max(1, Math.round(v.rows)), cols = Math.max(1, Math.round(v.cols)), ih = 220 - (rows - 1) * 10, iw = 280 - (cols - 1) * 10, rh = ih / rows, cw = iw / cols;
     let g = `<rect x="60" y="40" width="300" height="240" rx="3" class="gw"/><rect x="70" y="50" width="280" height="220" class="gbt"/>`;
@@ -698,31 +1197,32 @@ const GUIDE = {
       if (c > 0) g += `<rect x="${x - 10}" y="${y}" width="10" height="${rh}" class="gw"/>`;
       g += `<rect x="${x + 3}" y="${y + 3}" width="${cw - 6}" height="${rh - 6}" rx="2" class="gbx"/>${v.prise === "trou" ? `<rect x="${x + cw / 2 - 10}" y="${y + 9}" width="20" height="6" rx="3" class="gslot"/>` : ""}<text x="${x + cw / 2}" y="${y + rh / 2 + 8}" text-anchor="middle" class="gbk">${esc(labels[r * cols + c] || "")}</text>`;
     }
-    return {title: "Meuble à tiroirs (vue de face)", svg: g + `
-      ${gCall(358, 46, 400, 50, "Caisson à encoches", ["ouvert devant, fermé par le dos"])}
-      ${rows > 1 ? gCall(330, 50 + rh + 5, 400, 110, "Étagères à tenons", ["plantées dans le dos et les côtés"], true) : ""}
-      ${cols > 1 ? gCall(70 + (cols - 1) * (cw + 10) - 5, 50 + (rows - 1) * (rh + 10) + rh * 0.3, 400, 170, "Séparateurs à tenons", ["plantés dans les étagères"], true) : ""}
-      ${gCall(70 + (cols - 1) * (cw + 10) + cw * 0.7, 50 + (rows - 1) * (rh + 10) + rh * 0.8, 400, 230, "Tiroirs étiquetés", [v.prise === "trou" ? "avec prise pour le doigt" : "sans prise"])}`};
+    return {title: tt("guide.orga.drawers.title"), svg: g + `
+      ${gCall(358, 46, 400, 50, tt("guide.orga.carcass"), [tt("guide.orga.carcassSub")])}
+      ${rows > 1 ? gCall(330, 50 + rh + 5, 400, 110, tt("guide.orga.shelves"), [tt("guide.orga.shelvesSub")], true) : ""}
+      ${cols > 1 ? gCall(70 + (cols - 1) * (cw + 10) - 5, 50 + (rows - 1) * (rh + 10) + rh * 0.3, 400, 170, tt("guide.orga.dividers"), [tt("guide.orga.dividersSub")], true) : ""}
+      ${gCall(70 + (cols - 1) * (cw + 10) + cw * 0.7, 50 + (rows - 1) * (rh + 10) + rh * 0.8, 400, 230, tt("guide.orga.drawersLabeled"), [v.prise === "trou" ? tt("guide.orga.gripYes") : tt("guide.orga.gripNo")])}`};
   },
-  tray: v => ({title: "Casier empilable (vue en coupe)", svg: `
-    ${v.couvercleT ? `<rect x="40" y="20" width="300" height="12" rx="2" class="gw"/><text x="190" y="30" text-anchor="middle" class="gbk">couvercle gravé</text><rect x="54" y="32" width="272" height="9" class="gac"/>` : ""}
+  tray: v => ({title: tt("guide.tray.title"), svg: `
+    ${v.couvercleT ? `<rect x="40" y="20" width="300" height="12" rx="2" class="gw"/><text x="190" y="30" text-anchor="middle" class="gbk">${tt("guide.box.engravedLid")}</text><rect x="54" y="32" width="272" height="9" class="gac"/>` : ""}
     <rect x="40" y="42" width="11" height="130" class="gw"/><rect x="329" y="42" width="11" height="130" class="gw"/>
     <rect x="51" y="161" width="278" height="11" class="gbt"/><rect x="54" y="172" width="272" height="9" class="gac"/>
     <rect x="55" y="60" width="130" height="101" rx="3" class="gbx"/><rect x="190" y="60" width="66" height="101" rx="3" class="gbx"/><rect x="261" y="60" width="64" height="101" rx="3" class="gbx"/>
     <rect x="40" y="172" width="11" height="130" class="gw"/><rect x="329" y="172" width="11" height="130" class="gw"/>
     <rect x="51" y="291" width="278" height="11" class="gbt"/>
     <rect x="55" y="190" width="170" height="101" rx="3" class="gbx"/><rect x="230" y="190" width="95" height="101" rx="3" class="gbx"/>
-    ${v.couvercleT ? gCall(330, 36, 380, 30, "Cadre du couvercle", [], true) : ""}
-    ${gCall(334, 110, 380, 90, "Étage 2", ["son propre plan de cases"])}
-    ${gCall(330, 176, 380, 160, "Cadre d'empilage", ["collé sous le fond, rentre", "de 3 mm dans l'étage 1"], true)}
-    ${gCall(334, 240, 380, 240, "Étage 1", ["posé sur la table"])}
-    <text x="40" y="326" class="gm">Les boîtes sont un peu plus basses que le casier pour laisser la place au cadre du dessus.</text>`}),
+    ${v.couvercleT ? gCall(330, 36, 380, 30, tt("guide.tray.lidFrame"), [], true) : ""}
+    ${gCall(334, 110, 380, 90, tt("guide.tray.layer2"), [tt("guide.tray.layer2Sub")])}
+    ${gCall(330, 176, 380, 160, tt("guide.tray.stackFrame"), [tt("guide.tray.stackFrameSub1"), tt("guide.tray.stackFrameSub2")], true)}
+    ${gCall(334, 240, 380, 240, tt("guide.tray.layer1"), [tt("guide.tray.layer1Sub")])}
+    <text x="40" y="326" class="gm">${tt("guide.tray.footnote")}</text>`}),
 };
 function openGuide() {
+  modalRefresh = openGuide;
   const v = vals(), g = GUIDE[state.tab](v);
-  openModal(`<h2>${g.title}</h2><p>Schéma de principe (épaisseurs exagérées pour la lisibilité), suivi de la notice de ton projet.</p>
+  openModal(`<h2>${g.title}</h2><p>${tt("guide.heading")}</p>
     <div class="gd"><svg viewBox="0 0 640 345" role="img" aria-label="${esc(g.title)}">${G_DEFS}${g.svg}</svg></div>
-    <h3 class="gd-h">Notice de montage</h3><ul class="notice">${lastInfo.map(i => `<li>${esc(i)}</li>`).join("")}</ul>`, true);
+    <h3 class="gd-h">${tt("guide.notice")}</h3><ul class="notice">${lastInfo.map(i => `<li>${esc(i)}</li>`).join("")}</ul>`, true);
 }
 const MATERIALS = [
   // mode, matériau, épaisseur (mm), puissance (%), vitesse (mm/min), passes — laser diode 20W
@@ -741,14 +1241,15 @@ const MATERIALS = [
 ];
 let matMode = "g", matQuery = "";
 function openMaterials() {
-  openModal(`<h2>Réglages laser recommandés</h2>
-    <p>Point de départ pour un laser diode <b>20W</b> — toujours valider sur une chute avant la pièce finale, chaque lot de bois/cuir varie un peu.</p>
+  modalRefresh = openMaterials;
+  openModal(`<h2>${tt("materials.title")}</h2>
+    <p>${tt("materials.intro")}</p>
     <div class="sheettabs" id="matTabs" style="margin-bottom:10px">
-      <button class="chip" data-m="g" aria-pressed="${matMode === "g"}">Gravure</button>
-      <button class="chip" data-m="c" aria-pressed="${matMode === "c"}">Découpe</button>
+      <button class="chip" data-m="g" aria-pressed="${matMode === "g"}">${tt("materials.engrave")}</button>
+      <button class="chip" data-m="c" aria-pressed="${matMode === "c"}">${tt("materials.cut")}</button>
     </div>
-    <label class="hint" style="display:block;margin-bottom:6px">Filtrer un matériau</label>
-    <input type="text" id="matSearch" placeholder="Ex. noyer, cuir, acrylique…" value="${esc(matQuery)}" style="width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--field);color:var(--ink);font:inherit;margin-bottom:12px">
+    <label class="hint" style="display:block;margin-bottom:6px">${tt("materials.filterLabel")}</label>
+    <input type="text" id="matSearch" placeholder="${tt("materials.searchPlaceholder")}" value="${esc(matQuery)}" style="width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--field);color:var(--ink);font:inherit;margin-bottom:12px">
     <div id="matTableWrap"></div>`, true);
   renderMatTable();
   $("#matTabs").querySelectorAll("button").forEach(b => b.onclick = () => {
@@ -760,10 +1261,10 @@ function openMaterials() {
 }
 function renderMatTable() {
   const q = matQuery.trim().toLowerCase();
-  const rows = MATERIALS.filter(r => r[0] === matMode && (!q || r[1].toLowerCase().includes(q)));
-  $("#matTableWrap").innerHTML = rows.length ? `<table class="mtable"><thead><tr><th>Matériau</th><th>Épaisseur</th><th>Puissance</th><th>Vitesse</th><th>Passes</th></tr></thead>
-    <tbody>${rows.map(r => `<tr><td>${esc(r[1])}</td><td>${f1(r[2])} mm</td><td>${r[3]}%</td><td>${r[4]} mm/min<br><small style="color:var(--muted)">${f1(r[4] / 60)} mm/s</small></td><td>${r[5]}</td></tr>`).join("")}</tbody></table>`
-    : `<div class="empty">Aucun matériau ne correspond.</div>`;
+  const rows = MATERIALS.filter(r => r[0] === matMode && (!q || r[1].toLowerCase().includes(q) || tt("material." + r[1]).toLowerCase().includes(q)));
+  $("#matTableWrap").innerHTML = rows.length ? `<table class="mtable"><thead><tr><th>${tt("materials.th.material")}</th><th>${tt("materials.th.thickness")}</th><th>${tt("materials.th.power")}</th><th>${tt("materials.th.speed")}</th><th>${tt("materials.th.passes")}</th></tr></thead>
+    <tbody>${rows.map(r => `<tr><td>${esc(tt("material." + r[1]))}</td><td>${f1(r[2])} mm</td><td>${r[3]}%</td><td>${r[4]} mm/min<br><small style="color:var(--muted)">${f1(r[4] / 60)} mm/s</small></td><td>${r[5]}</td></tr>`).join("")}</tbody></table>`
+    : `<div class="empty">${tt("materials.empty")}</div>`;
 }
 $("#modal").addEventListener("click", e => { if (e.target.id === "modal") closeModal(); });
 document.addEventListener("keydown", e => {
@@ -771,11 +1272,12 @@ document.addEventListener("keydown", e => {
   if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "s") { e.preventDefault(); saveToLib(); }
 });
 function openAbout() {
-  openModal(`<h2>LaserTool<span style="color:var(--accent)">FX</span></h2><p>Générateur gratuit de boîtes, coffres et formes pour la découpe laser, offert par <b>NeoprodFX</b>.</p>
-  <ul class="notice"><li><b style="color:#e11d48">Rouge</b> = découpe, <b>noir</b> = gravure, <b style="color:#2563eb">bleu</b> = repères de montage (à désactiver dans ton logiciel).</li>
-  <li>Fichiers SVG en millimètres, compatibles LightBurn, LaserGRBL, xTool Creative Space, Inkscape…</li>
-  <li>Règle le <b>kerf</b> avec un premier test sur carton : si ça flotte, augmente-le ; si ça force, diminue-le.</li>
-  <li>Sur le plan de travail : glisse pour te déplacer, molette pour zoomer. Glisse un texte pour le placer, molette dessus pour sa taille.</li></ul>
+  modalRefresh = openAbout;
+  openModal(`<h2>LaserTool<span style="color:var(--accent)">FX</span></h2><p>${tt("about.tagline")}</p>
+  <ul class="notice"><li>${tt("about.li1")}</li>
+  <li>${tt("about.li2")}</li>
+  <li>${tt("about.li3")}</li>
+  <li>${tt("about.li4")}</li></ul>
   <div class="links"><a class="btn" href="https://www.youtube.com/@NeoProdFX" target="_blank" rel="noopener">YouTube</a><a class="btn ghost" href="https://www.instagram.com/neoprodfx/" target="_blank" rel="noopener">Instagram</a></div>`);
 }
 
@@ -783,40 +1285,42 @@ function openAbout() {
 const slug = s => (s || "projet").normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "").toLowerCase() || "projet";
 function projectData() { return {app: "lasertoolfx", version: 3, name: state.name, tab: state.tab, values: state.values, date: new Date().toISOString()}; }
 function loadProject(p) {
-  if (!p || !["lasertoolfx", "atelier-laser-neoprodfx"].includes(p.app) || !TABS[p.tab]) throw new Error("Ce fichier n'est pas un projet LaserToolFX.");
-  state = {tab: p.tab, values: p.values || {}, name: p.name || "Projet"}; save();
+  if (!p || !["lasertoolfx", "atelier-laser-neoprodfx"].includes(p.app) || !TABS[p.tab]) throw new Error(tt("alert.invalidFile"));
+  state = {tab: p.tab, values: p.values || {}, name: p.name || tt("project.defaultName")}; save();
   $("#projName").value = state.name; buildModels(); buildForm(); needFit = true; currentSheet = state.tab === "tray" ? -2 : 0; render();
 }
 function getLib() { try { return JSON.parse(localStorage.getItem(LIB)) || {}; } catch (e) { return {}; } }
 function setLib(l) { try { localStorage.setItem(LIB, JSON.stringify(l)); return true; } catch (e) { return false; } }
 function saveToLib() {
   const lib = getLib(); lib[slug(state.name)] = projectData();
-  toast(setLib(lib) ? `« ${state.name} » enregistré dans Mes projets` : "Impossible d'enregistrer dans ce navigateur : utilise Exporter > Fichier projet");
+  toast(setLib(lib) ? tt("toast.projectSaved", {name: state.name}) : tt("toast.saveFailed"));
 }
 function openLib() {
+  modalRefresh = openLib;
   const lib = getLib(), items = Object.entries(lib).sort((a, b) => (b[1].date || "").localeCompare(a[1].date || ""));
-  openModal(`<h2>Mes projets</h2><p>Enregistrés dans ce navigateur. Pour les garder ailleurs ou les partager, exporte le fichier projet.</p>
-    <button class="btn" id="libSave">${icon("save", 16)}Enregistrer « ${esc(state.name)} »</button>
-    <div class="plist">${items.length ? items.map(([id, p]) => `<div class="pitem"><span style="color:var(--accent)">${icon(MODELS[p.tab] ? MODELS[p.tab].icon : "box", 22)}</span><div class="meta"><b>${esc(p.name)}</b><small>${MODELS[p.tab] ? MODELS[p.tab].name : ""} · ${p.date ? new Date(p.date).toLocaleString("fr-FR", {dateStyle: "short", timeStyle: "short"}) : ""}</small></div>
-      <button class="btn sm" data-open="${esc(id)}">Ouvrir</button><button class="mini" data-dl="${esc(id)}" title="Télécharger">${icon("download", 14)}</button><button class="mini" data-del="${esc(id)}" title="Supprimer">${icon("trash", 14)}</button></div>`).join("") : `<div class="empty">Aucun projet enregistré pour l'instant.</div>`}</div>`);
+  const locale = ui.lang === "en" ? "en-US" : "fr-FR";
+  openModal(`<h2>${tt("lib.title")}</h2><p>${tt("lib.intro")}</p>
+    <button class="btn" id="libSave">${icon("save", 16)}${tt("lib.saveBtn", {name: esc(state.name)})}</button>
+    <div class="plist">${items.length ? items.map(([id, p]) => `<div class="pitem"><span style="color:var(--accent)">${icon(MODELS[p.tab] ? MODELS[p.tab].icon : "box", 22)}</span><div class="meta"><b>${esc(p.name)}</b><small>${MODELS[p.tab] ? tt(MODELS[p.tab].name) : ""} · ${p.date ? new Date(p.date).toLocaleString(locale, {dateStyle: "short", timeStyle: "short"}) : ""}</small></div>
+      <button class="btn sm" data-open="${esc(id)}">${tt("lib.open")}</button><button class="mini" data-dl="${esc(id)}" title="${tt("lib.downloadTitle")}">${icon("download", 14)}</button><button class="mini" data-del="${esc(id)}" title="${tt("lib.deleteTitle")}">${icon("trash", 14)}</button></div>`).join("") : `<div class="empty">${tt("lib.empty")}</div>`}</div>`);
   $("#libSave").onclick = () => { saveToLib(); openLib(); };
-  $("#modalCard").querySelectorAll("[data-open]").forEach(b => b.onclick = () => { loadProject(lib[b.dataset.open]); closeModal(); toast(`« ${lib[b.dataset.open].name} » ouvert`); });
+  $("#modalCard").querySelectorAll("[data-open]").forEach(b => b.onclick = () => { loadProject(lib[b.dataset.open]); closeModal(); toast(tt("toast.projectOpened", {name: lib[b.dataset.open].name})); });
   $("#modalCard").querySelectorAll("[data-dl]").forEach(b => b.onclick = () => downloadBlob(`${b.dataset.dl}.lasertoolfx.json`, new Blob([JSON.stringify(lib[b.dataset.dl], null, 2)], {type: "application/json"})));
-  $("#modalCard").querySelectorAll("[data-del]").forEach(b => b.onclick = () => { if (confirm(`Supprimer « ${lib[b.dataset.del].name} » ?`)) { delete lib[b.dataset.del]; setLib(lib); openLib(); } });
+  $("#modalCard").querySelectorAll("[data-del]").forEach(b => b.onclick = () => { if (confirm(tt("confirm.deleteProject", {name: lib[b.dataset.del].name}))) { delete lib[b.dataset.del]; setLib(lib); openLib(); } });
 }
 function newProject() {
-  if (!confirm("Démarrer un nouveau projet ? Les réglages non enregistrés seront perdus.")) return;
-  state = {tab: state.tab, values: {}, name: "Nouveau projet"}; save();
+  if (!confirm(tt("confirm.newProject"))) return;
+  state = {tab: state.tab, values: {}, name: tt("project.newName")}; save();
   $("#projName").value = state.name; buildForm(); needFit = true; currentSheet = state.tab === "tray" ? -2 : 0; render();
 }
 $("#openFile").onchange = async e => {
   const f = e.target.files[0]; if (!f) return;
-  try { loadProject(JSON.parse(await f.text())); toast(`« ${state.name} » ouvert`); } catch (err) { alert(err.message); }
+  try { loadProject(JSON.parse(await f.text())); toast(tt("toast.projectOpened", {name: state.name})); } catch (err) { alert(err.message); }
   e.target.value = "";
 };
 $("#projName").addEventListener("input", e => { state.name = e.target.value; save(); });
 $("#projName").addEventListener("keydown", e => { if (e.key === "Enter" || e.key === "Escape") e.target.blur(); });
-$("#projName").addEventListener("blur", e => { if (!e.target.value.trim()) { state.name = "Mon projet"; e.target.value = state.name; save(); } });
+$("#projName").addEventListener("blur", e => { if (!e.target.value.trim()) { state.name = tt("project.defaultName"); e.target.value = state.name; save(); } });
 
 // ---------- Polices du PC / fichiers ----------
 const localFonts = {}, fileFonts = {};
@@ -825,7 +1329,7 @@ function fontOptions() {
   for (const f of Object.keys(FONTS)) o[f] = f;
   for (const [k, n] of Object.entries(fileFonts)) o[k] = "📁 " + n.label;
   const v = vals();
-  if (v.police && v.police.startsWith("local:") && !localFonts[v.police]) o[v.police] = "🖥️ " + v.police.slice(6) + " (recharger)";
+  if (v.police && v.police.startsWith("local:") && !localFonts[v.police]) o[v.police] = "🖥️ " + v.police.slice(6) + tt("font.reloadSuffix");
   for (const [k, n] of Object.entries(localFonts).sort((a, b) => a[1].label.localeCompare(b[1].label))) o[k] = "🖥️ " + n.label;
   return o;
 }
@@ -835,14 +1339,14 @@ async function loadLocalFonts() {
     for (const fd of all) { const cur = fam[fd.family]; if (!cur || /^(regular|normal|book|roman)$/i.test(fd.style)) fam[fd.family] = fd; }
     for (const [family, fd] of Object.entries(fam)) localFonts["local:" + fd.postscriptName] = {label: family, fd};
     buildForm();
-  } catch (e) { alert("Accès aux polices refusé ou impossible : " + e.message); }
+  } catch (e) { alert(tt("alert.fontsAccessDenied") + " : " + e.message); }
 }
 async function importFontFile(file) {
   try {
     const font = opentype.parse(await file.arrayBuffer()), key = "file:" + file.name;
     fileFonts[key] = {label: file.name.replace(/\.\w+$/, "")}; fontCache[key] = Promise.resolve(font);
     const cur = state.values[state.tab] = state.values[state.tab] || {}; cur.police = key; save(); buildForm(); render();
-  } catch (e) { alert("Police illisible (formats acceptés : .ttf, .otf, .woff) : " + e.message); }
+  } catch (e) { alert(tt("alert.fontUnreadable") + " : " + e.message); }
 }
 
 // ---------- Geometry helpers ----------
@@ -882,11 +1386,11 @@ function fingerBox(L, W, H, t, k, doigt) {
   const e = (len, s) => fpat(len, s, doigt);
   const mk = (name, w, h, edges) => ({name, w, h, els: [{k: "cut", d: polyD(fingerPoly(w, h, edges, t, k))}]});
   return [
-    mk("Fond", L, W, [e(L, false), e(W, false), e(L, false), e(W, false)]),
-    mk("Façade", L, H, [e(L, true), e(H, true), fflat(L), e(H, true)]),
-    mk("Arrière", L, H, [e(L, true), e(H, true), fflat(L), e(H, true)]),
-    mk("Côté G", W, H, [e(W, true), e(H, false), fflat(W), e(H, false)]),
-    mk("Côté D", W, H, [e(W, true), e(H, false), fflat(W), e(H, false)]),
+    mk(tt("piece.bottom"), L, W, [e(L, false), e(W, false), e(L, false), e(W, false)]),
+    mk(tt("piece.front"), L, H, [e(L, true), e(H, true), fflat(L), e(H, true)]),
+    mk(tt("piece.back"), L, H, [e(L, true), e(H, true), fflat(L), e(H, true)]),
+    mk(tt("piece.sideLeft"), W, H, [e(W, true), e(H, false), fflat(W), e(H, false)]),
+    mk(tt("piece.sideRight"), W, H, [e(W, true), e(H, false), fflat(W), e(H, false)]),
   ];
 }
 // Tenons sur courbes : la bande porte des tenons, la pièce support des mortaises le long de la fibre neutre
@@ -952,10 +1456,10 @@ function roundedPoly(centers, rho) {
 function heartPts(v, dlt) {
   const Wf = v.W - 2 * v.t, kk = 0.6, r0 = Wf / (2 * (1 + kk)), d = kk * r0, h = v.allong * Wf;
   const R = r0 + dlt, rho = Math.max(0.3, v.pointe + dlt);
-  if (R <= d) throw new Error("Cœur trop petit pour cette épaisseur.");
+  if (R <= d) throw new Error(tt("err.shape.heartTooSmall"));
   const yN = Math.sqrt(R * R - d * d);
   const Dx = d, Dy = -h, Lh = Math.hypot(Dx, Dy), ux = Dx / Lh, uy = Dy / Lh, vx = -uy, vy = ux;
-  const c = (R - rho) / Lh; if (Math.abs(c) >= 1) throw new Error("Pointe du cœur incohérente.");
+  const c = (R - rho) / Lh; if (Math.abs(c) >= 1) throw new Error(tt("err.shape.heartTipInvalid"));
   const s = Math.sqrt(1 - c * c);
   const nL = [ux * c - vx * s, uy * c - vy * s], nR = [-nL[0], nL[1]];
   const aL = Math.atan2(nL[1], nL[0]) + 2 * Math.PI, aR = Math.atan2(nR[1], nR[0]) + 2 * Math.PI;
@@ -1044,11 +1548,11 @@ function decorRect(v, label, w, h, body) {
   const outer = polyD([[0, 0], [w, 0], [w, h], [0, h]]), rc = Math.min(v.feston, (Math.min(w, h) - 2 * b) / 3);
   if (st === "cadre" || st === "cadreMotif") {
     if (Math.min(w, h) < 2 * b + 8) return out;
-    out.push({name: `Cadre ${label}`, w, h, decor: true, els: [{k: "cut", d: outer}, {k: "cut", d: polyD(festoonRect(b, b, w - b, h - b, rc))}]});
+    out.push({name: tt("piece.frameOf", {label}), w, h, decor: true, els: [{k: "cut", d: outer}, {k: "cut", d: polyD(festoonRect(b, b, w - b, h - b, rc))}]});
     if (st === "cadreMotif" && body && !body.els.some(e => e.k === "text")) body.els.push({k: "line", d: motif(v.motif, w / 2, h / 2, Math.min(w - 2 * b, h - 2 * b) * 0.62).lines});
   } else if (st === "ajoure") {
-    out.push({name: `Plaque ${label}`, w, h, decor: true, els: [{k: "cut", d: outer}, ...motif(v.motif, w / 2, h / 2, Math.min(w, h) * 0.62).cuts.map(d => ({k: "cut", d}))]});
-  } else if (st === "coins") for (let i = 0; i < 4; i++) out.push(cornerPiece(v, `Coin ${label}`));
+    out.push({name: tt("piece.plateOf", {label}), w, h, decor: true, els: [{k: "cut", d: outer}, ...motif(v.motif, w / 2, h / 2, Math.min(w, h) * 0.62).cuts.map(d => ({k: "cut", d}))]});
+  } else if (st === "coins") for (let i = 0; i < 4; i++) out.push(cornerPiece(v, tt("piece.cornerOf", {label})));
   return out;
 }
 
@@ -1056,7 +1560,7 @@ function decorRect(v, label, w, h, body) {
 function bedOf(v) { if (v.bed === "custom") return [v.bedW, v.bedH]; return v.bed.split("x").map(Number); }
 function genBox(v) {
   const {L, W, H, t, kerf} = v, info = [], warns = [], mode = v.couvercle;
-  if (Math.min(L, W, H) < 4 * t) throw new Error("Dimensions trop petites pour cette épaisseur.");
+  if (Math.min(L, W, H) < 4 * t) throw new Error(tt("err.box.tooSmallForThickness"));
   const e = (len, s) => fpat(len, s, v.doigt);
   const mk = (name, w, h, edges) => ({name, w, h, els: [{k: "cut", d: polyD(fingerPoly(w, h, edges, t, kerf))}]});
   let pieces;
@@ -1064,21 +1568,21 @@ function genBox(v) {
     // Cadre = dernière couche (épaisseur t) emboîtée en haut des côtés et de l'arrière ;
     // le couvercle glisse entre le dessous du cadre et le haut des rails (= haut de la façade)
     const jeu = 0.4, Hf = H - 2 * t - jeu, ov = 5, rw = 6;
-    if (Hf < 3 * t) throw new Error("Boîte trop basse pour un couvercle coulissant.");
+    if (Hf < 3 * t) throw new Error(tt("err.box.tooLowForSliding"));
     pieces = [
-      mk("Fond", L, W, [e(L, false), e(W, false), e(L, false), e(W, false)]),
-      mk("Façade (basse)", L, Hf, [e(L, true), e(Hf, true), fflat(L), e(Hf, true)]),
-      mk("Arrière", L, H, [e(L, true), e(H, true), e(L, true), e(H, true)]),
+      mk(tt("piece.bottom"), L, W, [e(L, false), e(W, false), e(L, false), e(W, false)]),
+      mk(tt("piece.frontLow"), L, Hf, [e(L, true), e(Hf, true), fflat(L), e(Hf, true)]),
+      mk(tt("piece.back"), L, H, [e(L, true), e(H, true), e(L, true), e(H, true)]),
       // bord droit = côté façade : encoches sur Hf puis bord plein jusqu'en haut ; bord gauche = arrière
-      mk("Côté G", W, H, [e(W, true), fmixed(e(Hf, false), H - Hf, false), e(W, true), e(H, false)]),
-      mk("Côté D", W, H, [e(W, true), fmixed(e(Hf, false), H - Hf, false), e(W, true), e(H, false)]),
+      mk(tt("piece.sideLeft"), W, H, [e(W, true), fmixed(e(Hf, false), H - Hf, false), e(W, true), e(H, false)]),
+      mk(tt("piece.sideRight"), W, H, [e(W, true), fmixed(e(Hf, false), H - Hf, false), e(W, true), e(H, false)]),
     ];
     // Cadre : encoches sur les bords arrière et latéraux (comme le fond), bord avant ouvert en U
     const a = t + ov, bk = W - t - ov, frame = fingerPoly(L, W, [e(L, false), e(W, false), fflat(L), e(W, false)], t, kerf);
     const fi = frame.findIndex((p, i) => { const q = frame[(i + 1) % frame.length]; return Math.abs(p[1]) < 1e-6 && Math.abs(q[1]) < 1e-6 && p[0] > q[0] + 2 * a; });
     frame.splice(fi + 1, 0, [L - a, 0], [L - a, bk], [a, bk], [a, 0]);
-    pieces.push({name: "Cadre (ouverture vers l'avant)", w: L, h: W, els: [{k: "cut", d: polyD(frame)}]});
-    const lw = L - 2 * t - jeu, ld = W - t - jeu, lid = rectPiece("Couvercle coulissant", lw, ld);
+    pieces.push({name: tt("piece.frameOpenFront"), w: L, h: W, els: [{k: "cut", d: polyD(frame)}]});
+    const lw = L - 2 * t - jeu, ld = W - t - jeu, lid = rectPiece(tt("piece.slidingLid"), lw, ld);
     const gx = lw / 2, gy = 9, gl = Math.min(26, lw * 0.4), gr = 4, grip = [];
     arc(gx + gl / 2 - gr, gy, gr, -Math.PI / 2, Math.PI / 2, grip); arc(gx - gl / 2 + gr, gy, gr, Math.PI / 2, 3 * Math.PI / 2, grip);
     lid.els.push({k: "cut", d: polyD(grip)}, ...textEls(v, lw / 2, ld / 2 + 6));
@@ -1087,42 +1591,42 @@ function genBox(v) {
     // rail arrière entre les deux.
     const rt = {tabW: 8, tabPitch: 25}, ySlot = H - (Hf - t / 2);
     const railSide = W - 2 * t, railBack = L - 2 * t - 2 * rw;
-    if (railBack < 20) throw new Error("Boîte trop étroite pour les rails du couvercle coulissant.");
+    if (railBack < 20) throw new Error(tt("err.box.tooNarrowForRails"));
     const tSide = tabCenters(railSide, rt), tBack = tabCenters(railBack, rt);
     const mort = (x0, cs) => cs.map(c => slotD(x0 + c, ySlot, 0, rt.tabW - kerf, t - kerf)).join("");
     for (const i of [3, 4]) pieces[i].els.push({k: "cut", d: mort(t, tSide)});
     pieces[2].els.push({k: "cut", d: mort(t + rw, tBack)});
     const rail = (name, len, cs) => { const s = stripPoly(len, rw, t, [], cs, rt.tabW + kerf); return {name, w: len, h: s.h, els: [{k: "cut", d: polyD(s.pts)}]}; };
-    pieces.push(lid, rail("Rail côté G", railSide, tSide), rail("Rail côté D", railSide, tSide), rail("Rail arrière", railBack, tBack));
-    info.push(`Boîte ${L}×${W}×${H} mm, couvercle coulissant ${f1(lw)}×${f1(ld)} mm.`);
-    info.push(`Montage : 1) emboîte les rails dans les mortaises des côtés et de l'arrière (tenons vers l'extérieur, ils affleurent la paroi). 2) Assemble côtés + arrière + façade basse. 3) Emboîte le cadre sur le dessus, ouverture côté façade. 4) Pose le fond en dernier. Le couvercle glisse entre les rails et le cadre.`);
+    pieces.push(lid, rail(tt("piece.railLeft"), railSide, tSide), rail(tt("piece.railRight"), railSide, tSide), rail(tt("piece.railBack"), railBack, tBack));
+    info.push(tt("notice.box.sliding.dims", {L, W, H, lw: f1(lw), ld: f1(ld)}));
+    info.push(tt("notice.box.sliding.steps"));
   } else if (mode === "ferme") {
     pieces = [
-      mk("Fond", L, W, [e(L, false), e(W, false), e(L, false), e(W, false)]),
-      mk("Façade", L, H, [e(L, true), e(H, true), e(L, true), e(H, true)]),
-      mk("Arrière", L, H, [e(L, true), e(H, true), e(L, true), e(H, true)]),
-      mk("Côté G", W, H, [e(W, true), e(H, false), e(W, true), e(H, false)]),
-      mk("Côté D", W, H, [e(W, true), e(H, false), e(W, true), e(H, false)]),
-      mk("Dessus", L, W, [e(L, false), e(W, false), e(L, false), e(W, false)]),
+      mk(tt("piece.bottom"), L, W, [e(L, false), e(W, false), e(L, false), e(W, false)]),
+      mk(tt("piece.front"), L, H, [e(L, true), e(H, true), e(L, true), e(H, true)]),
+      mk(tt("piece.back"), L, H, [e(L, true), e(H, true), e(L, true), e(H, true)]),
+      mk(tt("piece.sideLeft"), W, H, [e(W, true), e(H, false), e(W, true), e(H, false)]),
+      mk(tt("piece.sideRight"), W, H, [e(W, true), e(H, false), e(W, true), e(H, false)]),
+      mk(tt("piece.top"), L, W, [e(L, false), e(W, false), e(L, false), e(W, false)]),
     ];
     pieces[5].els.push(...textEls(v, L / 2, W / 2));
-    info.push(`Boîte fermée ${L}×${W}×${H} mm : le dessus s'emboîte comme le fond (idéal tirelire ou boîte scellée).`);
+    info.push(tt("notice.box.closed.dims", {L, W, H}));
   } else {
     pieces = fingerBox(L, W, H, t, kerf, v.doigt);
     if (mode === "pose") {
-      const lid = rectPiece("Couvercle", L, W); lid.els.push(...textEls(v, L / 2, W / 2)); pieces.push(lid);
-      pieces.push(rectPiece("Lèvre (sous le couvercle)", L - 2 * t - 0.4, W - 2 * t - 0.4));
-      info.push("Montage : fond + façades + côtés, puis colle la lèvre centrée sous le couvercle.");
+      const lid = rectPiece(tt("piece.lid"), L, W); lid.els.push(...textEls(v, L / 2, W / 2)); pieces.push(lid);
+      pieces.push(rectPiece(tt("piece.lip"), L - 2 * t - 0.4, W - 2 * t - 0.4));
+      info.push(tt("notice.box.lid.steps"));
     } else pieces[1].els.push(...textEls(v, L / 2, H / 2));
-    info.unshift(`Boîte ${L}×${W}×${H} mm (extérieur), intérieur ${f1(L - 2 * t)}×${f1(W - 2 * t)}×${f1(H - t)} mm.`);
+    info.unshift(tt("notice.box.dims", {L, W, H, iL: f1(L - 2 * t), iW: f1(W - 2 * t), iH: f1(H - t)}));
   }
   const deco = [1, 2, 3, 4].flatMap(i => decorRect(v, pieces[i].name.replace(/ \(.*\)/, ""), pieces[i].w, pieces[i].h, pieces[i]));
-  if (deco.length) info.push("Décor : colle chaque plaque sur la face du même nom, bords affleurants. Découpe-les dans un bois plus foncé pour le contraste.");
+  if (deco.length) info.push(tt("notice.decor.plates"));
   pieces.push(...deco);
   // Compartiments « boîte de pêche » : hauteur libre sous la lèvre, les rails ou le dessus
   const ih = {coulissant: H - 4 * t - 0.4, ferme: H - 2 * t, pose: H - 2 * t, aucun: H - t}[mode];
-  const comp = compartments("Case", L - 2 * t, W - 2 * t, ih, Math.round(v.compX || 1), Math.round(v.compY || 1), v);
-  if (comp.length) { pieces.push(...comp); info.push(`Compartiments : ${Math.round(v.compX)} × ${Math.round(v.compY)} cases, séparateurs à mi-bois de ${f1(ih - 1)} mm de haut à poser dans la boîte.`); }
+  const comp = compartments(tt("piece.cellPrefix"), L - 2 * t, W - 2 * t, ih, Math.round(v.compX || 1), Math.round(v.compY || 1), v);
+  if (comp.length) { pieces.push(...comp); info.push(tt("notice.box.compartments", {cx: Math.round(v.compX), cy: Math.round(v.compY), h: f1(ih - 1)})); }
   return {pieces, info, warns};
 }
 const f1 = n => (Math.round(n * 10) / 10).toString().replace(".", ",");
@@ -1130,7 +1634,7 @@ function genShape(v) {
   const info = [], warns = [], t = v.t, m = v.rebord, k = v.kerf;
   const fondO = shapePts(v, t + m), lid = shapePts(v, t + m), lip = shapePts(v, -v.jeu), neutral = shapePts(v, t / 2);
   const P = perimeter(neutral), Hb = v.H - 2 * t;
-  if (Hb < 10) throw new Error("Hauteur de boîte trop faible.");
+  if (Hb < 10) throw new Error(tt("err.shape.heightTooLow"));
   const [bw, bh] = bedOf(v), maxLen = Math.max(bw, bh) - 4;
   let n = Math.max(1, Math.round(v.bandes) || 0, Math.ceil(P / maxLen));
   const segLen = P / n, pieces = [], tabs = tabCenters(segLen, v);
@@ -1138,27 +1642,27 @@ function genShape(v) {
   const b = bbox(fondO), sh = p => shift(p, -b[0], -b[1]), neu = sh(neutral);
   let slots = "";
   for (let i = 0; i < n; i++) for (const c of tabs) { const [x, y, a] = pointAt(neu, i * segLen + c, true); slots += slotD(x, y, a, v.tabW - k, t - k); }
-  pieces.push({name: "Fond", w: b[2] - b[0], h: b[3] - b[1], els: [{k: "cut", d: polyD(sh(fondO))}, {k: "cut", d: slots}]});
+  pieces.push({name: tt("piece.bottom"), w: b[2] - b[0], h: b[3] - b[1], els: [{k: "cut", d: polyD(sh(fondO))}, {k: "cut", d: slots}]});
   const fixed = v.couvS === "tenons";
   // Couvercle fixé : mêmes mortaises que le fond, posé dans le même sens (face gravée vers le haut)
-  const pL = fixed ? {name: "Couvercle (à tenons)", w: b[2] - b[0], h: b[3] - b[1], els: [{k: "cut", d: polyD(sh(fondO))}, {k: "cut", d: slots}], origin: [-b[0], -b[1]]} : shapePiece("Couvercle", lid);
+  const pL = fixed ? {name: tt("piece.lidTabbed"), w: b[2] - b[0], h: b[3] - b[1], els: [{k: "cut", d: polyD(sh(fondO))}, {k: "cut", d: slots}], origin: [-b[0], -b[1]]} : shapePiece(tt("piece.lid"), lid);
   pL.els.push(...textEls(v, pL.origin[0], pL.origin[1])); pieces.push(pL);
-  if (!fixed) pieces.push(shapePiece("Lèvre (sous le couvercle)", lip));
+  if (!fixed) pieces.push(shapePiece(tt("piece.lip"), lip));
   for (let i = 0; i < n; i++) {
     const s = stripPoly(segLen, Hb, t, fixed ? tabs : [], tabs, v.tabW + k);
-    pieces.push({name: n > 1 ? `Bande ${i + 1}/${n}` : "Bande", w: segLen, h: s.h, els: [{k: "cut", d: polyD(s.pts)}, {k: "cut", d: hinge(3, segLen - 3, s.y0, s.y1, v)}]});
+    pieces.push({name: n > 1 ? tt("piece.stripN", {i: i + 1, n}) : tt("piece.strip"), w: segLen, h: s.h, els: [{k: "cut", d: polyD(s.pts)}, {k: "cut", d: hinge(3, segLen - 3, s.y0, s.y1, v)}]});
   }
-  info.push(`Bande flexible : ${f1(P)} mm au total${n > 1 ? `, en ${n} morceaux de ${f1(segLen)} mm` : ""}, hauteur ${f1(Hb)} mm + tenons, ${tabs.length * n} tenons.`);
-  info.push(v.forme === "coeur" ? "Montage : plante la bande dans les mortaises du fond en partant de l'échancrure du cœur (jointure à la pointe si 2 bandes). Colle au fur et à mesure." : "Montage : plante la bande dans les mortaises du fond en faisant le tour, colle au fur et à mesure.");
-  info.push(fixed ? "Couvercle fixé : pose-le dans le même sens que le fond (gravure vers le haut) et plante les tenons du haut de la bande dans ses mortaises." : "Colle la lèvre centrée sous le couvercle : il s'emboîte dans la bande.");
-  if (v.forme === "coeur" && v.pointe + t / 2 < 5) warns.push("Pointe du cœur très serrée : la bande risque de casser. Augmente l'arrondi de la pointe ou réduis l'espacement des lignes.");
-  if (v.hSpace > t * 0.9) warns.push("Espacement des lignes large par rapport à l'épaisseur : la bande sera raide. Essaie 1,5 à 2 mm pour du 3 mm.");
+  info.push(tt("notice.shape.strip", {P: f1(P), multi: n > 1 ? tt("notice.shape.stripMulti", {n, seg: f1(segLen)}) : "", Hb: f1(Hb), tabs: tabs.length * n}));
+  info.push(v.forme === "coeur" ? tt("notice.shape.assembly.heart") : tt("notice.shape.assembly.generic"));
+  info.push(fixed ? tt("notice.shape.lid.fixed") : tt("notice.shape.lid.loose"));
+  if (v.forme === "coeur" && v.pointe + t / 2 < 5) warns.push(tt("warn.shape.heartTip"));
+  if (v.hSpace > t * 0.9) warns.push(tt("warn.shape.hingeSpacing"));
   return {pieces, info, warns};
 }
 function genChest(v) {
   const {L, W, H, t, kerf, hb, S} = v, info = [], warns = [];
-  if (S > W / 2) throw new Error("Le bombé ne peut pas dépasser la moitié de la largeur (demi-cercle).");
-  if (Math.min(L, W, H) < 4 * t) throw new Error("Dimensions trop petites pour cette épaisseur.");
+  if (S > W / 2) throw new Error(tt("err.chest.domeTooWide"));
+  if (Math.min(L, W, H) < 4 * t) throw new Error(tt("err.dimsTooSmall"));
   const pieces = fingerBox(L, W, H, t, kerf, v.doigt);
   pieces[1].els.push(...textEls(v, L / 2, H / 2, L * 0.8));
   const m = v.rebord;
@@ -1166,7 +1670,7 @@ function genChest(v) {
   const Rc = (W * W / 4 + S * S) / (2 * S), cy = hb + S - Rc;
   // Fibre neutre du panneau (à t/2 de l'extérieur) : montant, arc, montant
   const rn = Rc - t / 2, yN = cy + Math.sqrt(rn * rn - (W / 2 - t / 2) ** 2), thN = Math.atan2(yN - cy, W / 2 - t / 2);
-  if (yN < 1) throw new Error("Hauteur droite du couvercle trop faible pour ce bombé.");
+  if (yN < 1) throw new Error(tt("err.chest.straightTooLow"));
   const neu = [[t / 2, 0]]; arc(W / 2, cy, rn, Math.PI - thN, thN, neu); neu.push([W - t / 2, 0]);
   // Flanc : contour extérieur agrandi du rebord, les mortaises restent fermées
   const ro = Rc + m, yO = cy + Math.sqrt(ro * ro - (W / 2 + m) ** 2), thO = Math.atan2(yO - cy, W / 2 + m);
@@ -1175,11 +1679,11 @@ function genChest(v) {
   const N = sh(flip(neu)), Lp = pathLen(neu, false), arcLen = rn * (Math.PI - 2 * thN), tabs = tabCenters(Lp, v);
   let slots = "";
   for (const c of tabs) { const [x, y, a] = pointAt(N, c, false); slots += slotD(x, y, a, v.tabW - kerf, t - kerf); }
-  for (const nm of ["Flanc couvercle G", "Flanc couvercle D"]) pieces.push({name: nm, w: b[2] - b[0], h: b[3] - b[1], els: [{k: "cut", d: polyD(sh(F))}, {k: "cut", d: slots}]});
+  for (const nm of [tt("piece.flankLeft"), tt("piece.flankRight")]) pieces.push({name: nm, w: b[2] - b[0], h: b[3] - b[1], els: [{k: "cut", d: polyD(sh(F))}, {k: "cut", d: slots}]});
   const s = stripPoly(Lp, L - 2 * t, t, tabs, tabs, v.tabW + kerf);
-  pieces.push({name: "Couvercle flexible", w: Lp, h: s.h, els: [{k: "cut", d: polyD(s.pts)}, {k: "cut", d: hinge(Math.max(3, yN - 2), Math.min(Lp - 3, yN + arcLen + 2), s.y0, s.y1, v)}]});
-  info.push(`Corps ${L}×${W}×${H} mm. Couvercle : ${f1(hb + S)} mm de haut, panneau flexible ${f1(Lp)}×${L} mm avec ${tabs.length * 2} tenons.`);
-  info.push(`Montage : assemble le corps, puis plante les tenons du panneau dans les mortaises des deux flancs (les flancs débordent de ${f1(m)} mm). Fixe le couvercle au corps avec deux petites charnières.`);
+  pieces.push({name: tt("piece.flexLid"), w: Lp, h: s.h, els: [{k: "cut", d: polyD(s.pts)}, {k: "cut", d: hinge(Math.max(3, yN - 2), Math.min(Lp - 3, yN + arcLen + 2), s.y0, s.y1, v)}]});
+  info.push(tt("notice.chest.dims", {L, W, H, hs: f1(hb + S), Lp: f1(Lp), tabs: tabs.length * 2}));
+  info.push(tt("notice.chest.assembly", {m: f1(m)}));
 
   // --- Habillage ---
   const deco = [1, 2, 3, 4].flatMap(i => decorRect(v, pieces[i].name, pieces[i].w, pieces[i].h, pieces[i]));
@@ -1189,11 +1693,12 @@ function genChest(v) {
     const flOuter = polyD(sh(F)), fw = b[2] - b[0], fh = b[3] - b[1];
     const cxM = W / 2, cyM = (yb + cy + ri) / 2, sM = Math.min(xr - xl, cy + ri - yb) * 0.5;
     for (const nm of ["G", "D"]) {
-      if (v.deco === "coins") { deco.push(cornerPiece(v, `Coin flanc ${nm}`), cornerPiece(v, `Coin flanc ${nm}`)); continue; }
+      const side = tt(nm === "G" ? "side.left" : "side.right");
+      if (v.deco === "coins") { deco.push(cornerPiece(v, tt("piece.cornerFlank", {side})), cornerPiece(v, tt("piece.cornerFlank", {side}))); continue; }
       if (v.deco === "ajoure") {
         const [mx, my] = sh(flip([[cxM, cyM]]))[0];
         const mo2 = motif(v.motif, mx, my, sM);
-        deco.push({name: `Plaque flanc ${nm}`, w: fw, h: fh, decor: true, els: [{k: "cut", d: flOuter}, ...mo2.cuts.map(d => ({k: "cut", d}))]});
+        deco.push({name: tt("piece.plateFlank", {side}), w: fw, h: fh, decor: true, els: [{k: "cut", d: flOuter}, ...mo2.cuts.map(d => ({k: "cut", d}))]});
         continue;
       }
       if (ri < hx - 1e-6) continue;
@@ -1202,7 +1707,7 @@ function genChest(v) {
       if (rcc > 0.2) arc(xr, yb, rcc, Math.PI, Math.PI / 2, op);
       op.push([xr, yv]); arc(W / 2, cy, ri, thv, Math.PI - thv, op); op.push([xl, yb + rcc]);
       if (rcc > 0.2) arc(xl, yb, rcc, Math.PI / 2, 0, op);
-      deco.push({name: `Cadre flanc ${nm}`, w: fw, h: fh, decor: true, els: [{k: "cut", d: flOuter}, {k: "cut", d: polyD(sh(flip(op)))}]});
+      deco.push({name: tt("piece.frameFlank", {side}), w: fw, h: fh, decor: true, els: [{k: "cut", d: flOuter}, {k: "cut", d: polyD(sh(flip(op)))}]});
       if (v.deco === "cadreMotif") { const [mx, my] = sh(flip([[cxM, cyM]]))[0]; pieces[nm === "G" ? 5 : 6].els.push({k: "line", d: motif(v.motif, mx, my, sM * 0.9).lines}); }
     }
   }
@@ -1213,20 +1718,20 @@ function genChest(v) {
     const arcS = rs * (Math.PI - 2 * thS), Ls = 2 * yS + arcS;
     let kerfs = "", i = 0;
     for (let x = yS - 1; x <= yS + arcS + 1; x += v.hSpace * 1.2, i++) kerfs += i % 2 ? `M${f3(x)},${sw}V${f3(sw * 0.3)}` : `M${f3(x)},0V${f3(sw * 0.7)}`;
-    for (let k = 0; k < ns; k++) deco.push({name: `Sangle ${k + 1}`, w: Ls, h: sw, decor: true, els: [{k: "cut", d: polyD([[0, 0], [Ls, 0], [Ls, sw], [0, sw]])}, {k: "cut", d: kerfs}]});
-    info.push(`Sangles : ${ns} bande(s) de ${f1(Ls)} mm à coller en travers du couvercle (réparties sur la longueur), du bas avant au bas arrière.`);
+    for (let k = 0; k < ns; k++) deco.push({name: tt("piece.strap", {n: k + 1}), w: Ls, h: sw, decor: true, els: [{k: "cut", d: polyD([[0, 0], [Ls, 0], [Ls, sw], [0, sw]])}, {k: "cut", d: kerfs}]});
+    info.push(tt("notice.chest.straps", {n: ns, Ls: f1(Ls)}));
   }
   // Fermoir décoratif : collé sur l'avant du couvercle, il retombe sur la façade
   if (v.fermoir) {
     const fwd = 22, fhd = hb + 24, rr = fwd / 2, p = [[0, 0], [fwd, 0], [fwd, fhd - rr]];
     arc(rr, fhd - rr, rr, 0, Math.PI, p);
     const key = []; arc(rr, fhd - rr - 2, 2.2, 0, 2 * Math.PI, key); key.pop();
-    deco.push({name: "Fermoir", w: fwd, h: fhd, decor: true, els: [{k: "cut", d: polyD(p)}, {k: "cut", d: polyD(key)}, {k: "cut", d: polyD([[rr - 1, fhd - rr - 1], [rr + 1, fhd - rr - 1], [rr + 1.6, fhd - rr + 4], [rr - 1.6, fhd - rr + 4]])}]});
-    info.push("Fermoir : colle-le uniquement sur l'avant du couvercle, centré ; il retombe sur la façade sans l'empêcher de s'ouvrir.");
+    deco.push({name: tt("piece.clasp"), w: fwd, h: fhd, decor: true, els: [{k: "cut", d: polyD(p)}, {k: "cut", d: polyD(key)}, {k: "cut", d: polyD([[rr - 1, fhd - rr - 1], [rr + 1, fhd - rr - 1], [rr + 1.6, fhd - rr + 4], [rr - 1.6, fhd - rr + 4]])}]});
+    info.push(tt("notice.chest.clasp"));
   }
-  if (deco.length) info.push("Décor : pièces sur planche(s) séparée(s), à découper dans un bois plus foncé et à coller face par face.");
+  if (deco.length) info.push(tt("notice.chest.decor"));
   pieces.push(...deco);
-  if (Rc - t < 12) warns.push("Rayon du couvercle serré : réduis l'espacement des lignes si le bois résiste.");
+  if (Rc - t < 12) warns.push(tt("warn.chest.radius"));
   return {pieces, info, warns};
 }
 // ---------- Organiseur ----------
@@ -1255,8 +1760,8 @@ function compartments(prefix, iw, id, ih, nx, ny, v) {
   const out = [], sw = v.t - v.kerf + 0.15, hc = ih - 1, lw = iw - 0.4, ld = id - 0.4;
   if (nx < 2 && ny < 2) return out;
   const xs = Array.from({length: nx - 1}, (_, i) => (i + 1) * lw / nx), ys = Array.from({length: ny - 1}, (_, i) => (i + 1) * ld / ny);
-  for (let j = 0; j < ny - 1; j++) out.push(crateDivider(`${prefix} séparateur L${j + 1}`, lw, hc, xs, true, sw));
-  for (let i = 0; i < nx - 1; i++) out.push(crateDivider(`${prefix} séparateur P${i + 1}`, ld, hc, ys, false, sw));
+  for (let j = 0; j < ny - 1; j++) out.push(crateDivider(`${prefix} ${tt("piece.divider")} ${tt("axis.len")}${j + 1}`, lw, hc, xs, true, sw));
+  for (let i = 0; i < nx - 1; i++) out.push(crateDivider(`${prefix} ${tt("piece.divider")} ${tt("axis.depth")}${i + 1}`, ld, hc, ys, false, sw));
   return out;
 }
 // Mini-boîte ouverte (tiroir ou bac) : prise oblongue + étiquette gravée sur la façade
@@ -1280,32 +1785,32 @@ function genOrga(v) {
   if (v.type === "bacs") {
     // Casier ouvert + bacs posés côte à côte
     const H = v.H;
-    if (Math.min(W, D, H) < 4 * t) throw new Error("Dimensions trop petites pour cette épaisseur.");
-    pieces.push(...fingerBox(W, D, H, t, kerf, v.doigt).map(p => ({...p, name: `Casier ${p.name.toLowerCase()}`})));
+    if (Math.min(W, D, H) < 4 * t) throw new Error(tt("err.dimsTooSmall"));
+    pieces.push(...fingerBox(W, D, H, t, kerf, v.doigt).map(p => ({...p, name: `${tt("piece.crate")} ${p.name.toLowerCase()}`})));
     const bw = (W - 2 * t - j * (cols + 1)) / cols, bd = (D - 2 * t - j * (rows + 1)) / rows, bh = H - t - 0.5;
-    if (bw < 4 * t || bd < 4 * t) throw new Error("Trop de bacs pour cette taille de casier.");
+    if (bw < 4 * t || bd < 4 * t) throw new Error(tt("err.orga.tooManyBins"));
     if (v.tiroirs !== "aucun") {
       const n = v.tiroirs === "unique" ? 1 : rows * cols;
-      for (let i = 0; i < n; i++) pieces.push(...miniBox(n === 1 ? "Bac" : `Bac ${letter(Math.floor(i / cols))}${i % cols + 1}`, bw, bd, bh, v.tiroirs === "unique" ? "" : labels[i], v));
+      for (let i = 0; i < n; i++) pieces.push(...miniBox(n === 1 ? tt("piece.bin") : tt("piece.binLetter", {letter: letter(Math.floor(i / cols)), n: i % cols + 1}), bw, bd, bh, v.tiroirs === "unique" ? "" : labels[i], v));
     }
-    info.push(`Casier ${W}×${D}×${H} mm avec ${rows * cols} bacs de ${f1(bw)}×${f1(bd)}×${f1(bh)} mm.`);
-    if (v.tiroirs === "unique") info.push(`Un seul bac généré : découpe-le ${rows * cols} fois (étiquettes désactivées dans ce mode).`);
-    info.push("Montage : assemble le casier comme une boîte à encoches, puis les bacs ; ils se posent côte à côte et se sortent par le dessus.");
+    info.push(tt("notice.orga.bins.dims", {W, D, H, n: rows * cols, bw: f1(bw), bd: f1(bd), bh: f1(bh)}));
+    if (v.tiroirs === "unique") info.push(tt("notice.orga.bins.single", {n: rows * cols}));
+    info.push(tt("notice.orga.bins.assembly"));
     return {pieces, info, warns};
   }
   // --- Meuble à tiroirs : caisson ouvert devant, étagères et séparateurs à tenons ---
   let hs = String(v.rowsCustom || "").split(",").map(s => parseFloat(s.replace(",", "."))).filter(x => x > 0);
   hs = Array.from({length: rows}, (_, i) => hs.length ? (hs[i] || hs[hs.length - 1]) : v.rowH); // haut → bas
-  if (hs.some(h => h < 15)) throw new Error("Une rangée fait moins de 15 mm.");
+  if (hs.some(h => h < 15)) throw new Error(tt("err.orga.rowTooSmall"));
   const Htot = hs.reduce((a, b) => a + b, 0) + (rows + 1) * t, Wi = W - 2 * t, Dd = D - t;
   const cw = (Wi - (cols - 1) * t) / cols;
-  if (cw < 20) throw new Error("Colonnes trop étroites.");
+  if (cw < 20) throw new Error(tt("err.orga.colsTooNarrow"));
   const e = (len, s) => fpat(len, s, 10), mk = (name, w, h, edges) => ({name, w, h, els: [{k: "cut", d: polyD(fingerPoly(w, h, edges, t, kerf))}]});
-  const fond = mk("Fond", W, D, [fflat(W), e(D, false), e(W, false), e(D, false)]);
-  const dessus = mk("Dessus", W, D, [fflat(W), e(D, false), e(W, false), e(D, false)]);
-  const side = () => mk("Côté", D, Htot, [e(D, true), e(Htot, false), e(D, true), fflat(Htot)]);
-  const sideG = side(), sideD = side(); sideG.name = "Côté G"; sideD.name = "Côté D";
-  const dos = mk("Dos", W, Htot, [e(W, true), e(Htot, true), e(W, true), e(Htot, true)]);
+  const fond = mk(tt("piece.bottom"), W, D, [fflat(W), e(D, false), e(W, false), e(D, false)]);
+  const dessus = mk(tt("piece.top"), W, D, [fflat(W), e(D, false), e(W, false), e(D, false)]);
+  const side = () => mk(tt("piece.side"), D, Htot, [e(D, true), e(Htot, false), e(D, true), fflat(Htot)]);
+  const sideG = side(), sideD = side(); sideG.name = tt("piece.sideLeft"); sideD.name = tt("piece.sideRight");
+  const dos = mk(tt("piece.cabinetBack"), W, Htot, [e(W, true), e(Htot, true), e(W, true), e(Htot, true)]);
   const rt = {tabW: 8, tabPitch: 30}, tw = rt.tabW, sl = (x, y, a) => slotD(x, y, a, tw - kerf, t - kerf);
   const hb = [...hs].reverse(); // bas → haut
   const zStart = hb.map((_, r) => t + hb.slice(0, r).reduce((a, h) => a + h + t, 0));
@@ -1317,7 +1822,7 @@ function genOrga(v) {
   const shelves = [];
   for (let r = 0; r < rows - 1; r++) {
     const z = zStart[r] + hb[r], s = tabbedRect(Wi, Dd, t, tw + kerf, {left: shelfSide, right: shelfSide, bottom: shelfBack});
-    const sp = {name: `Étagère ${r + 1}`, w: s.W, h: s.H, els: [{k: "cut", d: polyD(s.pts)}]};
+    const sp = {name: tt("piece.shelf", {n: r + 1}), w: s.W, h: s.H, els: [{k: "cut", d: polyD(s.pts)}]};
     let d = "";
     for (const x of xDiv) { for (const c of topT) d += sl(x + t / 2 - t + s.ox, s.oy + c, Math.PI / 2); for (const c of botT) d += sl(x + t / 2 - t + s.ox, s.oy + c, Math.PI / 2); }
     if (d) addEls(sp, d);
@@ -1331,7 +1836,7 @@ function genOrga(v) {
   for (let r = 0; r < rows; r++) for (const [ci, x] of xDiv.entries()) {
     const back = hb[r] >= tw + 8 ? [hb[r] / 2] : [];
     const s = tabbedRect(Dd, hb[r], t, tw + kerf, {top: topT, bottom: botT, right: back});
-    dividers.push({name: `Séparateur ${letter(rows - 1 - r)}${ci + 1}`, w: s.W, h: s.H, els: [{k: "cut", d: polyD(s.pts)}]});
+    dividers.push({name: tt("piece.separator", {letter: letter(rows - 1 - r), n: ci + 1}), w: s.W, h: s.H, els: [{k: "cut", d: polyD(s.pts)}]});
     if (back.length) addEls(dos, sl(x + t / 2, Htot - zStart[r] - hb[r] / 2, Math.PI / 2));
   }
   if (xDiv.length) {
@@ -1347,16 +1852,16 @@ function genOrga(v) {
     hs.forEach((h, r) => {
       for (let c = 0; c < cols; c++) {
         const dh = h - 1.5;
-        if (v.tiroirs === "unique") { if (done.has(dh)) continue; done.add(dh); pieces.push(...miniBox(`Tiroir h${f1(h)}`, dw, dd, dh, "", v)); continue; }
-        pieces.push(...miniBox(`Tiroir ${letter(r)}${c + 1}`, dw, dd, dh, labels[r * cols + c], v));
+        if (v.tiroirs === "unique") { if (done.has(dh)) continue; done.add(dh); pieces.push(...miniBox(tt("piece.drawerH", {h: f1(h)}), dw, dd, dh, "", v)); continue; }
+        pieces.push(...miniBox(tt("piece.drawer", {letter: letter(r), n: c + 1}), dw, dd, dh, labels[r * cols + c], v));
       }
     });
-    info.push(`Tiroirs : ${f1(dw)} mm de large, ${f1(dd)} mm de profondeur, hauteur selon la rangée (jeu ${f1(j)} mm de chaque côté).`);
-    if (v.tiroirs === "unique") info.push("Un tiroir par hauteur de rangée : découpe chacun autant de fois qu'il y a de cases dans la rangée (étiquettes désactivées dans ce mode).");
+    info.push(tt("notice.orga.drawers.dims", {dw: f1(dw), dd: f1(dd), j: f1(j)}));
+    if (v.tiroirs === "unique") info.push(tt("notice.orga.drawers.single"));
   }
-  info.unshift(`Meuble ${W}×${D}×${f1(Htot)} mm : ${rows} rangée(s) × ${cols} colonne(s), cases de ${f1(cw)} mm de large.`);
-  info.push("Montage : 1) plante les séparateurs dans les étagères (et le fond / le dessus). 2) Emboîte les étagères dans le dos puis dans les côtés. 3) Ferme avec le fond et le dessus. 4) Assemble les tiroirs et glisse-les dans les cases.");
-  if (Math.round(v.compX) > 1 || Math.round(v.compY) > 1) info.push("Compartiments : les séparateurs s'emboîtent à mi-bois pour former la grille, puis se posent dans le tiroir ou le bac.");
+  info.unshift(tt("notice.orga.dims", {W, D, Htot: f1(Htot), rows, cols, cw: f1(cw)}));
+  info.push(tt("notice.orga.assembly"));
+  if (Math.round(v.compX) > 1 || Math.round(v.compY) > 1) info.push(tt("notice.orga.compartments"));
   return {pieces, info, warns};
 }
 // ---------- Casier empilable (plan de cases fusionnables, une boîte par case) ----------
@@ -1393,42 +1898,42 @@ function genTray(v) {
   const which = v.genLayers === "actuel" ? [td.cur] : td.layers.map((_, i) => i);
   for (const li of which) {
     const L = td.layers[li]; L.regions = normRegions(L.regions, gx, gy);
-    const H = L.H, pre = n > 1 ? `É${li + 1} ` : "";
-    if (Math.min(W, D, H) < 4 * t) throw new Error(`Étage ${li + 1} : dimensions trop petites pour cette épaisseur.`);
-    pieces.push(...fingerBox(W, D, H, t, kerf, v.doigt).map(p => ({...p, name: `${pre}Casier ${p.name.toLowerCase()}`})));
-    if (li > 0) pieces.push(stackFrame(`${pre}Cadre d'empilage`, v));
+    const H = L.H, pre = n > 1 ? tt("piece.layerPrefix", {n: li + 1}) : "";
+    if (Math.min(W, D, H) < 4 * t) throw new Error(tt("err.tray.layerTooSmall", {n: li + 1}));
+    pieces.push(...fingerBox(W, D, H, t, kerf, v.doigt).map(p => ({...p, name: `${pre}${tt("piece.crate")} ${p.name.toLowerCase()}`})));
+    if (li > 0) pieces.push(stackFrame(`${pre}${tt("piece.stackFrame")}`, v));
     // les boîtes laissent la place au cadre de l'étage du dessus (ou du couvercle)
     const lowered = li < n - 1 || v.couvercleT, bh = H - t - (lowered ? t : 0) - 0.5;
-    if (bh < 10) throw new Error(`Étage ${li + 1} trop bas pour des boîtes.`);
+    if (bh < 10) throw new Error(tt("err.tray.layerTooLow", {n: li + 1}));
     L.regions.forEach((r, k) => {
       const w = (r[2] - r[0] + 1) * px - j, d = (r[3] - r[1] + 1) * py - j;
-      if (Math.min(w, d) < 4 * t + 4) throw new Error(`Étage ${li + 1}, case ${k + 1} : trop petite pour une boîte (${f1(w)}×${f1(d)} mm). Fusionne-la ou réduis la grille.`);
-      pieces.push(...miniBox(`${pre}Boîte ${k + 1}${r[4] ? ` « ${r[4]} »` : ""}`, w, d, bh, r[4], {...v, compX: 1, compY: 1}));
+      if (Math.min(w, d) < 4 * t + 4) throw new Error(tt("err.tray.cellTooSmall", {n: li + 1, k: k + 1, w: f1(w), d: f1(d)}));
+      pieces.push(...miniBox(`${pre}${r[4] ? tt("piece.boxNNamed", {n: k + 1, name: r[4]}) : tt("piece.boxN", {n: k + 1})}`, w, d, bh, r[4], {...v, compX: 1, compY: 1}));
     });
-    info.push(`Étage ${li + 1} : casier ${W}×${D}×${H} mm, ${L.regions.length} boîtes de ${f1(bh)} mm de haut.`);
+    info.push(tt("notice.tray.layer", {n: li + 1, W, D, H, count: L.regions.length, bh: f1(bh)}));
   }
   if (v.couvercleT && (v.genLayers !== "actuel" || td.cur === n - 1)) {
-    const lid = rectPiece("Couvercle", W, D);
+    const lid = rectPiece(tt("piece.lid"), W, D);
     if (v.texteC) lid.els.push({k: "text", id: null, str: v.texteC, x: W / 2, y: D / 2, size: Math.min(14, D * 0.15), maxW: W * 0.7});
-    pieces.push(lid, stackFrame("Cadre du couvercle", v));
+    pieces.push(lid, stackFrame(tt("piece.lidStackFrame"), v));
   }
-  info.push("Montage : assemble chaque casier comme une boîte ouverte, colle le cadre d'empilage centré sous le fond des étages supérieurs (et sous le couvercle), puis assemble les boîtes et range-les selon le plan.");
-  info.push(`Grille ${gx} × ${gy} : une case de base mesure ${f1(px)} × ${f1(py)} mm (jeu de ${f1(j)} mm autour de chaque boîte).`);
+  info.push(tt("notice.tray.assembly"));
+  info.push(tt("notice.tray.grid", {gx, gy, px: f1(px), py: f1(py), j: f1(j)}));
   return {pieces, info, warns};
 }
 function layersHtml() {
   const td = trayData();
-  return `<div class="layers">${td.layers.map((L, i) => `<button class="chip" data-layer="${i}" aria-pressed="${i === td.cur}">Étage ${i + 1} · ${L.H} mm</button>`).join("")}</div>
-    <div class="row"><label for="layerH">Hauteur de l'étage ${td.cur + 1}</label><div class="u"><input type="number" id="layerH" value="${td.layers[td.cur].H}" min="15" step="1"><span>mm</span></div></div>
-    <div class="fontbtns"><button class="btn ghost sm" id="layerAdd" type="button">＋ Ajouter un étage</button><button class="btn ghost sm" id="layerDup" type="button">Dupliquer</button>${td.layers.length > 1 ? `<button class="btn ghost sm" id="layerDel" type="button">Supprimer</button>` : ""}</div>`;
+  return `<div class="layers">${td.layers.map((L, i) => `<button class="chip" data-layer="${i}" aria-pressed="${i === td.cur}">${tt("layer.chip", {n: i + 1, h: L.H})}</button>`).join("")}</div>
+    <div class="row"><label for="layerH">${tt("layer.heightLabel", {n: td.cur + 1})}</label><div class="u"><input type="number" id="layerH" value="${td.layers[td.cur].H}" min="15" step="1"><span>mm</span></div></div>
+    <div class="fontbtns"><button class="btn ghost sm" id="layerAdd" type="button">${tt("layer.add")}</button><button class="btn ghost sm" id="layerDup" type="button">${tt("layer.dup")}</button>${td.layers.length > 1 ? `<button class="btn ghost sm" id="layerDel" type="button">${tt("layer.del")}</button>` : ""}</div>`;
 }
 function bindLayers() {
   const td = trayData(), redo = () => { save(); buildForm(); needFit = true; currentSheet = -2; render(); };
   document.querySelectorAll("[data-layer]").forEach(b => b.onclick = () => { td.cur = +b.dataset.layer; redo(); });
-  const h = $("#layerH"); if (h) h.oninput = () => { const x = parseFloat(h.value); if (x > 0) { td.layers[td.cur].H = x; save(); document.querySelector(`[data-layer="${td.cur}"]`).textContent = `Étage ${td.cur + 1} · ${x} mm`; schedule(); } };
+  const h = $("#layerH"); if (h) h.oninput = () => { const x = parseFloat(h.value); if (x > 0) { td.layers[td.cur].H = x; save(); document.querySelector(`[data-layer="${td.cur}"]`).textContent = tt("layer.chip", {n: td.cur + 1, h: x}); schedule(); } };
   const add = $("#layerAdd"); if (add) add.onclick = () => { td.layers.push({H: td.layers[td.cur].H, regions: []}); td.cur = td.layers.length - 1; redo(); };
   const dup = $("#layerDup"); if (dup) dup.onclick = () => { td.layers.push(JSON.parse(JSON.stringify(td.layers[td.cur]))); td.cur = td.layers.length - 1; redo(); };
-  const del = $("#layerDel"); if (del) del.onclick = () => { if (confirm(`Supprimer l'étage ${td.cur + 1} ?`)) { td.layers.splice(td.cur, 1); td.cur = Math.max(0, td.cur - 1); redo(); } };
+  const del = $("#layerDel"); if (del) del.onclick = () => { if (confirm(tt("confirm.deleteLayer", {n: td.cur + 1}))) { td.layers.splice(td.cur, 1); td.cur = Math.max(0, td.cur - 1); redo(); } };
 }
 // Plan vu de dessus (étage affiché) : glisser = fusionner, double-clic = nommer, ✂ = séparer
 function planSvg(v) {
@@ -1441,7 +1946,7 @@ function planSvg(v) {
   L.regions.forEach((r, k) => {
     const x = t + r[0] * px + j / 2, y = t + r[1] * py + j / 2, w = (r[2] - r[0] + 1) * px - j, h = (r[3] - r[1] + 1) * py - j, fs = Math.max(3, Math.min(7, w / 7, h / 4));
     g += `<g data-reg="${k}"><rect x="${f3(x)}" y="${f3(y)}" width="${f3(w)}" height="${f3(h)}" rx="2" class="p-reg"/>
-      <text x="${f3(x + w / 2)}" y="${f3(y + h / 2 - fs * 0.1)}" font-size="${f3(fs)}" class="p-name">${esc(r[4] || "Case " + (k + 1))}</text>
+      <text x="${f3(x + w / 2)}" y="${f3(y + h / 2 - fs * 0.1)}" font-size="${f3(fs)}" class="p-name">${esc(r[4] || tt("sheet.cellName", {n: k + 1}))}</text>
       <text x="${f3(x + w / 2)}" y="${f3(y + h / 2 + fs * 1.1)}" font-size="${f3(fs * 0.62)}" class="p-dim">${f1(w)} × ${f1(h)} mm</text>
       ${r[2] > r[0] || r[3] > r[1] ? `<g class="p-split" data-split="${k}"><circle cx="${f3(x + w - 5)}" cy="${f3(y + 5)}" r="3.6"/><text x="${f3(x + w - 5)}" y="${f3(y + 6.3)}" font-size="4.2">✂</text></g>` : ""}</g>`;
   });
@@ -1485,7 +1990,7 @@ function bindPlan(svg, v) {
   function rename(g) {
     if (!g) return;
     const r = L.regions[+g.dataset.reg], box = g.querySelector("rect").getBoundingClientRect();
-    const inp = document.createElement("input"); inp.className = "renamer"; inp.value = r[4]; inp.placeholder = "Nom de la case";
+    const inp = document.createElement("input"); inp.className = "renamer"; inp.value = r[4]; inp.placeholder = tt("sheet.cellRename");
     Object.assign(inp.style, {left: box.left + box.width / 2 + "px", top: box.top + box.height / 2 + "px"});
     document.body.appendChild(inp); inp.focus(); inp.select();
     let done = false; const fin = ok => { if (done) return; done = true; if (ok) { r[4] = inp.value.trim(); commit(); } inp.remove(); };
@@ -1502,7 +2007,7 @@ function layout(pieces, bw, bh) {
   const items = pieces.map(p => {
     let rot = false, w = p.w, h = p.h;
     if (w > bw - 2 * M || (h > bh - 2 * M && h <= bw - 2 * M && w <= bh - 2 * M)) { if (h <= bw - 2 * M && w <= bh - 2 * M) { rot = true; [w, h] = [h, w]; } }
-    if (w > bw - 2 * M || h > bh - 2 * M) throw new Error(`« ${p.name} » (${f1(p.w)}×${f1(p.h)} mm) ne tient pas sur le plateau ${bw}×${bh}.`);
+    if (w > bw - 2 * M || h > bh - 2 * M) throw new Error(tt("err.layout.pieceTooBig", {name: p.name, w: f1(p.w), h: f1(p.h), bw, bh}));
     return {p, w, h, rot};
   }).sort((a, b) => b.h - a.h);
   for (const it of items) {
@@ -1580,7 +2085,7 @@ function sheetSvg(sheet, bw, bh, v, font, idx, total, preview) {
     if (v.reperes) g += `<text x="${f3(it.p.w / 2)}" y="${f3(Math.min(it.p.h - 2, it.p.h * 0.18 + 3))}" font-size="3.2" text-anchor="middle" fill="#0000ff" font-family="Arial">${esc(it.p.name)}</text>`;
     body += `<g transform="${tf}">${g}</g>`;
   }
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="${bw}mm" height="${bh}mm" viewBox="0 0 ${bw} ${bh}">\n<!-- LaserToolFX par NeoprodFX — ${esc(state.name)} — planche ${idx}/${total} — rouge=découpe noir=gravure bleu=repères -->\n${body}\n</svg>`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${bw}mm" height="${bh}mm" viewBox="0 0 ${bw} ${bh}">\n<!-- ${tt("export.svgComment", {name: esc(state.name), idx, total})} -->\n${body}\n</svg>`;
 }
 const PX = 3; // pixels par mm à 100 %
 let timer = null, lastFiles = [], lastInfo = [], needFit = true, currentSheet = 0;
@@ -1638,13 +2143,13 @@ async function render() {
     sheets = [...main, ...dec];
   } catch (e) {
     $("#warns").innerHTML = `<div class="warn err">⚠️ ${esc(e.message)}</div>`;
-    $("#status").innerHTML = `<span class="bad">⚠ À corriger : ${esc(e.message)}</span>`;
+    $("#status").innerHTML = `<span class="bad">${tt("status.toFix", {msg: esc(e.message)})}</span>`;
     return;
   }
   const needsText = res.pieces.some(p => p.els.some(e => e.k === "text"));
   const font = needsText ? await getFont(v.police) : null;
   const warns = [...res.warns];
-  if (needsText && !font) warns.push(String(v.police).startsWith("local:") ? "Police du PC non chargée : clique sur « Polices du PC » pour la recharger." : "Police non chargée (pas de connexion ?) : le texte est exporté en police système. Convertis-le en tracés dans ton logiciel avant de graver.");
+  if (needsText && !font) warns.push(String(v.police).startsWith("local:") ? tt("warn.fontLocal") : tt("warn.fontMissing"));
   $("#warns").innerHTML = warns.map(w => `<div class="warn">⚠️ ${esc(w)}</div>`).join("");
   const base = slug(state.name) + "_" + ({box: `boite_${v.L}x${v.W}x${v.H}`, shape: `${v.forme}_${v.W}x${v.H}`, chest: `coffre_${v.L}x${v.W}x${v.H}`}[state.tab]);
   lastFiles = sheets.map((s, i) => ({name: sheets.length > 1 ? `${base}_planche${i + 1}${s.decor ? "_decor" : ""}.svg` : `${base}.svg`, svg: sheetSvg(s, bw, bh, v, font, i + 1, sheets.length, false)}));
@@ -1652,21 +2157,21 @@ async function render() {
   const cols = Math.min(2, sheets.length), c = $("#canvas");
   c.style.width = (cols * bw * PX + (cols - 1) * 48) + "px";
   const isTray = state.tab === "tray", td = isTray ? trayData() : null;
-  const plan = isTray ? `<div class="sheet plan-card" data-si="-2" style="width:${bw * PX}px"><div class="lbl"><span><b>Plan vu de dessus</b> · étage ${td.cur + 1}/${td.layers.length}</span><span>glisse = fusionner · touche une case = la nommer · ✂ = séparer</span></div>${planSvg(v)}</div>` : "";
-  c.innerHTML = plan + sheets.map((s, i) => `<div class="sheet${s.decor ? " decor" : ""}" data-si="${i}" style="width:${bw * PX}px"><div class="lbl"><span><b>Planche ${i + 1}</b> · ${s.length} pièce${s.length > 1 ? "s" : ""}${s.decor ? `<span class="tag">Décor · bois contrasté</span>` : ""}</span><button class="mini" data-dl="${i}">${icon("download", 14)}SVG</button></div>${sheetSvg(s, bw, bh, v, font, i + 1, sheets.length, true)}</div>`).join("");
+  const plan = isTray ? `<div class="sheet plan-card" data-si="-2" style="width:${bw * PX}px"><div class="lbl"><span><b>${tt("sheet.topView")}</b> · ${tt("sheet.layerOf", {cur: td.cur + 1, total: td.layers.length})}</span><span>${tt("sheet.planHelp")}</span></div>${planSvg(v)}</div>` : "";
+  c.innerHTML = plan + sheets.map((s, i) => `<div class="sheet${s.decor ? " decor" : ""}" data-si="${i}" style="width:${bw * PX}px"><div class="lbl"><span><b>${tt("sheet.card", {n: i + 1})}</b> · ${tt("sheet.pieceCount", {n: s.length, s: s.length > 1 ? "s" : ""})}${s.decor ? `<span class="tag">${tt("sheet.decorTag")}</span>` : ""}</span><button class="mini" data-dl="${i}">${icon("download", 14)}${tt("sheet.svgBtn")}</button></div>${sheetSvg(s, bw, bh, v, font, i + 1, sheets.length, true)}</div>`).join("");
   c.querySelectorAll("[data-dl]").forEach(b => b.onclick = () => downloadBlob(lastFiles[+b.dataset.dl].name, new Blob([lastFiles[+b.dataset.dl].svg], {type: "image/svg+xml"})));
   c.querySelectorAll("[data-ti]").forEach(g => bindTextDrag(g, v));
   if (isTray) bindPlan(c.querySelector("svg.plan"), v);
   if (currentSheet >= sheets.length || (currentSheet === -2 && !isTray)) currentSheet = 0;
-  $("#sheetTabs").innerHTML = (isTray ? `<button class="chip" data-si="-2" aria-pressed="${currentSheet === -2}">✏️ Plan</button>` : "") + `<button class="chip" data-si="-1" aria-pressed="${currentSheet === -1}">Tout</button>` + sheets.map((s, i) => `<button class="chip" data-si="${i}" aria-pressed="${i === currentSheet}">${s.decor ? "🎨 " : ""}Planche ${i + 1}</button>`).join("");
+  $("#sheetTabs").innerHTML = (isTray ? `<button class="chip" data-si="-2" aria-pressed="${currentSheet === -2}">${tt("sheet.plan")}</button>` : "") + `<button class="chip" data-si="-1" aria-pressed="${currentSheet === -1}">${tt("sheet.all")}</button>` + sheets.map((s, i) => `<button class="chip" data-si="${i}" aria-pressed="${i === currentSheet}">${s.decor ? "🎨 " : ""}${tt("sheet.n", {n: i + 1})}</button>`).join("");
   $("#sheetTabs").querySelectorAll("[data-si]").forEach(b => b.onclick = () => { currentSheet = +b.dataset.si; markTabs(); fit(currentSheet === -1 ? null : c.querySelector(`.sheet[data-si="${currentSheet}"]`)); });
   markTabs();
   // Barre d'état : pièces, planches, occupation du bois (boîtes englobantes, approximatif)
   const mainSheets = sheets.filter(s => !s.decor), area = mainSheets.flat().reduce((a, it) => a + it.w * it.h, 0);
   const pct = mainSheets.length ? Math.round(100 * area / (mainSheets.length * bw * bh)) : 0;
-  $("#status").innerHTML = `<span>${res.pieces.length} pièces</span><span>${sheets.length} planche${sheets.length > 1 ? "s" : ""} ${bw}×${bh} mm</span><span>bois utilisé ≈ ${pct} %</span>${warns.length ? `<span class="bad">⚠ ${warns.length} alerte${warns.length > 1 ? "s" : ""}</span>` : `<span class="ok">✓ Prêt à découper</span>`}
-    <span class="legend"><span><i style="background:#ff0000"></i>Découpe</span><span><i style="background:#000;outline:1px solid var(--line)"></i>Gravure</span><span><i style="background:#0000ff"></i>Repères</span><a href="https://www.youtube.com/@NeoProdFX" target="_blank" rel="noopener">Offert par NeoprodFX ♥</a></span>`;
-  $("#info").innerHTML = `<ul>${res.info.map(i => `<li>${esc(i)}</li>`).join("")}<li>Épaisseur ${f1(v.t)} mm · kerf ${f1(v.kerf)} mm : si l'assemblage flotte, augmente le kerf ; s'il force, diminue-le.</li></ul><button class="btn ghost sm" id="openGuide" style="margin-top:8px">${icon("book", 15)}Voir le schéma de montage</button>`;
+  $("#status").innerHTML = `<span>${tt("status.pieces", {n: res.pieces.length})}</span><span>${tt("status.sheets", {n: sheets.length, s: sheets.length > 1 ? "s" : "", bw, bh})}</span><span>${tt("status.woodUsed", {pct})}</span>${warns.length ? `<span class="bad">${tt("status.alerts", {n: warns.length, s: warns.length > 1 ? "s" : ""})}</span>` : `<span class="ok">${tt("status.ready")}</span>`}
+    <span class="legend"><span><i style="background:#ff0000"></i>${tt("status.legend.cut")}</span><span><i style="background:#000;outline:1px solid var(--line)"></i>${tt("status.legend.engrave")}</span><span><i style="background:#0000ff"></i>${tt("status.legend.marks")}</span><a href="https://www.youtube.com/@NeoProdFX" target="_blank" rel="noopener">${tt("status.offeredBy")}</a></span>`;
+  $("#info").innerHTML = `<ul>${res.info.map(i => `<li>${esc(i)}</li>`).join("")}<li>${tt("info.kerfTip", {t: f1(v.t), k: f1(v.kerf)})}</li></ul><button class="btn ghost sm" id="openGuide" style="margin-top:8px">${icon("book", 15)}${tt("info.viewGuide")}</button>`;
   $("#openGuide").onclick = openGuide;
   if (needFit) { needFit = false; requestAnimationFrame(() => fit(currentSheet === -1 ? null : c.querySelector(`.sheet[data-si="${currentSheet}"]`))); }
 }
@@ -1677,20 +2182,20 @@ function downloadBlob(name, blob) {
   setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 800);
 }
 async function doExport(kind) {
-  if (!lastFiles.length) { toast("Rien à exporter : corrige d'abord les alertes"); return; }
+  if (!lastFiles.length) { toast(tt("toast.nothingToExport")); return; }
   const pj = new Blob([JSON.stringify(projectData(), null, 2)], {type: "application/json"}), s = slug(state.name);
   if (kind === "json") return downloadBlob(`${s}.lasertoolfx.json`, pj);
   if (kind === "sheet") { const f = lastFiles[Math.max(0, currentSheet)]; return downloadBlob(f.name, new Blob([f.svg], {type: "image/svg+xml"})); }
-  const notice = `LASERTOOLFX — par NeoprodFX\nProjet : ${state.name}\n\nRouge = découpe · Noir = gravure · Bleu = repères (à désactiver)\nFaites un test sur carton avant le bois.\n\nMONTAGE\n- ${lastInfo.join("\n- ")}\n\nYouTube : https://www.youtube.com/@NeoProdFX\n`;
+  const notice = tt("export.notice", {name: state.name, steps: lastInfo.join("\n- ")});
   if (window.JSZip) {
     const zip = new JSZip(), dir = zip.folder(s);
     lastFiles.forEach(f => dir.file(f.name, f.svg)); dir.file(`${s}.lasertoolfx.json`, pj); dir.file("NOTICE.txt", notice);
-    downloadBlob(`${s}.zip`, await zip.generateAsync({type: "blob"})); toast("ZIP téléchargé");
-  } else { lastFiles.forEach((f, i) => setTimeout(() => downloadBlob(f.name, new Blob([f.svg], {type: "image/svg+xml"})), i * 400)); toast("Téléchargement des planches une par une"); }
+    downloadBlob(`${s}.zip`, await zip.generateAsync({type: "blob"})); toast(tt("toast.zipDownloaded"));
+  } else { lastFiles.forEach((f, i) => setTimeout(() => downloadBlob(f.name, new Blob([f.svg], {type: "image/svg+xml"})), i * 400)); toast(tt("toast.sheetsDownloading")); }
 }
 
 // ---------- Démarrage ----------
-applyTheme(); buildActions(); buildZoom(); initViewport();
+applyTheme(); applyLang(); buildActions(); buildZoom(); initViewport();
 $("#projName").value = state.name;
 if (state.tab === "tray") currentSheet = -2;
 buildModels(); buildForm(); render();
