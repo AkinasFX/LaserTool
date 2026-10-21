@@ -1,4 +1,4 @@
-const CACHE = "lasertoolfx-v1";
+const CACHE = "lasertoolfx-v2";
 const ASSETS = [
   "./",
   "./index.html",

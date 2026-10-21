@@ -521,7 +521,7 @@ const I18N = {
   "guide.box.lowFront": {fr: "Façade basse", en: "Low front"},
   "guide.box.lowFrontSub": {fr: "le couvercle passe au-dessus", en: "the lid passes above it"},
   "guide.box.bottomLast": {fr: "Fond (posé en dernier)", en: "Bottom (fitted last)"},
-  "guide.box.engravedLid": {fr: "couvercle gravé", en: "engraved lid"},
+  "guide.box.engravedLid": {fr: "couvercle", en: "lid"},
   "guide.box.lipGlued": {fr: "Lèvre collée sous le couvercle", en: "Lip glued under the lid"},
   "guide.box.lipGluedSub": {fr: "centrée : elle s'emboîte dans la boîte", en: "centered: it fits inside the box"},
   "guide.box.closedTop": {fr: "Dessus à encoches", en: "Finger-jointed top"},
@@ -556,7 +556,7 @@ const I18N = {
   "guide.chest.flank": {fr: "Flanc du couvercle", en: "Lid flank"},
   "guide.chest.flankSub": {fr: "déborde un peu", en: "overhangs slightly"},
   "guide.chest.body": {fr: "Corps à encoches", en: "Finger-jointed body"},
-  "guide.chest.bodySub": {fr: "texte gravé en façade", en: "text engraved on the front"},
+  "guide.chest.bodySub": {fr: "assemblé à encoches", en: "finger-jointed"},
   "guide.chest.frameNote1": {fr: "cadres de décor (bois foncé)", en: "decor frames (dark wood)"},
   "guide.chest.frameNote2": {fr: "collés sur les faces", en: "glued onto the faces"},
   "guide.chest.straps": {fr: "sangles collées en travers", en: "straps glued across"},
@@ -780,6 +780,65 @@ const I18N = {
   "err.tray.cellTooSmall": {fr: "Étage {n}, case {k} : trop petite pour une boîte ({w}×{d} mm). Fusionne-la ou réduis la grille.", en: "Layer {n}, cell {k}: too small for a box ({w}×{d} mm). Merge it or reduce the grid."},
   "err.layout.pieceTooBig": {fr: "« {name} » ({w}×{h} mm) ne tient pas sur le plateau {bw}×{bh}.", en: "“{name}” ({w}×{h} mm) does not fit on the {bw}×{bh} bed."},
   "export.svgComment": {fr: "LaserToolFX par NeoprodFX — {name} — planche {idx}/{total} — rouge=découpe noir=gravure bleu=repères", en: "LaserToolFX by NeoprodFX — {name} — sheet {idx}/{total} — red=cutting black=engraving blue=markers"},
+  // Coffre : charnières en bois
+  "field.charnieres": {fr: "Charnières en bois", en: "Wooden hinges"},
+  "notice.chest.assemblyWood": {fr: "Montage : assemble le corps ; en haut à l'arrière, chaque côté a un arrondi creusé où apparaît l'ergot carré de la plaque arrière, à fleur. Enfile la languette ronde de chaque flanc du couvercle sur son ergot (par l'extérieur), puis plante les tenons du panneau flexible dans les mortaises des deux flancs en le cintrant, et colle-le : il tient les flancs en place. Les flancs débordent de {m} mm devant et derrière.", en: "Assembly: assemble the body; at the top back, each side has a carved round recess showing the back panel's square stud, flush. Slip each lid flank's round tab over its stud (from outside), then fit the flexible panel's tabs into the mortises of both flanks by bending it, and glue it: it holds the flanks in place. The flanks overhang {m} mm front and back."},
+  "notice.chest.hinges": {fr: "Charnières en bois sans pièce rapportée : l'axe est l'ergot carré taillé au bout de la plaque arrière, le couvercle tourne autour par le trou rond de ses flancs ; couvercle et corps ont la même largeur. Pas de colle sur l'ergot. Ponce un peu ses arêtes si la rotation accroche. L'ergot est petit : ne soulève pas le coffre par le couvercle.", en: "Wooden hinges with no extra part: the pivot is the square stud cut at the end of the back panel, the lid turns around it through its flanks' round holes; lid and body are the same width. No glue on the stud. Lightly sand its edges if the rotation catches. The stud is small: don't lift the chest by its lid."},
+  "warn.chest.hingeNoRoom": {fr: "Charnières en bois retirées : corps trop bas (30 mm minimum).", en: "Wooden hinges removed: body too low (30 mm minimum)."},
+  "guide.chest.hinges": {fr: "Charnières : ergot carré au bout de la plaque arrière, la languette ronde du flanc tourne autour.", en: "Hinges: square stud at the end of the back panel, the flank's round tab turns around it."},
+  // Lanterne d'Halloween
+  "model.lantern.name": {fr: "Lanterne", en: "Lantern"},
+  "model.lantern.desc": {fr: "Lanterne d'Halloween ajourée : citrouille, chat, fantôme, chauves-souris, lune… pour bougie LED.", en: "Openwork Halloween lantern: pumpkin, cat, ghost, bats, moon… for an LED candle."},
+  "grp.lantern": {fr: "Lanterne", en: "Lantern"},
+  "field.motifs": {fr: "Motifs des faces", en: "Side motifs"},
+  "motifs.mix": {fr: "Mélange (4 différents)", en: "Mix (4 different)"},
+  "hmotif.citrouille": {fr: "Citrouille 🎃", en: "Pumpkin 🎃"},
+  "hmotif.chat": {fr: "Chat noir 🐈", en: "Black cat 🐈"},
+  "hmotif.fantome": {fr: "Fantôme 👻", en: "Ghost 👻"},
+  "hmotif.chauve": {fr: "Chauves-souris 🦇", en: "Bats 🦇"},
+  "hmotif.lune": {fr: "Lune et étoiles 🌙", en: "Moon and stars 🌙"},
+  "field.marge": {fr: "Marge autour des motifs", en: "Margin around motifs"},
+  "field.dessusL": {fr: "Dessus", en: "Top"},
+  "dessusL.cadre": {fr: "Cadre ouvert (plus rigide)", en: "Open frame (stiffer)"},
+  "dessusL.ouvert": {fr: "Ouvert", en: "Open"},
+  "field.cadreL": {fr: "Largeur du cadre", en: "Frame width"},
+  "field.socle": {fr: "Anneau pour bougie LED", en: "LED candle ring"},
+  "field.socleD": {fr: "Diamètre de la bougie", en: "Candle diameter"},
+  "piece.topFrame": {fr: "Cadre du dessus", en: "Top frame"},
+  "piece.ledRing": {fr: "Anneau bougie LED", en: "LED candle ring"},
+  "notice.lantern.dims": {fr: "Lanterne {L}×{W}×{H} mm (intérieur {iL}×{iW} mm).", en: "Lantern {L}×{W}×{H} mm (inside {iL}×{iW} mm)."},
+  "notice.lantern.order": {fr: "Lance la gravure (noir) avant la découpe (rouge) : le contour de la citrouille est gravé, son visage est découpé.", en: "Run the engraving (black) before the cutting (red): the pumpkin outline is engraved, its face is cut out."},
+  "notice.lantern.assembly": {fr: "Montage : emboîte les 4 faces sur le fond, puis pose le cadre du dessus. Un filet de colle à bois dans les encoches suffit.", en: "Assembly: fit the 4 sides onto the bottom, then the top frame. A thin line of wood glue in the joints is enough."},
+  "notice.lantern.ring": {fr: "Colle l'anneau au centre du fond : il garde la bougie LED en place.", en: "Glue the ring in the middle of the bottom: it keeps the LED candle in place."},
+  "notice.lantern.ringTooBig": {fr: "Anneau LED retiré : il ne tient pas à l'intérieur de la lanterne.", en: "LED ring removed: it does not fit inside the lantern."},
+  "notice.lantern.led": {fr: "Bougie LED uniquement : jamais de vraie flamme dans une lanterne en bois.", en: "LED candle only: never a real flame inside a wooden lantern."},
+  "notice.lantern.vellum": {fr: "Effet vitrail : colle du papier calque orange ou du vinyle translucide (découpé à la Cricut) à l'intérieur des faces.", en: "Stained-glass effect: glue orange vellum or translucent vinyl (cut on a Cricut) inside the sides."},
+  "err.lantern.tooSmall": {fr: "Lanterne trop petite pour cette épaisseur et cette marge.", en: "Lantern too small for this thickness and margin."},
+  "guide.lantern.title": {fr: "Lanterne d'Halloween (vue en coupe)", en: "Halloween lantern (cross-section)"},
+  "guide.lantern.top": {fr: "Cadre du dessus", en: "Top frame"},
+  "guide.lantern.topSub": {fr: "ouvert : on y glisse la bougie", en: "open: drop the candle in"},
+  "guide.lantern.walls": {fr: "4 faces ajourées", en: "4 openwork sides"},
+  "guide.lantern.wallsSub": {fr: "motifs découpés, contours gravés", en: "cut-out motifs, engraved outlines"},
+  "guide.lantern.ring": {fr: "Anneau collé au fond", en: "Ring glued to the bottom"},
+  "guide.lantern.ringSub": {fr: "la bougie LED ne glisse pas", en: "the LED candle stays put"},
+  "guide.lantern.vellum": {fr: "Option : calque orange collé à l'intérieur des faces pour une lumière chaude.", en: "Option: orange vellum glued inside the sides for a warm glow."},
+  // Calendrier de l'Avent
+  "model.advent.name": {fr: "Calendrier", en: "Advent"},
+  "model.advent.desc": {fr: "Calendrier de l'Avent à tiroirs numérotés (gravés), fronton de Noël en option.", en: "Advent calendar with numbered (engraved) drawers, optional Christmas pediment."},
+  "grp.advent": {fr: "Calendrier", en: "Calendar"},
+  "grp.fronton": {fr: "Fronton", en: "Pediment"},
+  "field.numeros": {fr: "Numéros", en: "Numbers"},
+  "numeros.melange": {fr: "Mélangés (comme un vrai calendrier)", en: "Shuffled (like a real calendar)"},
+  "numeros.ordre": {fr: "Dans l'ordre", en: "In order"},
+  "field.fronton": {fr: "Fronton décoratif", en: "Decorative pediment"},
+  "field.frontonH": {fr: "Hauteur du fronton", en: "Pediment height"},
+  "piece.pediment": {fr: "Fronton", en: "Pediment"},
+  "notice.advent.numbers": {fr: "{n} tiroirs numérotés de 1 à {n}, {mode}.", en: "{n} drawers numbered 1 to {n}, {mode}."},
+  "notice.advent.shuffled": {fr: "dans le désordre", en: "shuffled"},
+  "notice.advent.ordered": {fr: "dans l'ordre", en: "in order"},
+  "notice.advent.pediment": {fr: "Fronton : glisse ses 2 tenons dans les mortaises à l'arrière du dessus, avec un point de colle.", en: "Pediment: slide its 2 tabs into the slots at the back of the top, with a drop of glue."},
+  "guide.advent.title": {fr: "Calendrier de l'Avent", en: "Advent calendar"},
+  "guide.advent.pediment": {fr: "Le fronton se plante dans le dessus, à l'arrière (2 tenons).", en: "The pediment plugs into the back of the top (2 tabs)."},
 };
 function tt(key, vars) {
   const e = I18N[key];
@@ -817,16 +876,6 @@ const DECOR = [
   ["bord", "field.bord", 7, "mm", {min: 3, show: decoShown}],
   ["feston", "field.feston", 6, "mm", {min: 0, show: decoShown}],
 ];
-const TEXT = [
-  ["grp.engrave"],
-  ["texte", "field.texte", "NeoprodFX", "", {text: true}],
-  ["texte2", "field.texte2", "", "", {text: true}],
-  ["police", "field.police", "Pacifico", "", {options: () => fontOptions()}],
-  ["_fonts", "", "", "", {html: fontsHtml}],
-  ["taille", "field.taille", 10, "mm", {step: 0.5, min: 2}],
-  ["taille2", "field.taille2", 6, "mm", {step: 0.5, min: 2, show: v => !!v.texte && !!v.texte2}],
-  ["_hint", "", "", "", {html: () => `<p class="hint">${tt("hint.textPlace")}</p>`}],
-];
 const TABS = {
   box: {label: "Boîte à encoches", fields: [
     ["grp.outerDims"],
@@ -836,7 +885,7 @@ const TABS = {
     ["grp.compartments"],
     ["compX", "field.compX", 1, "", {min: 1, step: 1}],
     ["compY", "field.compY", 1, "", {min: 1, step: 1}],
-    ...TEXT, ...DECOR, ...COMMON]},
+    ...DECOR, ...COMMON]},
   shape: {label: "Boîte en forme (cœur…)", fields: [
     ["grp.shapeKind"],
     ["forme", "field.forme", "coeur", "", {options: () => ({coeur: tt("forme.coeur"), cercle: tt("forme.cercle"), ovale: tt("forme.ovale"), rect: tt("forme.rect"), hexa: tt("forme.hexa")})}],
@@ -849,7 +898,7 @@ const TABS = {
     ["bandes", "field.bandes", 0, "", {min: 0, step: 1}],
     ["couvS", "field.couvercle", "levre", "", {options: () => ({levre: tt("field.shape.couvS.levre"), tenons: tt("field.shape.couvS.tenons")})}],
     ["jeu", "field.jeu", 0.4, "mm", {step: 0.1, min: 0, show: v => v.couvS !== "tenons"}],
-    ...TABS_JOINT, ...TEXT, ...HINGE, ...COMMON]},
+    ...TABS_JOINT, ...HINGE, ...COMMON]},
   chest: {label: "Coffre bombé", fields: [
     ["grp.outerDims"],
     ["L", "field.longueur", 140, "mm"], ["W", "field.largeur", 90, "mm"],
@@ -857,10 +906,11 @@ const TABS = {
     ["hb", "field.hb", 10, "mm", {min: 5}],
     ["S", "field.S", 45, "mm", {min: 5}],
     ["doigt", "field.doigt", 10, "mm", {min: 3}],
-    ...TABS_JOINT, ...TEXT,
+    ...TABS_JOINT,
     ...DECOR.map(f => f[0] === "deco" ? ["deco", "field.decoStyle", "cadre", "", f[4]] : f),
     ["sangles", "field.sangles", 2, "", {min: 0, step: 1}],
     ["fermoir", "field.fermoir", true, "", {}],
+    ["charnieres", "field.charnieres", true, "", {}],
     ...HINGE, ...COMMON]},
   orga: {label: "Organiseur", fields: [
     ["grp.organizer"],
@@ -906,6 +956,38 @@ const TABS = {
     ["police", "field.police", "Pacifico", "", {options: () => fontOptions()}],
     ["_fonts", "", "", "", {html: fontsHtml}],
     ["tailleEtiq", "field.tailleEtiq", 5, "mm", {step: 0.5, min: 2}],
+    ...COMMON]},
+  lantern: {label: "Lanterne d'Halloween", fields: [
+    ["grp.outerDims"],
+    ["L", "field.longueur", 90, "mm"], ["W", "field.largeur", 90, "mm"], ["H", "field.hauteur", 140, "mm"],
+    ["doigt", "field.doigt", 10, "mm", {min: 3}],
+    ["grp.lantern"],
+    ["motifs", "field.motifs", "mix", "", {options: () => ({mix: tt("motifs.mix"), citrouille: tt("hmotif.citrouille"), chat: tt("hmotif.chat"), fantome: tt("hmotif.fantome"), chauve: tt("hmotif.chauve"), lune: tt("hmotif.lune")})}],
+    ["marge", "field.marge", 10, "mm", {min: 4}],
+    ["dessus", "field.dessusL", "cadre", "", {options: () => ({cadre: tt("dessusL.cadre"), ouvert: tt("dessusL.ouvert")})}],
+    ["cadreL", "field.cadreL", 14, "mm", {min: 6, show: v => v.dessus === "cadre"}],
+    ["socle", "field.socle", true, "", {}],
+    ["socleD", "field.socleD", 39, "mm", {step: 0.5, min: 20, show: v => v.socle}],
+    ...COMMON]},
+  advent: {label: "Calendrier de l'Avent", fields: [
+    ["grp.advent"],
+    ["W", "field.largeurExt", 270, "mm"], ["D", "field.profondeurExt", 50, "mm"],
+    ["rows", "field.rows", 4, "", {min: 1, step: 1}], ["cols", "field.cols", 6, "", {min: 1, step: 1}],
+    ["rowH", "field.rowH", 32, "mm", {min: 15}],
+    ["numeros", "field.numeros", "melange", "", {options: () => ({melange: tt("numeros.melange"), ordre: tt("numeros.ordre")})}],
+    ["grp.drawersBins"],
+    ["jeuT", "field.jeuT.orga", 0.8, "mm", {step: 0.1, min: 0}],
+    ["doigt", "field.doigt", 8, "mm", {min: 3}],
+    ["prise", "field.prise", "trou", "", {options: () => ({trou: tt("prise.trou"), aucune: tt("prise.aucune")})}],
+    ["grp.labels"],
+    ["police", "field.police", "Pacifico", "", {options: () => fontOptions()}],
+    ["_fonts", "", "", "", {html: fontsHtml}],
+    ["tailleEtiq", "field.tailleEtiq", 9, "mm", {step: 0.5, min: 2}],
+    ["grp.fronton"],
+    ["fronton", "field.fronton", true, "", {}],
+    ["frontonH", "field.frontonH", 60, "mm", {min: 30, show: v => v.fronton}],
+    ["texte", "field.texte", "Joyeux Noël", "", {text: true, show: v => v.fronton}],
+    ["taille", "field.taille", 11, "mm", {step: 0.5, min: 3, show: v => v.fronton}],
     ...COMMON]},
 };
 
@@ -953,6 +1035,8 @@ const ICONS = {
   chest: "M3 12h18v8H3zM3 12V10a9 6 0 0 1 18 0v2M11 12v3h2v-3",
   layers: "M12 2l10 5-10 5L2 7l10-5zM2 17l10 5 10-5M2 12l10 5 10-5",
   flame: "M8.5 14.5A2.5 2.5 0 0 0 11 17a2.5 2.5 0 0 0 2.5-2.5c0-1.38-.5-2-1-3 1.072-.144 2.054.063 3 1 1.5 1.5 2 3.5 2 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z",
+  pumpkin: "M12 7c-5 0-8.5 2.8-8.5 6.8S7 21 12 21s8.5-3.2 8.5-7.2S17 7 12 7zM12 7V3.5l2-1M12 7c-2.2 2.5-2.2 11.5 0 14M12 7c2.2 2.5 2.2 11.5 0 14",
+  calendar: "M3 4h18v17H3zM3 10.5h18M3 15.5h18M9 4v17M15 4v17",
 };
 const icon = (n, s = 18) => `<svg class="ic" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${ICONS[n]}"/></svg>`;
 const MODELS = {
@@ -961,6 +1045,8 @@ const MODELS = {
   chest: {icon: "chest", name: "model.chest.name", desc: "model.chest.desc"},
   orga: {icon: "lib", name: "model.orga.name", desc: "model.orga.desc"},
   tray: {icon: "layers", name: "model.tray.name", desc: "model.tray.desc"},
+  lantern: {icon: "pumpkin", name: "model.lantern.name", desc: "model.lantern.desc"},
+  advent: {icon: "calendar", name: "model.advent.name", desc: "model.advent.desc"},
 };
 const RIGHT = new Set(["grp.engrave", "grp.decor", "grp.material", "grp.labels"]);
 
@@ -1033,7 +1119,7 @@ function buildForm() {
       if (el.type === "number" && el.value === "") return;
       cur[k] = el.type === "checkbox" ? el.checked : el.type === "number" ? parseFloat(el.value) : el.value;
       save();
-      if (el.tagName === "SELECT") { if (k === "bed") needFit = true; buildForm(); }
+      if (el.tagName === "SELECT" || el.type === "checkbox") { if (k === "bed") needFit = true; buildForm(); }
       else if (k === "texte" || k === "texte2") refreshVisibility();
       schedule();
     });
@@ -1167,6 +1253,7 @@ const GUIDE = {
       ${gCall(92, 146, 285, 140, tt("guide.chest.flank"), [tt("guide.chest.flankSub")])}
       ${gCall(215, 228, 285, 226, tt("guide.chest.body"), [tt("guide.chest.bodySub")])}
       ${deco ? `<text x="135" y="300" text-anchor="middle" class="gm">${tt("guide.chest.frameNote1")}</text><text x="135" y="314" text-anchor="middle" class="gm">${tt("guide.chest.frameNote2")}</text>` : ""}
+      ${v.charnieres ? `<text x="20" y="336" class="gm">${tt("guide.chest.hinges")}</text>` : ""}
       <text x="${F + FW / 2}" y="22" text-anchor="middle" class="gm">${tt("guide.chest.frontView")}</text>
       <rect x="${F}" y="40" width="${FW}" height="112" rx="4" class="gw"/>
       ${Array.from({length: 24}, (_, i) => `<line x1="${F}" y1="${44 + i * 4.4}" x2="${F + FW}" y2="${44 + i * 4.4}" class="ghg" opacity=".5"/>`).join("")}
@@ -1216,6 +1303,22 @@ const GUIDE = {
     ${gCall(330, 176, 380, 160, tt("guide.tray.stackFrame"), [tt("guide.tray.stackFrameSub1"), tt("guide.tray.stackFrameSub2")], true)}
     ${gCall(334, 240, 380, 240, tt("guide.tray.layer1"), [tt("guide.tray.layer1Sub")])}
     <text x="40" y="326" class="gm">${tt("guide.tray.footnote")}</text>`}),
+  lantern: v => ({title: tt("guide.lantern.title"), svg: `
+    ${v.dessus === "cadre" ? `<rect x="80" y="40" width="240" height="12" rx="2" class="gw"/><rect x="112" y="40" width="176" height="12" class="gghost"/>` : ""}
+    <rect x="80" y="${v.dessus === "cadre" ? 52 : 40}" width="12" height="${v.dessus === "cadre" ? 198 : 210}" class="gw"/><rect x="308" y="${v.dessus === "cadre" ? 52 : 40}" width="12" height="${v.dessus === "cadre" ? 198 : 210}" class="gw"/>
+    <rect x="92" y="60" width="216" height="186" class="gpanel"/>
+    <path d="M165 112l13 20h-26zM235 112l13 20h-26zM200 146l8 13h-16zM150 172l12 6 9-7 10 7 9-7 10 7 9-7 10 7 9-7 12-6c-12 34-88 34-100 0z" class="gslot"/>
+    <rect x="80" y="250" width="240" height="12" class="gbt"/>
+    ${v.socle ? `<rect x="168" y="240" width="64" height="10" rx="2" class="gac"/><rect x="184" y="210" width="32" height="30" rx="5" class="gdk"/>` : ""}
+    ${v.dessus === "cadre" ? gCall(300, 46, 400, 50, tt("guide.lantern.top"), [tt("guide.lantern.topSub")], true) : ""}
+    ${gCall(250, 150, 400, 112, tt("guide.lantern.walls"), [tt("guide.lantern.wallsSub")])}
+    ${v.socle ? gCall(228, 245, 400, 196, tt("guide.lantern.ring"), [tt("guide.lantern.ringSub")], true) : ""}
+    ${gCall(300, 256, 400, 262, tt("guide.box.bottomFinger"))}
+    <text x="40" y="318" class="gm">${tt("guide.lantern.vellum")}</text>`}),
+  advent: v => {
+    const g = GUIDE.orga({...v, type: "tiroirs", etiquettes: adventNumbers(v).join(",")});
+    return {title: tt("guide.advent.title"), svg: g.svg + (v.fronton ? `<text x="40" y="318" class="gm">${tt("guide.advent.pediment")}</text>` : "")};
+  },
 };
 function openGuide() {
   modalRefresh = openGuide;
@@ -1355,16 +1458,44 @@ const polyD = pts => "M" + pts.map(p => f3(p[0]) + "," + f3(p[1])).join("L") + "
 function bbox(pts) { let a = [1e9, 1e9, -1e9, -1e9]; for (const [x, y] of pts) { a[0] = Math.min(a[0], x); a[1] = Math.min(a[1], y); a[2] = Math.max(a[2], x); a[3] = Math.max(a[3], y); } return a; }
 function shift(pts, dx, dy) { return pts.map(([x, y]) => [x + dx, y + dy]); }
 function perimeter(pts) { let p = 0; for (let i = 0; i < pts.length; i++) { const a = pts[i], b = pts[(i + 1) % pts.length]; p += Math.hypot(b[0] - a[0], b[1] - a[1]); } return p; }
+function inPoly([x, y], pts) { let c = false; for (let i = 0, j = pts.length - 1; i < pts.length; j = i++) { const [xi, yi] = pts[i], [xj, yj] = pts[j]; if ((yi > y) !== (yj > y) && x < (xj - xi) * (y - yi) / (yj - yi) + xi) c = !c; } return c; }
+// Contour modifié par un cercle qui coupe son bord en deux points : "add" = ajoute le disque (bosse), "cut" = le retire (encoche)
+function circleEdit(pts0, cx, cy, r, mode) {
+  const pts = []; // bords redécoupés (≤ 1 mm) : le cercle peut couper un long bord sans englober de sommet
+  for (let i = 0; i < pts0.length; i++) { const a = pts0[i], b = pts0[(i + 1) % pts0.length], k = Math.max(1, Math.ceil(Math.hypot(b[0] - a[0], b[1] - a[1]))); for (let s = 0; s < k; s++) pts.push([a[0] + (b[0] - a[0]) * s / k, a[1] + (b[1] - a[1]) * s / k]); }
+  const n = pts.length, inC = p => Math.hypot(p[0] - cx, p[1] - cy) < r;
+  const cross = (a, b) => {
+    const dx = b[0] - a[0], dy = b[1] - a[1], fx = a[0] - cx, fy = a[1] - cy, A = dx * dx + dy * dy, B = 2 * (fx * dx + fy * dy);
+    const D = Math.sqrt(Math.max(0, B * B - 4 * A * (fx * fx + fy * fy - r * r)));
+    for (const u of [(-B - D) / (2 * A), (-B + D) / (2 * A)]) if (u >= -1e-9 && u <= 1 + 1e-9) return [a[0] + u * dx, a[1] + u * dy];
+    return b;
+  };
+  let i0 = -1; for (let i = 0; i < n; i++) if (!inC(pts[i]) && inC(pts[(i + 1) % n])) { i0 = i; break; }
+  if (i0 < 0) return pts;
+  let j = (i0 + 1) % n; while (inC(pts[(j + 1) % n])) j = (j + 1) % n;
+  const P = cross(pts[i0], pts[(i0 + 1) % n]), Q = cross(pts[j], pts[(j + 1) % n]);
+  const aP = Math.atan2(P[1] - cy, P[0] - cx); let aQ = Math.atan2(Q[1] - cy, Q[0] - cx); if (aQ < aP) aQ += 2 * Math.PI;
+  const mid = (aP + aQ) / 2, inside = inPoly([cx + r * Math.cos(mid), cy + r * Math.sin(mid)], pts);
+  const out = []; for (let k = (j + 1) % n; ; k = (k + 1) % n) { out.push(pts[k]); if (k === i0) break; }
+  return arc(cx, cy, r, aP, (mode === "cut") === inside ? aQ : aQ - 2 * Math.PI, out);
+}
+// Applique fn(x, y) -> [x, y] à chaque couple de coordonnées d'un tracé absolu (polyD, slotD)
+function mapD(d, fn) {
+  const re = /-?\d*\.?\d+(?:e-?\d+)?/g, n = d.match(re) || [], out = [];
+  for (let i = 0; i + 1 < n.length; i += 2) out.push(fn(parseFloat(n[i]), parseFloat(n[i + 1])));
+  let k = 0; return d.replace(re, () => { const v = out[k >> 1][k & 1]; k++; return f3(v); });
+}
 function arc(cx, cy, r, a0, a1, out) { const n = Math.max(2, Math.ceil(Math.abs(a1 - a0) / (Math.PI / 90))); for (let i = 0; i <= n; i++) { const a = a0 + (a1 - a0) * i / n; out.push([cx + r * Math.cos(a), cy + r * Math.sin(a)]); } return out; }
 
 // Encoches : motif impair donc symétrique ; true = doigt (bord), false = creux (retrait de t)
 function fpat(len, startFinger, doigt) { let n = Math.max(3, Math.round(len / doigt)); if (n % 2 === 0) n++; return {len, n, pat: Array.from({length: n}, (_, i) => (i % 2 === 0) === startFinger)}; }
 const fflat = len => ({len, n: 1, pat: [true]});
 // Bord mixte : encoches sur une partie, bord plein sur le reste (flatFirst = partie pleine au début du parcours)
-function fmixed(part, flatLen, flatFirst) {
+// (val = false : partie pleine en creux, pour la pièce d'en face)
+function fmixed(part, flatLen, flatFirst, val = true) {
   const b = Array.from({length: part.n + 1}, (_, i) => i * part.len / part.n);
-  if (flatFirst) return {len: part.len + flatLen, n: part.n + 1, pat: [true, ...part.pat], bounds: [0, ...b.map(x => x + flatLen)]};
-  return {len: part.len + flatLen, n: part.n + 1, pat: [...part.pat, true], bounds: [...b, part.len + flatLen]};
+  if (flatFirst) return {len: part.len + flatLen, n: part.n + 1, pat: [val, ...part.pat], bounds: [0, ...b.map(x => x + flatLen)]};
+  return {len: part.len + flatLen, n: part.n + 1, pat: [...part.pat, val], bounds: [...b, part.len + flatLen]};
 }
 function fingerPoly(w, h, edges, t, k) {
   const C = [[0, 0], [w, 0], [w, h], [0, h]], D = [[1, 0], [0, 1], [-1, 0], [0, -1]], N = [[0, 1], [-1, 0], [0, -1], [1, 0]];
@@ -1427,14 +1558,17 @@ function stripPoly(len, bodyH, t, top, bot, w) {
 function rectPiece(name, w, h) { return {name, w, h, els: [{k: "cut", d: polyD([[0, 0], [w, 0], [w, h], [0, h]])}]}; }
 
 // Charnière flexible : colonnes de coupes décalées, bord plein conservé en haut et en bas
-function hinge(x0, x1, y0, y1, v) {
+// Une colonne sur deux débouche sur les bords y0 / y1 (sinon la bande pleine le long du bord raidit le cintrage
+// et casse), sauf au droit d'un tenon (centres tabsTop / tabsBot, largeur tw) qui garde son pont plein
+function hinge(x0, x1, y0, y1, v, tabsTop = [], tabsBot = [], tw = 0) {
   const p = v.hCut + v.hBridge; let d = "";
-  const top = y0 + v.hBridge, bot = y1 - v.hBridge;
+  const top = y0 + v.hBridge, bot = y1 - v.hBridge, near = (cs, x) => cs.some(c => Math.abs(x - c) < tw / 2 + 1.5);
   let col = 0;
   for (let x = x0; x <= x1 + 1e-6; x += v.hSpace, col++) {
-    const off = col % 2 ? p / 2 : 0;
-    for (let s = top - p + off; s < bot; s += p) {
-      const a = Math.max(s, top), b = Math.min(s + v.hCut, bot);
+    const off = col % 2 ? p / 2 : 0, open = col % 2 === 1;
+    const lo = open && !near(tabsTop, x) ? y0 : top, hi = open && !near(tabsBot, x) ? y1 : bot;
+    for (let s = top - p + off; s < hi; s += p) {
+      const a = Math.max(s, lo), b = Math.min(s + v.hCut, hi);
       if (b - a > 1) d += `M${f3(x)},${f3(a)}V${f3(b)}`;
     }
   }
@@ -1585,7 +1719,7 @@ function genBox(v) {
     const lw = L - 2 * t - jeu, ld = W - t - jeu, lid = rectPiece(tt("piece.slidingLid"), lw, ld);
     const gx = lw / 2, gy = 9, gl = Math.min(26, lw * 0.4), gr = 4, grip = [];
     arc(gx + gl / 2 - gr, gy, gr, -Math.PI / 2, Math.PI / 2, grip); arc(gx - gl / 2 + gr, gy, gr, Math.PI / 2, 3 * Math.PI / 2, grip);
-    lid.els.push({k: "cut", d: polyD(grip)}, ...textEls(v, lw / 2, ld / 2 + 6));
+    lid.els.push({k: "cut", d: polyD(grip)});
     // Rails = étagères horizontales (largeur rw, épaisseur t) à tenons, engagées dans des mortaises des parois ;
     // le dessus des rails est au niveau du haut de la façade. Rails latéraux sur toute la profondeur intérieure,
     // rail arrière entre les deux.
@@ -1609,15 +1743,14 @@ function genBox(v) {
       mk(tt("piece.sideRight"), W, H, [e(W, true), e(H, false), e(W, true), e(H, false)]),
       mk(tt("piece.top"), L, W, [e(L, false), e(W, false), e(L, false), e(W, false)]),
     ];
-    pieces[5].els.push(...textEls(v, L / 2, W / 2));
     info.push(tt("notice.box.closed.dims", {L, W, H}));
   } else {
     pieces = fingerBox(L, W, H, t, kerf, v.doigt);
     if (mode === "pose") {
-      const lid = rectPiece(tt("piece.lid"), L, W); lid.els.push(...textEls(v, L / 2, W / 2)); pieces.push(lid);
+      pieces.push(rectPiece(tt("piece.lid"), L, W));
       pieces.push(rectPiece(tt("piece.lip"), L - 2 * t - 0.4, W - 2 * t - 0.4));
       info.push(tt("notice.box.lid.steps"));
-    } else pieces[1].els.push(...textEls(v, L / 2, H / 2));
+    }
     info.unshift(tt("notice.box.dims", {L, W, H, iL: f1(L - 2 * t), iW: f1(W - 2 * t), iH: f1(H - t)}));
   }
   const deco = [1, 2, 3, 4].flatMap(i => decorRect(v, pieces[i].name.replace(/ \(.*\)/, ""), pieces[i].w, pieces[i].h, pieces[i]));
@@ -1646,11 +1779,11 @@ function genShape(v) {
   const fixed = v.couvS === "tenons";
   // Couvercle fixé : mêmes mortaises que le fond, posé dans le même sens (face gravée vers le haut)
   const pL = fixed ? {name: tt("piece.lidTabbed"), w: b[2] - b[0], h: b[3] - b[1], els: [{k: "cut", d: polyD(sh(fondO))}, {k: "cut", d: slots}], origin: [-b[0], -b[1]]} : shapePiece(tt("piece.lid"), lid);
-  pL.els.push(...textEls(v, pL.origin[0], pL.origin[1])); pieces.push(pL);
+  pieces.push(pL);
   if (!fixed) pieces.push(shapePiece(tt("piece.lip"), lip));
   for (let i = 0; i < n; i++) {
     const s = stripPoly(segLen, Hb, t, fixed ? tabs : [], tabs, v.tabW + k);
-    pieces.push({name: n > 1 ? tt("piece.stripN", {i: i + 1, n}) : tt("piece.strip"), w: segLen, h: s.h, els: [{k: "cut", d: polyD(s.pts)}, {k: "cut", d: hinge(3, segLen - 3, s.y0, s.y1, v)}]});
+    pieces.push({name: n > 1 ? tt("piece.stripN", {i: i + 1, n}) : tt("piece.strip"), w: segLen, h: s.h, els: [{k: "cut", d: polyD(s.pts)}, {k: "cut", d: hinge(3, segLen - 3, s.y0, s.y1, v, fixed ? tabs : [], tabs, v.tabW + k)}]});
   }
   info.push(tt("notice.shape.strip", {P: f1(P), multi: n > 1 ? tt("notice.shape.stripMulti", {n, seg: f1(segLen)}) : "", Hb: f1(Hb), tabs: tabs.length * n}));
   info.push(v.forme === "coeur" ? tt("notice.shape.assembly.heart") : tt("notice.shape.assembly.generic"));
@@ -1663,9 +1796,43 @@ function genChest(v) {
   const {L, W, H, t, kerf, hb, S} = v, info = [], warns = [];
   if (S > W / 2) throw new Error(tt("err.chest.domeTooWide"));
   if (Math.min(L, W, H) < 4 * t) throw new Error(tt("err.dimsTooSmall"));
-  const pieces = fingerBox(L, W, H, t, kerf, v.doigt);
-  pieces[1].els.push(...textEls(v, L / 2, H / 2, L * 0.8));
   const m = v.rebord;
+  // Charnières en bois, sans pièce rapportée, couvercle de même largeur que le corps : flancs du couvercle et
+  // côtés du corps dans le même plan. Au bout de la plaque arrière, la colonne d'angle (t de large) est creusée
+  // en haut et n'y garde qu'un ergot carré t×t, à fleur de la face extérieure du côté : c'est l'axe. La languette
+  // ronde du flanc s'enfile dessus (trou rond) et tourne dans un arrondi creusé au coin haut arrière du côté.
+  // Axe au milieu de l'épaisseur du dos, he sous le haut du corps ; le haut du dos est abaissé de 0,5 mm pour
+  // que le panneau du couvercle ne le frotte pas en s'ouvrant. Dos et façade gardent leurs coins sur topS mm.
+  const ra = (t * Math.SQRT2 + 0.5) / 2, he = 5, rt = ra + 3, nw = 3, topS = 12, ax = W - t / 2;
+  const nr = Math.max(rt, Math.hypot(nw, he)) + 0.5; // creux autour de l'axe : la languette y tourne avec 0,5 mm de jeu
+  let hinges = !!v.charnieres;
+  if (hinges && H < 3 * topS) { hinges = false; warns.push(tt("warn.chest.hingeNoRoom")); }
+  let pieces;
+  if (hinges) {
+    const e = (len, s) => fpat(len, s, v.doigt);
+    const mk = (name, w, h, edges) => ({name, w, h, els: [{k: "cut", d: polyD(fingerPoly(w, h, edges, t, kerf))}]});
+    const up = s => fmixed(e(H - topS, s), topS, false, s), dn = s => fmixed(e(H - topS, s), topS, true, s);
+    // Coin haut (x0, 0.5) de la plaque arrière : colonne creusée jusqu'à he + nr, sauf l'ergot (s = sens vers l'intérieur)
+    const tb = (t + kerf) / 2;
+    const stud = (pts, x0, s) => {
+      const i = pts.findIndex(p => Math.abs(p[0] - x0) < 1e-6 && Math.abs(p[1] - 0.5) < 1e-6);
+      const prev = pts[(i + pts.length - 1) % pts.length], xi = x0 + s * t;
+      let seq = [[x0, he + nr], [xi, he + nr], [xi, he + tb], [x0, he + tb], [x0, he - tb], [xi, he - tb], [xi, 0.5]];
+      if (Math.abs(prev[0] - x0) > 1e-6) seq = seq.reverse(); // on arrive par le bord du haut : parcours inverse
+      return [...pts.slice(0, i), ...seq, ...pts.slice(i + 1)];
+    };
+    let back = fingerPoly(L, H, [e(L, true), up(true), fflat(L), dn(true)], t, kerf).map(([x, y]) => [x, Math.max(y, 0.5)]);
+    back = stud(stud(back, 0, 1), L, -1);
+    const side = fingerPoly(W, H, [e(W, true), up(false), fflat(W), dn(false)], t, kerf);
+    pieces = [
+      mk(tt("piece.bottom"), L, W, [e(L, false), e(W, false), e(L, false), e(W, false)]),
+      mk(tt("piece.front"), L, H, [e(L, true), up(true), fflat(L), dn(true)]),
+      {name: tt("piece.back"), w: L, h: H, els: [{k: "cut", d: polyD(back)}]},
+      // Face gravée (dessus de la planche) = face extérieure : vu de dehors, l'arrière est à gauche sur le côté G
+      {name: tt("piece.sideLeft"), w: W, h: H, els: [{k: "cut", d: polyD(circleEdit(side, W - ax, he, nr, "cut"))}]},
+      {name: tt("piece.sideRight"), w: W, h: H, els: [{k: "cut", d: polyD(circleEdit(side, ax, he, nr, "cut"))}]},
+    ];
+  } else pieces = fingerBox(L, W, H, t, kerf, v.doigt);
   // Arc extérieur du panneau : corde W, flèche S, posé sur les parties droites de hauteur hb
   const Rc = (W * W / 4 + S * S) / (2 * S), cy = hb + S - Rc;
   // Fibre neutre du panneau (à t/2 de l'extérieur) : montant, arc, montant
@@ -1674,19 +1841,44 @@ function genChest(v) {
   const neu = [[t / 2, 0]]; arc(W / 2, cy, rn, Math.PI - thN, thN, neu); neu.push([W - t / 2, 0]);
   // Flanc : contour extérieur agrandi du rebord, les mortaises restent fermées
   const ro = Rc + m, yO = cy + Math.sqrt(ro * ro - (W / 2 + m) ** 2), thO = Math.atan2(yO - cy, W / 2 + m);
-  const flank = [[-m, 0], [W + m, 0]]; arc(W / 2, cy, ro, thO, Math.PI - thO, flank);
+  // Languette du flanc (charnières) : col de largeur 2·nw puis disque de rayon rt autour de l'axe (W, -he)
+  const flank = [[-m, 0]];
+  if (hinges) {
+    const zc = -he + Math.sqrt(rt * rt - nw * nw), a0 = Math.atan2(zc + he, -nw);
+    flank.push([ax - nw, 0], [ax - nw, zc]); arc(ax, -he, rt, a0, Math.PI - a0 + 2 * Math.PI, flank); flank.push([ax + nw, 0]);
+  }
+  flank.push([W + m, 0]);
+  arc(W / 2, cy, ro, thO, Math.PI - thO, flank);
   const flip = p => p.map(([x, y]) => [x, -y]), F = flip(flank), b = bbox(F), sh = p => shift(p, -b[0], -b[1]);
   const N = sh(flip(neu)), Lp = pathLen(neu, false), arcLen = rn * (Math.PI - 2 * thN), tabs = tabCenters(Lp, v);
   let slots = "";
   for (const c of tabs) { const [x, y, a] = pointAt(N, c, false); slots += slotD(x, y, a, v.tabW - kerf, t - kerf); }
-  for (const nm of [tt("piece.flankLeft"), tt("piece.flankRight")]) pieces.push({name: nm, w: b[2] - b[0], h: b[3] - b[1], els: [{k: "cut", d: polyD(sh(F))}, {k: "cut", d: slots}]});
+  const [hx, hy] = sh(flip([[ax, -he]]))[0], pinHole = hinges ? polyD(arc(hx, hy, ra - kerf / 2, 0, 2 * Math.PI, [])) : "";
+  // Flancs : le gauche est en miroir quand la languette rend la pièce asymétrique (face gravée = face extérieure)
+  const fw0 = b[2] - b[0], mirX = d => hinges ? mapD(d, (x, y) => [fw0 - x, y]) : d;
+  for (const [nm, left] of [[tt("piece.flankLeft"), true], [tt("piece.flankRight"), false]]) {
+    const els = [{k: "cut", d: polyD(sh(F))}, {k: "cut", d: slots + pinHole}];
+    pieces.push({name: nm, w: fw0, h: b[3] - b[1], els: left ? els.map(e => ({...e, d: mirX(e.d)})) : els});
+  }
   const s = stripPoly(Lp, L - 2 * t, t, tabs, tabs, v.tabW + kerf);
-  pieces.push({name: tt("piece.flexLid"), w: Lp, h: s.h, els: [{k: "cut", d: polyD(s.pts)}, {k: "cut", d: hinge(Math.max(3, yN - 2), Math.min(Lp - 3, yN + arcLen + 2), s.y0, s.y1, v)}]});
+  pieces.push({name: tt("piece.flexLid"), w: Lp, h: s.h, els: [{k: "cut", d: polyD(s.pts)}, {k: "cut", d: hinge(Math.max(3, yN - 2), Math.min(Lp - 3, yN + arcLen + 2), s.y0, s.y1, v, tabs, tabs, v.tabW + kerf)}]});
   info.push(tt("notice.chest.dims", {L, W, H, hs: f1(hb + S), Lp: f1(Lp), tabs: tabs.length * 2}));
-  info.push(tt("notice.chest.assembly", {m: f1(m)}));
+  info.push(tt(hinges ? "notice.chest.assemblyWood" : "notice.chest.assembly", {m: f1(m)}));
+  if (hinges) info.push(tt("notice.chest.hinges"));
 
   // --- Habillage ---
-  const deco = [1, 2, 3, 4].flatMap(i => decorRect(v, pieces[i].name, pieces[i].w, pieces[i].h, pieces[i]));
+  // Côtés avec charnière : même arrondi creusé autour de la languette du flanc
+  const deco = [1, 2].flatMap(i => decorRect(v, pieces[i].name, pieces[i].w, pieces[i].h, pieces[i]));
+  for (const [i, mir] of [[3, true], [4, false]]) {
+    if (!hinges) { deco.push(...decorRect(v, pieces[i].name, pieces[i].w, pieces[i].h, pieces[i])); continue; }
+    const dr = decorRect(v, pieces[i].name, W, H, pieces[i]);
+    if (v.deco === "coins") { deco.push(...dr.slice(1)); continue; } // pas de coin en haut à l'arrière : la languette y passe
+    for (const p of dr) {
+      const notch = circleEdit([[0, 0], [W, 0], [W, H], [0, H]], mir ? W - ax : ax, he, nr, "cut");
+      p.els[0] = {k: "cut", d: polyD(notch)};
+    }
+    deco.push(...dr);
+  }
   if (v.deco && v.deco !== "aucun") {
     // Flancs : cadre qui suit l'arche, coins festonnés en bas seulement
     const bd = v.bord, xl = -m + bd, xr = W + m - bd, yb = bd, ri = ro - bd, hx = W / 2 + m - bd;
@@ -1998,24 +2190,150 @@ function bindPlan(svg, v) {
     inp.addEventListener("blur", () => fin(true));
   }
 }
-const GEN = {box: genBox, shape: genShape, chest: genChest, orga: genOrga, tray: genTray};
+// ---------- Lanterne d'Halloween ----------
+// Silhouettes dessinées dans une boîte 100×100 (centre 50,50), commandes absolues M/L/C/Z uniquement
+const HPATHS = {
+  chat: "M77 95L33 95C21 95 18 82 25 73C27 70 31 71 30 74C26 81 29 89 37 89L41 89C35 80 37 68 45 58C48 54 50 50 50 46C46 42 44 36 45 30L44 13L53 22C57 21 61 21 65 22L74 13L73 30C74 37 71 42 66 45C73 53 81 64 81 79C81 88 80 93 77 95Z",
+  chauve: "M50 40L53 34L55 42C62 38 72 34 84 36C92 37 97 42 98 48C93 46 89 47 87 51C83 48 78 49 76 53C72 50 66 51 63 56C59 54 56 57 55 62C53 64 51 66 50 68C49 66 47 64 45 62C44 57 41 54 37 56C34 51 28 50 24 53C22 49 17 48 13 51C11 47 7 46 2 48C3 42 8 37 16 36C28 34 38 38 45 42L47 34Z",
+  fantome: "M50 10C32 10 26 26 26 42L26 58C20 60 14 58 12 54C12 62 18 68 26 68L26 86C30 82 34 82 37 88C40 82 45 82 48 89C51 82 56 82 59 88C62 82 67 82 70 88C72 82 74 82 74 84L74 68C82 68 88 62 88 54C86 58 80 60 74 58L74 42C74 26 68 10 50 10Z",
+  citrouilleTour: "M50 22C22 18 10 40 14 62C18 84 40 92 50 88C60 92 82 84 86 62C90 40 78 18 50 22ZM46 22C46 14 48 8 54 6L56 9C52 11 52 16 54 22M36 24C27 32 24 44 26 56M64 24C73 32 76 44 74 56",
+  citrouilleVisage: ["M30 44L42 44L36 33Z", "M58 44L70 44L64 33Z", "M46 57L54 57L50 50Z", "M28 63L34 67L38 62L44 67L50 62L56 67L62 62L66 67L72 63C68 77 32 77 28 63Z"],
+};
+// Recale un tracé de la boîte 100×100 : centre (cx, cy), taille s mm
+function npath(d, cx, cy, s) {
+  const k = s / 100; let i = 0;
+  return d.replace(/-?\d*\.?\d+/g, m => f3((i++ % 2 === 0 ? cx : cy) + (parseFloat(m) - 50) * k));
+}
+function starPts(cx, cy, R) { const p = []; for (let i = 0; i < 10; i++) { const r = i % 2 ? R * 0.42 : R, a = -Math.PI / 2 + i * Math.PI / 5; p.push([cx + r * Math.cos(a), cy + r * Math.sin(a)]); } return p; }
+// Croissant = disque (c1, r1) privé du disque (c2, r2), dans la boîte 100×100
+function crescentPts() {
+  const [x1, y1, r1, x2, y2, r2] = [44, 48, 26, 56, 40, 23];
+  const d = Math.hypot(x2 - x1, y2 - y1), a = (r1 * r1 - r2 * r2 + d * d) / (2 * d), h = Math.sqrt(r1 * r1 - a * a);
+  const bx = x1 + a * (x2 - x1) / d, by = y1 + a * (y2 - y1) / d, ux = -(y2 - y1) / d, uy = (x2 - x1) / d;
+  const P = [bx + h * ux, by + h * uy], Q = [bx - h * ux, by - h * uy], ang = (cx, cy, p) => Math.atan2(p[1] - cy, p[0] - cx);
+  // grand arc du disque 1 (côté opposé au disque 2), puis petit arc du disque 2 (à l'intérieur du disque 1)
+  const toC2 = Math.atan2(y2 - y1, x2 - x1);
+  let a0 = ang(x1, y1, P), a1 = ang(x1, y1, Q); if (a1 < a0) a1 += 2 * Math.PI;
+  if (Math.cos((a0 + a1) / 2 - toC2) > 0) { [a0, a1] = [a1, a0 + 2 * Math.PI]; }
+  const pts = arc(x1, y1, r1, a0, a1, []);
+  const end = pts[pts.length - 1], start = pts[0];
+  let b0 = ang(x2, y2, end), b1 = ang(x2, y2, start); if (b1 < b0) b1 += 2 * Math.PI;
+  const mid = (b0 + b1) / 2; if (Math.hypot(x2 + r2 * Math.cos(mid) - x1, y2 + r2 * Math.sin(mid) - y1) > r1) b1 -= 2 * Math.PI;
+  return arc(x2, y2, r2, b0, b1, pts);
+}
+// Motif d'Halloween centré (cx, cy), taille s : fenêtres à découper + tracés à graver
+function hmotif(kind, cx, cy, s) {
+  const k = s / 100, P = (x, y) => [cx + (x - 50) * k, cy + (y - 50) * k];
+  if (kind === "citrouille") return {cuts: HPATHS.citrouilleVisage.map(d => npath(d, cx, cy, s)), lines: npath(HPATHS.citrouilleTour, cx, cy, s)};
+  if (kind === "chauve") return {cuts: [[50, 40, 0.9], [24, 78, 0.35], [78, 76, 0.4]].map(([x, y, f]) => { const [px, py] = P(x, y); return npath(HPATHS.chauve, px, py, s * f); }), lines: ""};
+  if (kind === "lune") {
+    const moon = crescentPts().map(([x, y]) => P(x, y));
+    const stars = [[76, 22, 7], [82, 52, 5], [68, 76, 4], [20, 18, 3.5]].map(([x, y, r]) => polyD(starPts(...P(x, y), r * k)));
+    return {cuts: [polyD(moon), ...stars], lines: ""};
+  }
+  return {cuts: [npath(HPATHS[kind], cx, cy, s)], lines: ""};
+}
+function genLantern(v) {
+  const {L, W, H, t, kerf} = v, m = v.marge, top = v.dessus === "cadre", info = [], warns = [];
+  if (Math.min(L, W, H) < 2 * (t + m) + 20) throw new Error(tt("err.lantern.tooSmall"));
+  const e = (len, s) => fpat(len, s, v.doigt);
+  const mk = (name, w, h, edges) => ({name, w, h, els: [{k: "cut", d: polyD(fingerPoly(w, h, edges, t, kerf))}]});
+  const pieces = [
+    mk(tt("piece.bottom"), L, W, [e(L, false), e(W, false), e(L, false), e(W, false)]),
+    mk(tt("piece.front"), L, H, [e(L, true), e(H, true), top ? e(L, true) : fflat(L), e(H, true)]),
+    mk(tt("piece.back"), L, H, [e(L, true), e(H, true), top ? e(L, true) : fflat(L), e(H, true)]),
+    mk(tt("piece.sideLeft"), W, H, [e(W, true), e(H, false), top ? e(W, true) : fflat(W), e(H, false)]),
+    mk(tt("piece.sideRight"), W, H, [e(W, true), e(H, false), top ? e(W, true) : fflat(W), e(H, false)]),
+  ];
+  // Façade citrouille, arrière fantôme, côtés chat et chauves-souris (ou le même motif partout)
+  const kinds = v.motifs === "mix" ? ["citrouille", "fantome", "chat", "chauve"] : Array(4).fill(v.motifs);
+  kinds.forEach((kind, i) => {
+    const p = pieces[i + 1], s = Math.min(p.w, p.h) - 2 * (t + m), mo = hmotif(kind, p.w / 2, p.h / 2, s);
+    if (mo.lines) p.els.unshift({k: "line", d: mo.lines});
+    p.els.push(...mo.cuts.map(d => ({k: "cut", d})));
+  });
+  if (top) {
+    const c = v.cadreL, tp = mk(tt("piece.topFrame"), L, W, [e(L, false), e(W, false), e(L, false), e(W, false)]);
+    if (Math.min(L, W) - 2 * c >= 15) tp.els.push({k: "cut", d: polyD(festoonRect(c, c, L - c, W - c, Math.min(6, (Math.min(L, W) - 2 * c) / 4)))});
+    pieces.push(tp);
+  }
+  info.push(tt("notice.lantern.dims", {L, W, H, iL: f1(L - 2 * t), iW: f1(W - 2 * t)}));
+  if (v.socle) {
+    const ri = v.socleD / 2 + 0.3, ro = ri + 5;
+    if (2 * ro <= Math.min(L, W) - 2 * t - 2) {
+      pieces.push({name: tt("piece.ledRing"), w: 2 * ro, h: 2 * ro, els: [{k: "cut", d: polyD(arc(ro, ro, ri, 0, 2 * Math.PI, []))}, {k: "cut", d: polyD(arc(ro, ro, ro, 0, 2 * Math.PI, []))}]});
+      info.push(tt("notice.lantern.ring"));
+    } else warns.push(tt("notice.lantern.ringTooBig"));
+  }
+  if (kinds.includes("citrouille")) info.push(tt("notice.lantern.order"));
+  info.push(tt("notice.lantern.assembly"), tt("notice.lantern.led"), tt("notice.lantern.vellum"));
+  return {pieces, info, warns};
+}
+
+// ---------- Calendrier de l'Avent (meuble à tiroirs de l'organiseur, numéros gravés) ----------
+function adventNumbers(v) {
+  const n = Math.max(1, Math.round(v.rows)) * Math.max(1, Math.round(v.cols)), nums = Array.from({length: n}, (_, i) => String(i + 1));
+  if (v.numeros !== "melange") return nums;
+  let s = 24121 + n; const rnd = () => (s = (s * 16807) % 2147483647) / 2147483647; // mélange fixe : même ordre à chaque génération
+  for (let i = n - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [nums[i], nums[j]] = [nums[j], nums[i]]; }
+  return nums;
+}
+function genAdvent(v) {
+  const nums = adventNumbers(v), rows = Math.max(1, Math.round(v.rows)), cols = Math.max(1, Math.round(v.cols)), {t, kerf} = v;
+  const res = genOrga({...v, type: "tiroirs", rowsCustom: "", tiroirs: "tous", compX: 1, compY: 1, etiquettes: nums.join(",")});
+  res.info.splice(1, 0, tt("notice.advent.numbers", {n: nums.length, mode: tt(v.numeros === "melange" ? "notice.advent.shuffled" : "notice.advent.ordered")}));
+  if (!v.fronton) return res;
+  // Fronton en arc, planté à l'arrière du dessus par 2 tenons centrés sur les colonnes les plus extérieures
+  // qui tombent sous le fronton (au milieu d'une case : jamais sur la mortaise d'un séparateur)
+  const Wf = Math.round(v.W * 0.9), Hf = v.frontonH, ry = Math.min(Hf * 0.55, Wf / 2), tw = 12, x0 = (v.W - Wf) / 2;
+  const cw = (v.W - 2 * t - (cols - 1) * t) / cols;
+  const inner = Array.from({length: cols}, (_, c) => t + cw / 2 + c * (cw + t) - x0).filter(c => c > tw && c < Wf - tw);
+  const tabs = inner.length >= 2 ? [inner[0], inner[inner.length - 1]] : [Wf / 4, 3 * Wf / 4];
+  const p = [[0, Hf]], hw = (tw + kerf) / 2;
+  for (const c of tabs) p.push([c - hw, Hf], [c - hw, Hf + t], [c + hw, Hf + t], [c + hw, Hf]);
+  p.push([Wf, Hf], [Wf, ry]);
+  for (let i = 1; i < 90; i++) { const a = -Math.PI * i / 90; p.push([Wf / 2 + Wf / 2 * Math.cos(a), ry + ry * Math.sin(a)]); }
+  p.push([0, ry]);
+  const ped = {name: tt("piece.pediment"), w: Wf, h: Hf + t, els: [{k: "cut", d: polyD(p)}]};
+  ped.els.push(...motif("etoile", Wf / 2, ry * 0.45, Math.min(ry * 0.6, 22)).cuts.map(d => ({k: "cut", d})));
+  for (const fx of [0.2, 0.8]) ped.els.push(...motif("sapin", Wf * fx, Hf * 0.55, Hf * 0.45).cuts.map(d => ({k: "cut", d})));
+  ped.els.push(...textEls(v, Wf / 2, Hf * 0.66));
+  res.pieces.push(ped);
+  // Mortaises à l'arrière du dessus (y = 0 côté dos), 3 mm devant le panneau arrière
+  const dessus = res.pieces.find(q => q.name === tt("piece.top"));
+  if (dessus) dessus.els.push({k: "cut", d: tabs.map(c => slotD(x0 + c, t + 3 + t / 2, 0, tw - kerf, t - kerf)).join("")});
+  res.info.push(tt("notice.advent.pediment"));
+  return res;
+}
+
+const GEN = {box: genBox, shape: genShape, chest: genChest, orga: genOrga, tray: genTray, lantern: genLantern, advent: genAdvent};
 
 // ---------- Placement ----------
+// Rangées « first fit » : chaque pièce (la plus basse des deux orientations d'abord) va dans la première rangée
+// déjà ouverte où elle tient, sur n'importe quelle planche, avant d'ouvrir une nouvelle rangée ou planche.
 function layout(pieces, bw, bh) {
-  const M = 2, G = 2.5, sheets = [[]];
-  let x = M, y = M, rowH = 0;
+  const M = 2, G = 2.5, eps = 1e-6, sheets = [], rows = [];
   const items = pieces.map(p => {
-    let rot = false, w = p.w, h = p.h;
-    if (w > bw - 2 * M || (h > bh - 2 * M && h <= bw - 2 * M && w <= bh - 2 * M)) { if (h <= bw - 2 * M && w <= bh - 2 * M) { rot = true; [w, h] = [h, w]; } }
-    if (w > bw - 2 * M || h > bh - 2 * M) throw new Error(tt("err.layout.pieceTooBig", {name: p.name, w: f1(p.w), h: f1(p.h), bw, bh}));
-    return {p, w, h, rot};
-  }).sort((a, b) => b.h - a.h);
-  for (const it of items) {
-    if (x + it.w > bw - M + 1e-6) { x = M; y += rowH + G; rowH = 0; }
-    if (y + it.h > bh - M + 1e-6) { sheets.push([]); x = M; y = M; rowH = 0; }
-    sheets[sheets.length - 1].push({...it, x, y});
-    x += it.w + G; rowH = Math.max(rowH, it.h);
+    const o = [[p.w, p.h, false], [p.h, p.w, true]].filter(([w, h]) => w <= bw - 2 * M + eps && h <= bh - 2 * M + eps).sort((a, b) => a[1] - b[1]);
+    if (!o.length) throw new Error(tt("err.layout.pieceTooBig", {name: p.name, w: f1(p.w), h: f1(p.h), bw, bh}));
+    return {p, o};
+  }).sort((a, b) => b.o[0][1] - a.o[0][1] || b.o[0][0] - a.o[0][0]);
+  const nextY = s => rows.filter(r => r.s === s).reduce((y, r) => Math.max(y, r.y + r.h + G), M);
+  for (const {p, o} of items) {
+    let done = false;
+    for (const r of rows) {
+      const f = o.find(([w, h]) => h <= r.h + eps && r.x + w <= bw - M + eps);
+      if (f) { sheets[r.s].push({p, w: f[0], h: f[1], rot: f[2], x: r.x, y: r.y}); r.x += f[0] + G; done = true; break; }
+    }
+    if (done) continue;
+    const [w, h, rot] = o[0];
+    let s = sheets.findIndex((_, i) => nextY(i) + h <= bh - M + eps);
+    if (s < 0) { sheets.push([]); s = sheets.length - 1; }
+    const y = nextY(s);
+    rows.push({s, y, h, x: M + w + G});
+    sheets[s].push({p, w, h, rot, x: M, y});
   }
+  if (!sheets.length) sheets.push([]);
   return sheets;
 }
 
@@ -2075,7 +2393,7 @@ function bindTextDrag(g, v) {
 function sheetSvg(sheet, bw, bh, v, font, idx, total, preview) {
   let body = "";
   for (const it of sheet) {
-    const tf = it.rot ? `translate(${f3(it.x + it.h)},${f3(it.y)}) rotate(90)` : `translate(${f3(it.x)},${f3(it.y)})`;
+    const tf = it.rot ? `translate(${f3(it.x + it.w)},${f3(it.y)}) rotate(90)` : `translate(${f3(it.x)},${f3(it.y)})`;
     let g = "";
     for (const el of it.p.els) {
       if (el.k === "cut") g += `<path class="cut" d="${el.d}" fill="none" stroke="#ff0000" stroke-width="0.1"/>`;
@@ -2151,7 +2469,7 @@ async function render() {
   const warns = [...res.warns];
   if (needsText && !font) warns.push(String(v.police).startsWith("local:") ? tt("warn.fontLocal") : tt("warn.fontMissing"));
   $("#warns").innerHTML = warns.map(w => `<div class="warn">⚠️ ${esc(w)}</div>`).join("");
-  const base = slug(state.name) + "_" + ({box: `boite_${v.L}x${v.W}x${v.H}`, shape: `${v.forme}_${v.W}x${v.H}`, chest: `coffre_${v.L}x${v.W}x${v.H}`}[state.tab]);
+  const base = slug(state.name) + "_" + ({box: `boite_${v.L}x${v.W}x${v.H}`, shape: `${v.forme}_${v.W}x${v.H}`, chest: `coffre_${v.L}x${v.W}x${v.H}`, orga: `organiseur_${v.W}x${v.D}`, tray: `casier_${v.W}x${v.D}`, lantern: `lanterne_${v.L}x${v.W}x${v.H}`, advent: `calendrier_${v.W}x${v.D}`}[state.tab]);
   lastFiles = sheets.map((s, i) => ({name: sheets.length > 1 ? `${base}_planche${i + 1}${s.decor ? "_decor" : ""}.svg` : `${base}.svg`, svg: sheetSvg(s, bw, bh, v, font, i + 1, sheets.length, false)}));
   lastInfo = res.info;
   const cols = Math.min(2, sheets.length), c = $("#canvas");
@@ -2159,7 +2477,7 @@ async function render() {
   const isTray = state.tab === "tray", td = isTray ? trayData() : null;
   const plan = isTray ? `<div class="sheet plan-card" data-si="-2" style="width:${bw * PX}px"><div class="lbl"><span><b>${tt("sheet.topView")}</b> · ${tt("sheet.layerOf", {cur: td.cur + 1, total: td.layers.length})}</span><span>${tt("sheet.planHelp")}</span></div>${planSvg(v)}</div>` : "";
   c.innerHTML = plan + sheets.map((s, i) => `<div class="sheet${s.decor ? " decor" : ""}" data-si="${i}" style="width:${bw * PX}px"><div class="lbl"><span><b>${tt("sheet.card", {n: i + 1})}</b> · ${tt("sheet.pieceCount", {n: s.length, s: s.length > 1 ? "s" : ""})}${s.decor ? `<span class="tag">${tt("sheet.decorTag")}</span>` : ""}</span><button class="mini" data-dl="${i}">${icon("download", 14)}${tt("sheet.svgBtn")}</button></div>${sheetSvg(s, bw, bh, v, font, i + 1, sheets.length, true)}</div>`).join("");
-  c.querySelectorAll("[data-dl]").forEach(b => b.onclick = () => downloadBlob(lastFiles[+b.dataset.dl].name, new Blob([lastFiles[+b.dataset.dl].svg], {type: "image/svg+xml"})));
+  c.querySelectorAll("[data-dl]").forEach(b => b.onclick = () => { const f = lastFiles[+b.dataset.dl]; downloadBlob(f.name, new Blob([f.svg], {type: "image/svg+xml"})); });
   c.querySelectorAll("[data-ti]").forEach(g => bindTextDrag(g, v));
   if (isTray) bindPlan(c.querySelector("svg.plan"), v);
   if (currentSheet >= sheets.length || (currentSheet === -2 && !isTray)) currentSheet = 0;
@@ -2199,6 +2517,7 @@ applyTheme(); applyLang(); buildActions(); buildZoom(); initViewport();
 $("#projName").value = state.name;
 if (state.tab === "tray") currentSheet = -2;
 buildModels(); buildForm(); render();
+try { localStorage.removeItem("neoprodfx-texture"); } catch (e) {}
 if (hp.get("guide")) setTimeout(openGuide, 1500);
 if (hp.get("materiaux")) setTimeout(openMaterials, 1200);
 window.addEventListener("resize", () => { clearTimeout(window._rz); window._rz = setTimeout(() => fit(currentSheet === -1 ? null : $(`#canvas .sheet[data-si="${currentSheet}"]`)), 150); });
