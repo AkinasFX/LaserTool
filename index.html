@@ -13,6 +13,9 @@
 <meta name="apple-mobile-web-app-title" content="LaserToolFX">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/opentype.js/1.3.4/opentype.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" defer></script>
+<script src="motifs.js"></script>
+<script src="textures.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/polygon-clipping@0.15.7/dist/polygon-clipping.umd.min.js"></script>
 <style>
 :root{
   --bg:#eceef2;--panel:#ffffff;--panel2:#f6f7f9;--ink:#14161a;--muted:#6b7280;--line:#e2e5ea;
@@ -384,7 +387,7 @@ const I18N = {
   "field.machine": {fr: "Machine", en: "Machine"},
   "field.bedW": {fr: "Largeur plateau", en: "Bed width"},
   "field.bedH": {fr: "Profondeur plateau", en: "Bed depth"},
-  "field.reperes": {fr: "Repères de montage (bleu)", en: "Assembly markers (blue)"},
+  "field.reperes": {fr: "Noms des pièces dans l'aperçu (jamais exportés)", en: "Piece names in the preview (never exported)"},
   "bed.custom": {fr: "Personnalisé…", en: "Custom…"},
   // Charnière flexible (HINGE)
   "field.hSpace": {fr: "Espacement des lignes", en: "Line spacing"},
@@ -779,11 +782,23 @@ const I18N = {
   "err.tray.layerTooLow": {fr: "Étage {n} trop bas pour des boîtes.", en: "Layer {n} too low for boxes."},
   "err.tray.cellTooSmall": {fr: "Étage {n}, case {k} : trop petite pour une boîte ({w}×{d} mm). Fusionne-la ou réduis la grille.", en: "Layer {n}, cell {k}: too small for a box ({w}×{d} mm). Merge it or reduce the grid."},
   "err.layout.pieceTooBig": {fr: "« {name} » ({w}×{h} mm) ne tient pas sur le plateau {bw}×{bh}.", en: "“{name}” ({w}×{h} mm) does not fit on the {bw}×{bh} bed."},
-  "export.svgComment": {fr: "LaserToolFX par NeoprodFX — {name} — planche {idx}/{total} — rouge=découpe noir=gravure bleu=repères", en: "LaserToolFX by NeoprodFX — {name} — sheet {idx}/{total} — red=cutting black=engraving blue=markers"},
+  "export.svgComment": {fr: "LaserToolFX par NeoprodFX — {name} — planche {idx}/{total} — rouge=découpe noir=gravure", en: "LaserToolFX by NeoprodFX — {name} — sheet {idx}/{total} — red=cutting black=engraving"},
   // Coffre : charnières en bois
   "field.charnieres": {fr: "Charnières en bois", en: "Wooden hinges"},
   "notice.chest.assemblyWood": {fr: "Montage : assemble le corps ; en haut à l'arrière, chaque côté a un arrondi creusé où apparaît l'ergot carré de la plaque arrière, à fleur. Enfile la languette ronde de chaque flanc du couvercle sur son ergot (par l'extérieur), puis plante les tenons du panneau flexible dans les mortaises des deux flancs en le cintrant, et colle-le : il tient les flancs en place. Les flancs débordent de {m} mm devant et derrière.", en: "Assembly: assemble the body; at the top back, each side has a carved round recess showing the back panel's square stud, flush. Slip each lid flank's round tab over its stud (from outside), then fit the flexible panel's tabs into the mortises of both flanks by bending it, and glue it: it holds the flanks in place. The flanks overhang {m} mm front and back."},
   "notice.chest.hinges": {fr: "Charnières en bois sans pièce rapportée : l'axe est l'ergot carré taillé au bout de la plaque arrière, le couvercle tourne autour par le trou rond de ses flancs ; couvercle et corps ont la même largeur. Pas de colle sur l'ergot. Ponce un peu ses arêtes si la rotation accroche. L'ergot est petit : ne soulève pas le coffre par le couvercle.", en: "Wooden hinges with no extra part: the pivot is the square stud cut at the end of the back panel, the lid turns around it through its flanks' round holes; lid and body are the same width. No glue on the stud. Lightly sand its edges if the rotation catches. The stud is small: don't lift the chest by its lid."},
+  "field.feutrine": {fr: "Feutrine intérieure", en: "Felt lining"},
+  "field.feltE": {fr: "Épaisseur de la feutrine", en: "Felt thickness"},
+  "field.feltLid": {fr: "Feutrine aussi dans le couvercle", en: "Felt in the lid too"},
+  "piece.feltBottom": {fr: "Feutrine fond", en: "Felt bottom"},
+  "piece.feltFront": {fr: "Feutrine façade", en: "Felt front"},
+  "piece.feltBack": {fr: "Feutrine dos", en: "Felt back"},
+  "piece.feltSide": {fr: "Feutrine côté", en: "Felt side"},
+  "piece.feltLid": {fr: "Feutrine couvercle (bande cintrée)", en: "Felt lid (curved strip)"},
+  "piece.feltFlank": {fr: "Feutrine flanc", en: "Felt flank"},
+  "sheet.feltTag": {fr: "Feutrine", en: "Felt"},
+  "notice.chest.felt": {fr: "Feutrine ({e} mm) : colle d'abord le fond, puis la façade et le dos posés dessus, puis les côtés entre eux ; dans le couvercle, la bande cintrée puis les deux demi-lunes des flancs. Colle en spray ou double face, pas de colle liquide qui traverse. Au laser : feutrine polyester ou laine, jamais de feutrine PVC ou plastifiée.", en: "Felt ({e} mm): glue the bottom first, then the front and back on top of it, then the sides between them; in the lid, the curved strip then both flank half-moons. Spray glue or double-sided tape, no liquid glue that soaks through. On the laser: polyester or wool felt, never PVC or plastic-coated felt."},
+  "notice.chest.backDecor": {fr: "Décor du dos : encoches aux coins du haut et bord haut abaissé de {top} mm, pour laisser passer le couvercle à l'ouverture. Colle-le bord bas affleurant le bas du coffre.", en: "Back decor: notches in the top corners and top edge lowered by {top} mm, so the lid clears it when opening. Glue it with its bottom edge flush with the bottom of the chest."},
   "warn.chest.hingeNoRoom": {fr: "Charnières en bois retirées : corps trop bas (30 mm minimum).", en: "Wooden hinges removed: body too low (30 mm minimum)."},
   "guide.chest.hinges": {fr: "Charnières : ergot carré au bout de la plaque arrière, la languette ronde du flanc tourne autour.", en: "Hinges: square stud at the end of the back panel, the flank's round tab turns around it."},
   // Lanterne d'Halloween
@@ -801,6 +816,15 @@ const I18N = {
   "field.dessusL": {fr: "Dessus", en: "Top"},
   "dessusL.cadre": {fr: "Cadre ouvert (plus rigide)", en: "Open frame (stiffer)"},
   "dessusL.ouvert": {fr: "Ouvert", en: "Open"},
+  "dessusL.toit": {fr: "Cadre + toit en triangle (amovible)", en: "Frame + gable roof (removable)"},
+  "field.hToit": {fr: "Hauteur du toit", en: "Roof height"},
+  "field.debordToit": {fr: "Débord du toit", en: "Roof overhang"},
+  "piece.gable": {fr: "Pignon", en: "Gable"},
+  "piece.roofPanel": {fr: "Pan de toit", en: "Roof panel"},
+  "notice.lantern.roof": {fr: "Toit amovible : pose les 2 pignons debout sur le cadre, à {c} mm des bords gauche et droit, leurs ergots dans les angles de l'ouverture ; colle les 2 pans ({Lr}×{s} mm) sur leurs pentes, faîte contre faîte. Soulève le toit pour poser la bougie ; une ficelle dans les trous des pignons permet de suspendre la lanterne.", en: "Removable roof: stand the 2 gables on the frame, {c} mm from the left and right edges, their studs in the corners of the opening; glue the 2 panels ({Lr}×{s} mm) onto their slopes, ridge to ridge. Lift the roof to place the candle; a string through the gables' holes lets you hang the lantern."},
+  "err.lantern.roofNoRoom": {fr: "Ouverture du cadre trop petite pour caler le toit : réduis la largeur du cadre.", en: "Frame opening too small to seat the roof: reduce the frame width."},
+  "guide.lantern.roof": {fr: "Toit amovible", en: "Removable roof"},
+  "guide.lantern.roofSub": {fr: "2 pignons + 2 pans collés", en: "2 gables + 2 glued panels"},
   "field.cadreL": {fr: "Largeur du cadre", en: "Frame width"},
   "field.socle": {fr: "Anneau pour bougie LED", en: "LED candle ring"},
   "field.socleD": {fr: "Diamètre de la bougie", en: "Candle diameter"},
@@ -822,6 +846,65 @@ const I18N = {
   "guide.lantern.ring": {fr: "Anneau collé au fond", en: "Ring glued to the bottom"},
   "guide.lantern.ringSub": {fr: "la bougie LED ne glisse pas", en: "the LED candle stays put"},
   "guide.lantern.vellum": {fr: "Option : calque orange collé à l'intérieur des faces pour une lumière chaude.", en: "Option: orange vellum glued inside the sides for a warm glow."},
+  // Lanterne hexagonale
+  "model.hexa.name": {fr: "Lanterne hexa", en: "Hex lantern"},
+  "model.hexa.desc": {fr: "Lanterne hexagonale à panneaux pleins (à décorer), toit en gradins, lanternon et anneau pour suspendre.", en: "Hexagonal lantern with plain panels (to decorate), stepped roof, cupola and hanging ring."},
+  "grp.hexaBody": {fr: "Corps hexagonal", en: "Hexagonal body"},
+  "grp.hexaTop": {fr: "Toit et lanternon", en: "Roof and cupola"},
+  "field.hexSide": {fr: "Largeur d'un panneau (côté)", en: "Panel width (side)"},
+  "field.ovBase": {fr: "Débord de la base", en: "Base overhang"},
+  "field.ovTop": {fr: "Débord du plateau", en: "Top plate overhang"},
+  "field.lanternon": {fr: "Lanternon", en: "Cupola"},
+  "field.lantSide": {fr: "Largeur d'un panneau du lanternon", en: "Cupola panel width"},
+  "field.lantH": {fr: "Hauteur du lanternon", en: "Cupola height"},
+  "field.ovChapeau": {fr: "Débord du chapeau", en: "Cap overhang"},
+  "field.anneau": {fr: "Anneau pour suspendre", en: "Hanging ring"},
+  "piece.hexPanel": {fr: "Panneau {n}", en: "Panel {n}"},
+  "piece.hexBase": {fr: "Base", en: "Base"},
+  "piece.hexTop": {fr: "Plateau", en: "Top plate"},
+  "piece.lantPanel": {fr: "Lanternon {n}", en: "Cupola {n}"},
+  "piece.cap": {fr: "Chapeau", en: "Cap"},
+  "piece.hangRing": {fr: "Anneau", en: "Ring"},
+  "notice.hexa.dims": {fr: "Lanterne hexagonale : {flat} mm entre faces, {H} mm de haut (corps), 6 panneaux de {wp}×{H} mm, pleins : ajoute tes motifs avant la découpe.", en: "Hexagonal lantern: {flat} mm across flats, {H} mm tall (body), 6 panels {wp}×{H} mm, plain: add your motifs before cutting."},
+  "notice.hexa.corners": {fr: "Angles : les panneaux se touchent par l'intérieur ; colle-les entre eux, il reste un petit V à l'extérieur de chaque angle (ponce ou laisse-le, c'est l'esprit lanterne).", en: "Corners: the panels touch on the inside; glue them together, a small V remains outside each corner (sand it or keep it)."},
+  "notice.hexa.assembly": {fr: "Montage : plante les 6 panneaux dans la base et colle les angles. Plante le lanternon dans le plateau, pose le chapeau et l'anneau, puis colle cet ensemble. Le plateau se pose sur les panneaux sans colle : soulève-le pour la bougie LED.", en: "Assembly: plug the 6 panels into the base and glue the corners. Plug the cupola into the top plate, add the cap and the ring, then glue that group. The top plate sits on the panels without glue: lift it for the LED candle."},
+  "field.calque": {fr: "Calque intérieur (papier rainuré à plier)", en: "Inner vellum (scored paper to fold)"},
+  "piece.paperStrip": {fr: "Calque bande {n} faces", en: "Vellum strip {n} sides"},
+  "piece.paperDoor": {fr: "Calque porte", en: "Vellum door"},
+  "piece.paperLant": {fr: "Calque lanternon", en: "Vellum cupola"},
+  "sheet.paperTag": {fr: "Papier / calque", en: "Paper / vellum"},
+  "notice.hexa.paper": {fr: "Calque intérieur : 2 bandes de 3 faces, lignes noires = plis. À la Cricut, importe le SVG, passe les lignes noires en « Rainurer », sélectionne tout puis « Attacher » : découpe et rainurage en une passe. Plie, colle chaque languette sous le début de l'autre bande et glisse l'anneau dans la lanterne avant de poser le plateau.", en: "Inner vellum: 2 strips of 3 sides, black lines = folds. On a Cricut, import the SVG, set the black lines to “Score”, select all then “Attach”: cut and score in one pass. Fold, glue each tab under the start of the other strip and slide the ring into the lantern before setting the top plate."},
+  "notice.hexa.paperDoor": {fr: "Calque intérieur : une bande pliée pour les 5 panneaux fixes (lignes noires = plis) et un morceau à coller derrière la porte. À la Cricut, importe le SVG, passe les lignes noires en « Rainurer », sélectionne tout puis « Attacher » : découpe et rainurage en une passe. Colle la bande contre les panneaux fixes, sans la coller à la porte.", en: "Inner vellum: one folded strip for the 5 fixed panels (black lines = folds) and a piece to glue behind the door. On a Cricut, import the SVG, set the black lines to “Score”, select all then “Attach”: cut and score in one pass. Glue the strip against the fixed panels, not to the door."},
+  "field.porte": {fr: "Porte (un panneau qui pivote)", en: "Door (one pivoting panel)"},
+  "piece.hexDoor": {fr: "Porte", en: "Door"},
+  "notice.hexa.door": {fr: "Porte : panneau de {wd} mm (0,8 mm de jeu à chaque bout) avec 2 tourillons carrés qui tournent dans les trous ronds de la base et du plateau, sans colle. Vue de dehors, charnière à droite et encoche pour le doigt à gauche (retourne la porte tête en bas si besoin, en gardant ta face décorée dehors). Pour qu'elle reste fermée : un petit aimant néodyme collé sur son bord libre et un autre sur le panneau voisin.", en: "Door: {wd} mm panel (0.8 mm clearance at each end) with 2 square pins turning in the round holes of the base and top plate, no glue. Seen from outside, hinge on the right and finger notch on the left (turn the door upside down if needed, decorated face out). To keep it closed: a small neodymium magnet on its free edge and another on the neighbouring panel."},
+  "notice.hexa.assemblyDoor": {fr: "Montage : plante les 5 panneaux fixes dans la base et colle leurs angles ; glisse le tourillon bas de la porte dans le trou rond de la base. Plante le lanternon dans le plateau, pose le chapeau et l'anneau, puis colle cet ensemble. Pose le plateau en engageant le tourillon haut de la porte dans son trou rond, et colle le plateau : la bougie s'atteint par la porte.", en: "Assembly: plug the 5 fixed panels into the base and glue their corners; slide the door's bottom pin into the base's round hole. Plug the cupola into the top plate, add the cap and the ring, then glue that group. Set the top plate, engaging the door's top pin in its round hole, and glue the plate: the candle is reached through the door."},
+  "grp.texture": {fr: "Texture gravée", en: "Engraved texture"},
+  "field.texture": {fr: "Texture", en: "Texture"},
+  "texture.none": {fr: "Aucune", en: "None"},
+  "field.texH": {fr: "Hauteur de la texture (mosaïque)", en: "Texture height (tiled)"},
+  "hint.texture": {fr: "Texture vectorielle (formes noires) posée sur les faces extérieures et coupée au contour de chaque pièce : grave-la en mode remplissage, avant la découpe. Planches parallèles aux lignes de flexion sur le couvercle.", en: "Vector texture (black shapes) laid on the outer faces and clipped to each piece's outline: engrave it in fill mode, before cutting. Planks parallel to the flex lines on the lid."},
+  "grp.hexaMotifs": {fr: "Motifs des panneaux", en: "Panel motifs"},
+  "field.motifA": {fr: "Motif A (panneaux 1, 3, 5)", en: "Motif A (panels 1, 3, 5)"},
+  "field.motifB": {fr: "Motif B (panneaux 2, 4, 6)", en: "Motif B (panels 2, 4, 6)"},
+  "field.motifPorte": {fr: "Motif de la porte", en: "Door motif"},
+  "field.motifLant": {fr: "Motif du lanternon", en: "Cupola motif"},
+  "motif.none": {fr: "Aucun (panneau plein)", en: "None (plain panel)"},
+  "motif.sameA": {fr: "Comme le motif A", en: "Same as motif A"},
+  "motif.sameB": {fr: "Comme le motif B", en: "Same as motif B"},
+  "motif.importBtn": {fr: "📁 Importer un motif SVG", en: "📁 Import an SVG motif"},
+  "hint.motifs": {fr: "Un SVG = soit le panneau complet vectorisé (contour, tenons et découpes : il est calé pile sur le panneau, son contour n'est pas redécoupé), soit le motif seul dessiné à la taille de la zone pleine du panneau (sans tenons). Tes motifs importés restent sur ce PC.", en: "One SVG = either the full vectorised panel (outline, tabs and cut-outs: it is fitted exactly onto the panel, its outline is not cut again), or the motif alone drawn at the size of the panel's solid area (without tabs). Your imported motifs stay on this PC."},
+  "toast.motifLoaded": {fr: "Motif « {name} » ajouté", en: "Motif “{name}” added"},
+  "toast.motifBad": {fr: "Aucun tracé trouvé dans ce SVG", en: "No path found in this SVG"},
+  "toast.motifNotSaved": {fr: "Motif trop lourd pour être mémorisé : à réimporter au prochain lancement", en: "Motif too large to be remembered: re-import it next time"},
+  "toast.motifTransform": {fr: "Motif ajouté, mais il contient des transformations : dans Inkscape, fais Chemin > Objet en chemin et dégroupe avant d'exporter si le placement est décalé", en: "Motif added, but it contains transforms: in Inkscape, use Path > Object to Path and ungroup before exporting if the placement is off"},
+  "err.hexa.lantTooBig": {fr: "Lanternon trop large pour le plateau.", en: "Cupola too wide for the top plate."},
+  "err.hexa.tooSmall": {fr: "Panneaux trop étroits pour cette épaisseur.", en: "Panels too narrow for this thickness."},
+  "guide.hexa.title": {fr: "Lanterne hexagonale (vue de face)", en: "Hexagonal lantern (front view)"},
+  "guide.hexa.body": {fr: "6 panneaux pleins", en: "6 plain panels"},
+  "guide.hexa.bodySub": {fr: "tenons dans la base et le plateau", en: "tabs into the base and top plate"},
+  "guide.hexa.top": {fr: "Plateau + lanternon + chapeau", en: "Top plate + cupola + cap"},
+  "guide.hexa.topSub": {fr: "amovible, sans colle sur les panneaux", en: "removable, no glue on the panels"},
   // Calendrier de l'Avent
   "model.advent.name": {fr: "Calendrier", en: "Advent"},
   "model.advent.desc": {fr: "Calendrier de l'Avent à tiroirs numérotés (gravés), fronton de Noël en option.", en: "Advent calendar with numbered (engraved) drawers, optional Christmas pediment."},
@@ -839,6 +922,171 @@ const I18N = {
   "notice.advent.pediment": {fr: "Fronton : glisse ses 2 tenons dans les mortaises à l'arrière du dessus, avec un point de colle.", en: "Pediment: slide its 2 tabs into the slots at the back of the top, with a drop of glue."},
   "guide.advent.title": {fr: "Calendrier de l'Avent", en: "Advent calendar"},
   "guide.advent.pediment": {fr: "Le fronton se plante dans le dessus, à l'arrière (2 tenons).", en: "The pediment plugs into the back of the top (2 tabs)."},
+  // Boîte lumineuse (boîte cadeau à coins flexibles, fenêtres sur les faces)
+  "model.lightbox.name": {fr: "Boîte lumineuse", en: "Light box"},
+  "model.lightbox.desc": {fr: "Lanterne-boîte à coins arrondis flexibles, une fenêtre par face avec plaques de scène, petite porte à l'arrière et dessus déco qui cache les tenons.", en: "Box lantern with flexible rounded corners, one window per side with scene plates, small back door and a decor top that hides the tabs."},
+  "grp.lightbox": {fr: "Fenêtres et scènes", en: "Windows and scenes"},
+  "grp.lightboxLid": {fr: "Dessus déco", en: "Decor top"},
+  "field.fenetres": {fr: "Fenêtres des faces", en: "Side windows"},
+  "fenetres.aucune": {fr: "Aucune (faces pleines)", en: "None (plain sides)"},
+  "fenetres.rect": {fr: "Rectangle aux coins arrondis", en: "Rounded rectangle"},
+  "fenetres.feston": {fr: "Coins festonnés", en: "Scalloped corners"},
+  "fenetres.arche": {fr: "Arche", en: "Arch"},
+  "field.margeF": {fr: "Marge autour des fenêtres", en: "Margin around windows"},
+  "field.rayonF": {fr: "Rayon des coins de fenêtre", en: "Window corner radius"},
+  "field.plaques": {fr: "Plaques de scène derrière les fenêtres", en: "Scene plates behind the windows"},
+  "field.recouv": {fr: "Recouvrement des plaques", en: "Plate overlap"},
+  "field.calqueLB": {fr: "Calques (papier) derrière les plaques", en: "Vellum (paper) behind the plates"},
+  "field.ouvTop": {fr: "Découpe du dessus déco", en: "Decor top cut-out"},
+  "ouvTop.aucune": {fr: "Aucune (dessus plein)", en: "None (solid top)"},
+  "ouvTop.cercle": {fr: "Cercle", en: "Circle"},
+  "ouvTop.rect": {fr: "Rectangle aux coins arrondis", en: "Rounded rectangle"},
+  "field.ouvPct": {fr: "Taille de l'ouverture", en: "Opening size"},
+  "piece.sceneFront": {fr: "Plaque de scène avant", en: "Front scene plate"},
+  "piece.sceneRight": {fr: "Plaque de scène droite", en: "Right scene plate"},
+  "piece.sceneBack": {fr: "Plaque de scène arrière", en: "Back scene plate"},
+  "piece.sceneLeft": {fr: "Plaque de scène gauche", en: "Left scene plate"},
+  "piece.sceneTop": {fr: "Plaque de scène du dessus", en: "Top scene plate"},
+  "piece.paperScene": {fr: "Calque {name}", en: "Vellum {name}"},
+  "err.lightbox.tooLong": {fr: "Boîte trop grande : une face et son coin ({len} mm) ne tiennent pas sur le plateau. Réduis la largeur ou la profondeur.", en: "Box too large: one side and its corner ({len} mm) do not fit on the bed. Reduce the width or depth."},
+  "err.lightbox.tooLow": {fr: "Boîte trop basse pour cette épaisseur.", en: "Box too low for this thickness."},
+  "notice.lightbox.dims": {fr: "Boîte {W}×{D}×{H} mm, coins de rayon {r} mm. Bande de {P} mm en {n} morceau(x), {Hb} mm de haut + tenons.", en: "Box {W}×{D}×{H} mm, corner radius {r} mm. Strip of {P} mm in {n} piece(s), {Hb} mm tall + tabs."},
+  "notice.lightbox.windows": {fr: "Fenêtres : face avant et arrière {wf}×{hf} mm, côtés {ws}×{hf} mm. Les plaques de scène sont vierges : dessine ou importe tes silhouettes dessus dans ton logiciel laser.", en: "Windows: front and back {wf}×{hf} mm, sides {ws}×{hf} mm. The scene plates are blank: draw or import your silhouettes on them in your laser software."},
+  "notice.lightbox.assembly": {fr: "Montage : face gravée vers l'extérieur, plante les tenons du bas de la bande dans le fond en partant de la face avant ; la charnière flexible tombe pile dans les coins. Colle au fur et à mesure, puis pose le cadre du dessus sur les tenons du haut.", en: "Assembly: engraved face outward, plug the strip's bottom tabs into the bottom starting from the front side; the flexible hinge lands right in the corners. Glue as you go, then set the top frame onto the top tabs."},
+  "notice.lightbox.plates": {fr: "Colle chaque plaque de scène à l'intérieur, centrée derrière sa fenêtre : elle crée la profondeur. Avec un calque derrière, la lumière LED devient douce.", en: "Glue each scene plate inside, centered behind its window: it adds depth. With vellum behind it, the LED light turns soft."},
+  "warn.lightbox.noWindow": {fr: "Fenêtres retirées sur les faces trop étroites ou trop basses pour cette marge.", en: "Windows removed on the sides too narrow or too low for this margin."},
+  "warn.lightbox.lidOpening": {fr: "Découpe du dessus réduite pour tenir dans l'ouverture du cadre.", en: "Top cut-out reduced to fit inside the frame opening."},
+  "guide.lightbox.title": {fr: "Boîte lumineuse (vue de face)", en: "Light box (front view)"},
+  "guide.lightbox.lid": {fr: "Dessus déco collé", en: "Glued decor top"},
+  "guide.lightbox.lidSub": {fr: "cache les tenons du cadre", en: "hides the frame's tabs"},
+  "guide.lightbox.window": {fr: "Fenêtre de la face", en: "Side window"},
+  "guide.lightbox.windowSub": {fr: "plaque de scène collée derrière", en: "scene plate glued behind"},
+  "guide.lightbox.corner": {fr: "Coin flexible", en: "Flexible corner"},
+  "guide.lightbox.cornerSub": {fr: "la charnière se courbe ici", en: "the hinge bends here"},
+  "field.porteLB": {fr: "Petite porte à l'arrière (pivotante)", en: "Small back door (pivoting)"},
+  "piece.topDeco": {fr: "Dessus déco (cache les tenons)", en: "Decor top (hides the tabs)"},
+  "piece.sceneDoor": {fr: "Plaque de scène porte", en: "Door scene plate"},
+  "piece.doorStop": {fr: "Butée de porte", en: "Door stop"},
+  "warn.lightbox.noDoor": {fr: "Porte retirée : la face arrière est trop étroite.", en: "Door removed: the back side is too narrow."},
+  "notice.lightbox.assemblyDoor": {fr: "Montage : face gravée vers l'extérieur, plante les tenons du bas de la bande dans le fond en partant d'un montant de la porte ; la charnière flexible tombe pile dans les coins. Glisse la porte (tourillon du bas dans son trou rond), puis pose le cadre du dessus sur les tenons du haut et le tourillon du haut. Colle tout sauf la porte.", en: "Assembly: engraved face outward, plug the strip's bottom tabs into the bottom starting from one door post; the flexible hinge lands right in the corners. Slide the door in (bottom pin in its round hole), then set the top frame onto the top tabs and the top pin. Glue everything except the door."},
+  "notice.lightbox.top": {fr: "Dessus : colle la plaque de scène sous le dessus déco, centrée sous sa découpe ; elle se loge dans l'ouverture du cadre. Colle ensuite le dessus déco sur le cadre : il cache les tenons et le tourillon de la porte.", en: "Top: glue the scene plate under the decor top, centered under its cut-out; it nests in the frame's opening. Then glue the decor top onto the frame: it hides the tabs and the door pin."},
+  "notice.lightbox.door": {fr: "Porte de {wd} mm : charnière à droite vue de dehors, encoche pour le doigt à gauche. Colle les 2 butées à l'intérieur du montant gauche (en haut et en bas), elles dépassent de 3 mm derrière la porte : elle ne s'ouvre que vers l'extérieur. Un petit aimant la garde fermée.", en: "Door {wd} mm wide: hinge on the right seen from outside, finger notch on the left. Glue the 2 stops inside the left post (top and bottom), sticking out 3 mm behind the door: it only opens outward. A small magnet keeps it shut."},
+  "guide.lightbox.frameSub": {fr: "tenons du haut de la bande", en: "strip's top tabs"},
+  "guide.lightbox.door": {fr: "À l'arrière : petite porte qui pivote sur 2 tourillons (fond et cadre du dessus).", en: "At the back: small door pivoting on 2 pins (bottom and top frame)."},
+  "model.tense.name": {fr: "Tensegrity", en: "Tensegrity"},
+  "model.tense.desc": {fr: "Table « qui flotte » : deux C identiques à coins flexibles, tenus par 3 paires de ficelles, anneau pour bougie LED.", en: "“Floating” table: two identical C shapes with flexible corners, held by 3 pairs of strings, LED candle ring."},
+  "grp.tense": {fr: "Tensegrity", en: "Tensegrity"},
+  "field.tenseH": {fr: "Hauteur totale", en: "Total height"},
+  "field.ecart": {fr: "Écart entre les bras (ficelle centrale)", en: "Gap between the arms (central string)"},
+  "field.depasse": {fr: "Dépassement des bras après le centre", en: "Arm overhang past the center"},
+  "field.bordC": {fr: "Largeur des flancs", en: "Flank width"},
+  "field.trou": {fr: "Diamètre des trous de ficelle", en: "String hole diameter"},
+  "field.motifFlanc": {fr: "Motif des flancs", en: "Flank pattern"},
+  "motif.treillis": {fr: "Treillis (triangles ajourés)", en: "Truss (open triangles)"},
+  "motif.aucun": {fr: "Aucun (flancs pleins)", en: "None (solid flanks)"},
+  "warn.tense.truss": {fr: "Flancs trop étroits pour le treillis : élargis les flancs (au moins {min} mm).", en: "Flanks too narrow for the truss: widen them (at least {min} mm)."},
+  "field.lien": {fr: "Liens", en: "Ties"},
+  "lien.chaine": {fr: "Chaînes en bois (longueur exacte)", en: "Wooden chains (exact length)"},
+  "lien.ficelle": {fr: "Ficelle / fil de pêche", en: "String / fishing line"},
+  "piece.chainLink": {fr: "Maillon {w}", en: "Link {w}"},
+  "piece.chainEnd": {fr: "Embout {w} à goupille", en: "{w} end, pinned"},
+  "piece.chainEndFlush": {fr: "Embout {w} affleurant", en: "{w} end, flush"},
+  "piece.chainPin": {fr: "Goupille", en: "Pin"},
+  "chain.center": {fr: "centre", en: "center"},
+  "chain.side": {fr: "côté", en: "side"},
+  "err.tense.chainShort": {fr: "Lien trop court pour une chaîne (il faut au moins {min} mm) : augmente l'écart ou la hauteur, ou passe en ficelle.", en: "Tie too short for a chain (needs at least {min} mm): increase the gap or the height, or switch to string."},
+  "err.tense.chainDepth": {fr: "Profondeur trop faible pour deux chaînes côte à côte : mets au moins {min} mm.", en: "Depth too small for two chains side by side: use at least {min} mm."},
+  "notice.tense.chains": {fr: "Chaînes : au centre {nc} maillon(s) + 2 embouts à goupille ({lc} mm entre les bras) ; sur les côtés {ns} maillon(s) + 1 embout à goupille (côté bras) + 1 embout affleurant (côté plateau) ({ls} mm). Pas de maillon : {p} mm, le reste est rattrapé par les embouts (épaulement → fond de l'œil : {ac} mm au centre, {as} mm sur les côtés).", en: "Chains: in the middle {nc} link(s) + 2 pinned ends ({lc} mm between the arms); on the sides {ns} link(s) + 1 pinned end (arm side) + 1 flush end (plate side) ({ls} mm). Link pitch {p} mm, the ends take up the rest (shoulder → bottom of the eye: {ac} mm center, {as} mm sides)."},
+  "notice.tense.chainAssembly": {fr: "Maillons d'une seule épaisseur, sans colle : présente le voisin (ou l'œil de l'embout) à plat, en travers, glisse-le dans la fente, tourne-le d'un quart de tour et tire-le au bout du trou. Embout à goupille : tenon dans la fente du bras, goupille enfoncée dans le trou de l'autre côté (cachée dans le creux du C). Embout affleurant : tenon collé dans la fente du plateau, à ras. Chaînes du centre d'abord.", en: "Single-layer links, no glue: hold the neighbor (or the end's eye) flat and crosswise, slip it into the slot, give it a quarter turn and pull it to the end of the hole. Pinned end: tab through the arm's slot, pin pushed through the hole on the other side (hidden inside the C). Flush end: tab glued into the plate's slot, flush. Middle chains first."},
+  "piece.tenseFlank": {fr: "Flanc de C", en: "C flank"},
+  "piece.tenseFlankPair": {fr: "Flancs du C {c} (paire imbriquée)", en: "C {c} flanks (nested pair)"},
+  "piece.tenseStrip": {fr: "Bande du C {c}", en: "C {c} strip"},
+  "piece.tenseStripN": {fr: "Bande du C {c} ({i}/{n})", en: "C {c} strip ({i}/{n})"},
+  "err.tense.tooSmall": {fr: "Dimensions trop petites pour cette épaisseur et ce rayon.", en: "Dimensions too small for this thickness and radius."},
+  "err.tense.gap": {fr: "Écart entre les bras trop petit : les flancs des deux C se touchent. Mets au moins {min} mm, ou réduis la largeur des flancs.", en: "Gap between the arms too small: the two C flanks touch. Use at least {min} mm, or reduce the flank width."},
+  "err.tense.overlap": {fr: "Bras trop longs pour cette largeur : réduis le dépassement ou le rayon, ou élargis la table.", en: "Arms too long for this width: reduce the overhang or the radius, or widen the table."},
+  "err.tense.tooLong": {fr: "Bande trop longue pour le plateau de la machine : réduis la taille.", en: "Strip too long for the machine bed: reduce the size."},
+  "notice.tense.dims": {fr: "Table {W}×{H}×{D} mm : deux C identiques de {Hc} mm de haut, bras écartés de {g} mm au centre. Bande de {L} mm par C, en {n} morceau(x).", en: "Table {W}×{H}×{D} mm: two identical C shapes {Hc} mm tall, arms {g} mm apart at the center. Strip of {L} mm per C, in {n} piece(s)."},
+  "notice.tense.assembly": {fr: "Montage de chaque C : plante les tenons d'un bord de la bande dans un flanc en partant du plateau (la charnière tombe dans les coins), puis pose le deuxième flanc. Colle. Les deux C sont identiques : celui du haut est le même, retourné.", en: "Each C: plug one edge's tabs into a flank starting from the plate (the hinge lands in the corners), then add the second flank. Glue. Both C are identical: the top one is the same, flipped."},
+  "notice.tense.strings": {fr: "Ficelles (fil ciré ou nylon, nœud + perle) : d'abord les 2 du centre, entre les deux bras, longueur {g} mm. Puis les 2 du côté droit (bras du bas vers plateau du haut, {a} mm) et les 2 du côté gauche (plateau du bas vers bras du haut, {b} mm). Tends-les jusqu'à ce que le haut ne bascule plus.", en: "Strings (waxed thread or nylon, knot + bead): first the 2 in the middle, between the two arms, {g} mm long. Then the 2 on the right (bottom arm to top plate, {a} mm) and the 2 on the left (bottom plate to top arm, {b} mm). Tighten until the top no longer tilts."},
+  "notice.tense.led": {fr: "Colle l'anneau au centre du plateau du haut, entre les trous de ficelle : il garde la bougie LED en place.", en: "Glue the ring in the middle of the top plate, between the string holes: it keeps the LED candle in place."},
+  "guide.tense.title": {fr: "Table tensegrity (vue de côté)", en: "Tensegrity table (side view)"},
+  "guide.chain.title": {fr: "Les chaînes en bois, pas à pas (à l'échelle)", en: "Wooden chains, step by step (to scale)"},
+  "guide.chain.p1": {fr: "1 · Le maillon (une seule épaisseur)", en: "1 · The link (single layer)"},
+  "guide.chain.p1a": {fr: "Anneau ouvert sur un grand côté par une fente", en: "Ring open on one long side by a slot"},
+  "guide.chain.p1b": {fr: "de l'épaisseur du bois. Pas de colle.", en: "as wide as the wood is thick. No glue."},
+  "guide.chain.opening": {fr: "ouverture {g} mm", en: "opening {g} mm"},
+  "guide.chain.hole": {fr: "trou", en: "hole"},
+  "guide.chain.p2": {fr: "2 · Le voisin entre à plat", en: "2 · The neighbor goes in flat"},
+  "guide.chain.flat": {fr: "voisin couché", en: "neighbor lying flat"},
+  "guide.chain.glued": {fr: "collés", en: "glued"},
+  "guide.chain.profile": {fr: "de profil :", en: "side view:"},
+  "guide.chain.layers": {fr: "2 × {t} mm", en: "2 × {t} mm"},
+  "guide.chain.p2a": {fr: "① Présente le voisin couché, en travers de la chaîne :", en: "① Hold the neighbor flat, across the chain:"},
+  "guide.chain.p2b": {fr: "son épaisseur passe juste dans la fente.", en: "its thickness just fits the slot."},
+  "guide.chain.p3": {fr: "3 · Quart de tour", en: "3 · Quarter turn"},
+  "guide.chain.p3a": {fr: "② Tourne le voisin d'un quart de tour dans le trou", en: "② Turn the neighbor a quarter turn in the hole"},
+  "guide.chain.p3b": {fr: "③ Tire-le au bout du trou : en tension, il reste", en: "③ Pull it to the end of the hole: under tension it stays"},
+  "guide.chain.p3c": {fr: "loin de la fente et ne peut plus ressortir.", en: "away from the slot and can't come out."},
+  "guide.chain.p4": {fr: "4 · L'embout", en: "4 · The end piece"},
+  "guide.chain.eye": {fr: "œil", en: "eye"},
+  "guide.chain.shoulder": {fr: "épaulement", en: "shoulder"},
+  "guide.chain.strip": {fr: "bande", en: "strip"},
+  "guide.chain.pin": {fr: "goupille", en: "pin"},
+  "guide.chain.p4a": {fr: "L'épaulement se pose sur la bande, le tenon", en: "The shoulder sits on the strip, the tab"},
+  "guide.chain.p4b": {fr: "traverse, la goupille bloque dessous.", en: "goes through, the pin locks it underneath."},
+  "guide.chain.p5": {fr: "5 · La chaîne du centre montée (vue de côté) : {n} maillon(s)", en: "5 · The assembled center chain (side view): {n} link(s)"},
+  "guide.chain.armTop": {fr: "bras du C du haut", en: "top C arm"},
+  "guide.chain.armBot": {fr: "bras du C du bas", en: "bottom C arm"},
+  "guide.chain.linkSide": {fr: "maillon de profil", en: "link, side view"},
+  "guide.chain.endFace": {fr: "embout de face", en: "end piece, front view"},
+  "guide.chain.pinShort": {fr: "goupille", en: "pin"},
+  "guide.chain.p6": {fr: "6 · La table montée (vue de côté, à l'échelle) : maillons par chaîne", en: "6 · The assembled table (side view, to scale): links per chain"},
+  "guide.chain.legC": {fr: "① Centre, entre les bras : 2 chaînes de {n} maillon(s) ({l} mm)", en: "① Center, between the arms: 2 chains of {n} link(s) ({l} mm)"},
+  "guide.chain.legR": {fr: "② Droite, bras → plateau du haut : 2 chaînes de {n} maillon(s) ({l} mm)", en: "② Right, arm → top plate: 2 chains of {n} link(s) ({l} mm)"},
+  "guide.chain.legL": {fr: "③ Gauche, plateau du bas → bras : 2 chaînes de {n} maillon(s) ({l} mm)", en: "③ Left, bottom plate → arm: 2 chains of {n} link(s) ({l} mm)"},
+  "guide.chain.legTot": {fr: "Total : {N} maillons", en: "Total: {N} links"},
+  "guide.chain.legEnds": {fr: "8 embouts à goupille (bras) + 4 affleurants (plateaux)", en: "8 pinned ends (arms) + 4 flush ends (plates)"},
+  "guide.chain.legPins": {fr: "8 goupilles", en: "8 pins"},
+  "guide.chain.legView": {fr: "Chaque chaîne est en double (devant et derrière) : de côté, on voit celle de devant.", en: "Each chain is doubled (front and back): from the side you see the front one."},
+  "guide.chain.hollowTop": {fr: "creux du C du haut", en: "inside the top C"},
+  "guide.chain.hollowBot": {fr: "creux du C du bas", en: "inside the bottom C"},
+  "guide.chain.note1": {fr: "Les pièces se croisent toujours à 90° : c'est ce qui permet à un maillon de passer dans le suivant. Les goupilles restent cachées dans le creux des C.", en: "Pieces always cross at 90°: that's what lets one link pass through the next. The pins stay hidden inside the C shapes."},
+  "guide.chain.note2": {fr: "Chaînes de côté : même principe ; l'embout côté plateau (dessous et dessus de la table) est affleurant, tenon collé à ras, sans goupille.", en: "Side chains: same idea; the end on the plate side (under and on top of the table) is flush, tab glued level, no pin."},
+  "guide.tense.center": {fr: "Liens du centre", en: "Center ties"},
+  "guide.tense.joinArm": {fr: "Trait orange = jonction de bande. Le petit bout (2/2) est le bout du bras : collé bout à bout, il porte les liens du centre.", en: "Orange mark = strip joint. The short piece (2/2) is the arm tip: glued end to end, it carries the center ties."},
+  "guide.tense.join": {fr: "Trait orange = jonction de bande : colle les morceaux bout à bout, les tenons dans les flancs tiennent la jonction.", en: "Orange mark = strip joint: glue the pieces end to end, the tabs in the flanks hold the joint."},
+  "notice.tense.joinArm": {fr: "Bande du C (2/2) = le bout du bras de chaque C (la bande est coupée au milieu du bras pour tenir sur le plateau) : colle-la bout à bout avec la grande bande, ses tenons dans les flancs. Ses 2 fentes reçoivent les liens du centre.", en: "C strip (2/2) = the tip of each C's arm (the strip is cut mid-arm to fit the bed): glue it end to end to the long strip, tabs into the flanks. Its 2 slots take the center ties."},
+  "guide.tense.centerSub": {fr: "portent tout le poids du haut", en: "carry the whole top"},
+  "guide.tense.side": {fr: "Liens de côté", en: "Side ties"},
+  "guide.tense.sideSub": {fr: "empêchent le haut de basculer", en: "keep the top from tilting"},
+  "guide.tense.note": {fr: "Deux C identiques : celui du haut est retourné. Bougie LED uniquement.", en: "Two identical C shapes: the top one is flipped. LED candle only."},
+  "model.tissue.name": {fr: "Mouchoirs", en: "Tissues"},
+  "model.tissue.desc": {fr: "Housse de boîte à mouchoirs sans fond, coins arrondis flexibles, dessus déco à fente : elle se pose sur la boîte du commerce.", en: "Bottomless tissue box cover, flexible rounded corners, decor top with a slot: it slips over a store-bought box."},
+  "grp.tissueBox": {fr: "Ta boîte de mouchoirs (mesurée)", en: "Your tissue box (measured)"},
+  "grp.tissueTop": {fr: "Dessus déco", en: "Decor top"},
+  "field.boxL": {fr: "Longueur de la boîte", en: "Box length"},
+  "field.boxW": {fr: "Largeur de la boîte", en: "Box width"},
+  "field.boxH": {fr: "Hauteur de la boîte", en: "Box height"},
+  "field.jeuBox": {fr: "Jeu autour de la boîte", en: "Clearance around the box"},
+  "ouvTop.fente": {fr: "Fente arrondie", en: "Rounded slot"},
+  "field.ouvPctLen": {fr: "Longueur de l'ouverture", en: "Opening length"},
+  "field.ouvW": {fr: "Largeur de la fente", en: "Slot width"},
+  "notice.tissue.dims": {fr: "Pour une boîte de {L}×{W}×{H} mm : housse de {oL}×{oW}×{oH} mm (dessus compris), coins de rayon {r} mm, bande de {P} mm en {n} morceau(x), sans fond.", en: "For a {L}×{W}×{H} mm box: cover {oL}×{oW}×{oH} mm (top included), corner radius {r} mm, strip of {P} mm in {n} piece(s), no bottom."},
+  "notice.tissue.assembly": {fr: "Montage : face gravée vers l'extérieur, plante les tenons de la bande dans le cadre du dessus (posé à l'envers sur la table) en partant d'un coin, colle au fur et à mesure, puis colle le dessus déco sur le cadre : il cache les tenons. La housse se pose sur la boîte, on la soulève pour changer de boîte.", en: "Assembly: engraved face outward, plug the strip's tabs into the top frame (upside down on the table) starting from a corner, glue as you go, then glue the decor top onto the frame: it hides the tabs. The cover slips over the box; lift it to swap boxes."},
+  "field.fondT": {fr: "Fond", en: "Bottom"},
+  "fondT.aucun": {fr: "Aucun (housse posée sur la boîte)", en: "None (cover over the box)"},
+  "fondT.coulissant": {fr: "Coulissant par l'arrière", en: "Sliding out the back"},
+  "piece.slideFrame": {fr: "Fond glissière (à tenons)", en: "Bottom slide frame (tabbed)"},
+  "piece.slideLedge": {fr: "Fond rebord (dessous)", en: "Bottom ledge (underneath)"},
+  "piece.slidePanel": {fr: "Fond coulissant", en: "Sliding bottom"},
+  "notice.tissue.dimsClosed": {fr: "Pour une boîte de {L}×{W}×{H} mm : boîte fermée de {oL}×{oW}×{oH} mm (dessus et fond compris), coins de rayon {r} mm, bande de {P} mm en {n} morceau(x).", en: "For a {L}×{W}×{H} mm box: closed box {oL}×{oW}×{oH} mm (top and bottom included), corner radius {r} mm, strip of {P} mm in {n} piece(s)."},
+  "notice.tissue.slide": {fr: "Fond coulissant de {w}×{d} mm : plante les tenons du bas dans le fond glissière (la face arrière n'a pas de tenon en bas, le fond passe dessous), colle le fond rebord sous la glissière, puis glisse le fond par l'arrière avec l'encoche. La recharge passe par une ouverture de {w} mm de large : baisse le rayon des coins pour l'élargir.", en: "Sliding bottom {w}×{d} mm: plug the bottom tabs into the slide frame (the back side has no bottom tabs, the bottom slides under it), glue the ledge under the slide frame, then slide the bottom in from the back using the notch. Refills go through a {w} mm wide opening: lower the corner radius to widen it."},
+  "guide.tissue.title": {fr: "Housse de boîte à mouchoirs (vue de face)", en: "Tissue box cover (front view)"},
+  "guide.tissue.box": {fr: "Boîte en carton du commerce", en: "Store-bought cardboard box"},
+  "guide.tissue.boxSub": {fr: "la housse se pose dessus, sans fond", en: "the cover slips over it, no bottom"},
+  "guide.tissue.note": {fr: "Mesure ta boîte au pied à coulisse : le jeu de 2 mm laisse la housse glisser sans flotter.", en: "Measure your box with calipers: the 2 mm clearance lets the cover slide on without wobbling."},
+  "guide.lightbox.note": {fr: "Bougie ou guirlande LED uniquement, jamais de vraie flamme.", en: "LED candle or string lights only, never a real flame."},
 };
 function tt(key, vars) {
   const e = I18N[key];
@@ -876,6 +1124,12 @@ const DECOR = [
   ["bord", "field.bord", 7, "mm", {min: 3, show: decoShown}],
   ["feston", "field.feston", 6, "mm", {min: 0, show: decoShown}],
 ];
+const TEXTURE = [
+  ["grp.texture"],
+  ["texture", "field.texture", "aucune", "", {options: () => textureOptions({aucune: tt("texture.none")})}],
+  ["texH", "field.texH", 150, "mm", {min: 20, show: v => !!v.texture && v.texture !== "aucune"}],
+  ["_texh", "", "", "", {html: () => `<p class="hint">${tt("hint.texture")}</p>`, show: v => !!v.texture && v.texture !== "aucune"}],
+];
 const TABS = {
   box: {label: "Boîte à encoches", fields: [
     ["grp.outerDims"],
@@ -885,7 +1139,7 @@ const TABS = {
     ["grp.compartments"],
     ["compX", "field.compX", 1, "", {min: 1, step: 1}],
     ["compY", "field.compY", 1, "", {min: 1, step: 1}],
-    ...DECOR, ...COMMON]},
+    ...DECOR, ...TEXTURE, ...COMMON]},
   shape: {label: "Boîte en forme (cœur…)", fields: [
     ["grp.shapeKind"],
     ["forme", "field.forme", "coeur", "", {options: () => ({coeur: tt("forme.coeur"), cercle: tt("forme.cercle"), ovale: tt("forme.ovale"), rect: tt("forme.rect"), hexa: tt("forme.hexa")})}],
@@ -911,7 +1165,10 @@ const TABS = {
     ["sangles", "field.sangles", 2, "", {min: 0, step: 1}],
     ["fermoir", "field.fermoir", true, "", {}],
     ["charnieres", "field.charnieres", true, "", {}],
-    ...HINGE, ...COMMON]},
+    ["feutrine", "field.feutrine", false, "", {}],
+    ["feltE", "field.feltE", 1.5, "mm", {step: 0.1, min: 0.3, show: v => v.feutrine}],
+    ["feltLid", "field.feltLid", true, "", {show: v => v.feutrine}],
+    ...HINGE, ...TEXTURE, ...COMMON]},
   orga: {label: "Organiseur", fields: [
     ["grp.organizer"],
     ["type", "field.type", "tiroirs", "", {options: () => ({tiroirs: tt("type.tiroirs"), bacs: tt("type.bacs")})}],
@@ -964,10 +1221,36 @@ const TABS = {
     ["grp.lantern"],
     ["motifs", "field.motifs", "mix", "", {options: () => ({mix: tt("motifs.mix"), citrouille: tt("hmotif.citrouille"), chat: tt("hmotif.chat"), fantome: tt("hmotif.fantome"), chauve: tt("hmotif.chauve"), lune: tt("hmotif.lune")})}],
     ["marge", "field.marge", 10, "mm", {min: 4}],
-    ["dessus", "field.dessusL", "cadre", "", {options: () => ({cadre: tt("dessusL.cadre"), ouvert: tt("dessusL.ouvert")})}],
-    ["cadreL", "field.cadreL", 14, "mm", {min: 6, show: v => v.dessus === "cadre"}],
+    ["dessus", "field.dessusL", "cadre", "", {options: () => ({cadre: tt("dessusL.cadre"), toit: tt("dessusL.toit"), ouvert: tt("dessusL.ouvert")})}],
+    ["cadreL", "field.cadreL", 14, "mm", {min: 6, show: v => v.dessus !== "ouvert"}],
+    ["hToit", "field.hToit", 40, "mm", {min: 10, show: v => v.dessus === "toit"}],
+    ["debordToit", "field.debordToit", 6, "mm", {min: 0, show: v => v.dessus === "toit"}],
     ["socle", "field.socle", true, "", {}],
     ["socleD", "field.socleD", 39, "mm", {step: 0.5, min: 20, show: v => v.socle}],
+    ...COMMON]},
+  hexa: {label: "Lanterne hexagonale", fields: [
+    ["grp.hexaBody"],
+    ["a", "field.hexSide", 52, "mm", {min: 25}],
+    ["H", "field.hauteur", 140, "mm", {min: 40}],
+    ["tabW", "field.tabW", 8, "mm", {min: 4}],
+    ["ovB", "field.ovBase", 5, "mm", {min: 0}],
+    ["porte", "field.porte", true, "", {}],
+    ["calque", "field.calque", false, "", {}],
+    ["socle", "field.socle", true, "", {}],
+    ["socleD", "field.socleD", 39, "mm", {step: 0.5, min: 20, show: v => v.socle}],
+    ["grp.hexaTop"],
+    ["ovT", "field.ovTop", 6, "mm", {min: 0}],
+    ["lant", "field.lanternon", true, "", {}],
+    ["a2", "field.lantSide", 26, "mm", {min: 12, show: v => v.lant}],
+    ["h2", "field.lantH", 28, "mm", {min: 10, show: v => v.lant}],
+    ["ov2", "field.ovChapeau", 4, "mm", {min: 0, show: v => v.lant}],
+    ["anneau", "field.anneau", true, "", {}],
+    ["grp.hexaMotifs"],
+    ["motifA", "field.motifA", "chateau", "", {options: () => motifOptions({aucun: tt("motif.none")})}],
+    ["motifB", "field.motifB", "chat", "", {options: () => motifOptions({aucun: tt("motif.none")})}],
+    ["motifPorte", "field.motifPorte", "A", "", {options: () => motifOptions({A: tt("motif.sameA"), B: tt("motif.sameB"), aucun: tt("motif.none")}), show: v => v.porte}],
+    ["motifLant", "field.motifLant", "aucun", "", {options: () => motifOptions({aucun: tt("motif.none")}), show: v => v.lant}],
+    ["_motifs", "", "", "", {html: () => motifHtml()}],
     ...COMMON]},
   advent: {label: "Calendrier de l'Avent", fields: [
     ["grp.advent"],
@@ -989,6 +1272,49 @@ const TABS = {
     ["texte", "field.texte", "Joyeux Noël", "", {text: true, show: v => v.fronton}],
     ["taille", "field.taille", 11, "mm", {step: 0.5, min: 3, show: v => v.fronton}],
     ...COMMON]},
+  lightbox: {label: "Boîte lumineuse", fields: [
+    ["grp.outerDims"],
+    ["W", "field.largeurExt", 120, "mm"], ["D", "field.profondeurExt", 120, "mm"], ["H", "field.hauteur", 110, "mm"],
+    ["rayon", "field.rayon", 18, "mm", {min: 4}],
+    ["grp.lightbox"],
+    ["fenetres", "field.fenetres", "rect", "", {options: () => ({aucune: tt("fenetres.aucune"), rect: tt("fenetres.rect"), feston: tt("fenetres.feston"), arche: tt("fenetres.arche")})}],
+    ["margeF", "field.margeF", 12, "mm", {min: 6, show: v => v.fenetres !== "aucune"}],
+    ["rayonF", "field.rayonF", 5, "mm", {min: 0, show: v => v.fenetres === "rect" || v.fenetres === "feston"}],
+    ["plaques", "field.plaques", true, "", {show: v => v.fenetres !== "aucune"}],
+    ["recouv", "field.recouv", 6, "mm", {min: 2, show: v => v.fenetres !== "aucune" && v.plaques}],
+    ["calque", "field.calqueLB", false, "", {show: v => v.fenetres !== "aucune" && v.plaques}],
+    ["porte", "field.porteLB", true, "", {}],
+    ["socle", "field.socle", true, "", {}],
+    ["socleD", "field.socleD", 39, "mm", {step: 0.5, min: 20, show: v => v.socle}],
+    ["grp.lightboxLid"],
+    ["ouvTop", "field.ouvTop", "cercle", "", {options: () => ({aucune: tt("ouvTop.aucune"), cercle: tt("ouvTop.cercle"), rect: tt("ouvTop.rect")})}],
+    ["ouvPct", "field.ouvPct", 70, "%", {min: 20, max: 95, show: v => v.ouvTop !== "aucune"}],
+    ...TABS_JOINT, ...HINGE, ...COMMON]},
+  tense: {label: "Table tensegrity", fields: [
+    ["grp.outerDims"],
+    ["W", "field.largeurExt", 140, "mm", {min: 60}], ["H", "field.tenseH", 170, "mm", {min: 60}], ["D", "field.profondeurExt", 90, "mm", {min: 30}],
+    ["grp.tense"],
+    ["ecart", "field.ecart", 50, "mm", {min: 20}],
+    ["depasse", "field.depasse", 12, "mm", {min: 4}],
+    ["rayon", "field.rayon", 18, "mm", {min: 5}],
+    ["bordC", "field.bordC", 15, "mm", {min: 6}],
+    ["motif", "field.motifFlanc", "treillis", "", {options: () => ({treillis: tt("motif.treillis"), aucun: tt("motif.aucun")})}],
+    ["lien", "field.lien", "chaine", "", {options: () => ({chaine: tt("lien.chaine"), ficelle: tt("lien.ficelle")})}],
+    ["trou", "field.trou", 2.5, "mm", {step: 0.1, min: 1, show: v => v.lien === "ficelle"}],
+    ["socle", "field.socle", true, "", {}],
+    ["socleD", "field.socleD", 39, "mm", {step: 0.5, min: 20, show: v => v.socle}],
+    ...TABS_JOINT, ...HINGE, ...COMMON]},
+  tissue: {label: "Boîte à mouchoirs", fields: [
+    ["grp.tissueBox"],
+    ["boxL", "field.boxL", 240, "mm", {min: 60}], ["boxW", "field.boxW", 120, "mm", {min: 40}], ["boxH", "field.boxH", 90, "mm", {min: 30}],
+    ["jeuBox", "field.jeuBox", 2, "mm", {step: 0.5, min: 0}],
+    ["rayon", "field.rayon", 15, "mm", {min: 4}],
+    ["fondT", "field.fondT", "aucun", "", {options: () => ({aucun: tt("fondT.aucun"), coulissant: tt("fondT.coulissant")})}],
+    ["grp.tissueTop"],
+    ["ouvTop", "field.ouvTop", "fente", "", {options: () => ({fente: tt("ouvTop.fente"), cercle: tt("ouvTop.cercle"), rect: tt("ouvTop.rect")})}],
+    ["ouvPct", "field.ouvPctLen", 60, "%", {min: 20, max: 95}],
+    ["ouvW", "field.ouvW", 30, "mm", {min: 10, show: v => v.ouvTop === "fente"}],
+    ...TABS_JOINT, ...HINGE, ...COMMON]},
 };
 
 // ---------- État ----------
@@ -1037,6 +1363,10 @@ const ICONS = {
   flame: "M8.5 14.5A2.5 2.5 0 0 0 11 17a2.5 2.5 0 0 0 2.5-2.5c0-1.38-.5-2-1-3 1.072-.144 2.054.063 3 1 1.5 1.5 2 3.5 2 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z",
   pumpkin: "M12 7c-5 0-8.5 2.8-8.5 6.8S7 21 12 21s8.5-3.2 8.5-7.2S17 7 12 7zM12 7V3.5l2-1M12 7c-2.2 2.5-2.2 11.5 0 14M12 7c2.2 2.5 2.2 11.5 0 14",
   calendar: "M3 4h18v17H3zM3 10.5h18M3 15.5h18M9 4v17M15 4v17",
+  hexa: "M12 2v2.5M9.5 4.5h5l1 3h-7zM7 8.5h10l3 6-3 6.5H7l-3-6.5z",
+  tense: "M3 21h11a4 4 0 0 0 4-4v-3a4 4 0 0 0-4-4H9M21 3H10a4 4 0 0 0-4 4v3a4 4 0 0 0 4 4h5M12 10v4",
+  tissue: "M3 11h18v9H3zM3 11l2-3h14l2 3M9 11c0-2.5 1.5-4.5 3-7 1.5 2.5 3 4.5 3 7",
+  gift: "M20 12v9H4v-9M2 7h20v5H2zM12 21V7M12 7H7.5a2.5 2.5 0 1 1 0-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 1 0 0-5C13 2 12 7 12 7z",
 };
 const icon = (n, s = 18) => `<svg class="ic" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${ICONS[n]}"/></svg>`;
 const MODELS = {
@@ -1046,9 +1376,13 @@ const MODELS = {
   orga: {icon: "lib", name: "model.orga.name", desc: "model.orga.desc"},
   tray: {icon: "layers", name: "model.tray.name", desc: "model.tray.desc"},
   lantern: {icon: "pumpkin", name: "model.lantern.name", desc: "model.lantern.desc"},
+  hexa: {icon: "hexa", name: "model.hexa.name", desc: "model.hexa.desc"},
   advent: {icon: "calendar", name: "model.advent.name", desc: "model.advent.desc"},
+  lightbox: {icon: "gift", name: "model.lightbox.name", desc: "model.lightbox.desc"},
+  tissue: {icon: "tissue", name: "model.tissue.name", desc: "model.tissue.desc"},
+  tense: {icon: "tense", name: "model.tense.name", desc: "model.tense.desc"},
 };
-const RIGHT = new Set(["grp.engrave", "grp.decor", "grp.material", "grp.labels"]);
+const RIGHT = new Set(["grp.engrave", "grp.decor", "grp.texture", "grp.hexaMotifs", "grp.material", "grp.labels"]);
 
 function buildActions() {
   $("#actions").innerHTML = `
@@ -1127,6 +1461,7 @@ function buildForm() {
   $("#reset").onclick = () => { delete state.values[state.tab]; save(); buildForm(); needFit = true; render(); toast(tt("toast.modelReset")); };
   const bl = $("#btnLocalFonts"); if (bl) bl.onclick = loadLocalFonts;
   const ff = $("#fontFile"); if (ff) ff.onchange = () => ff.files[0] && importFontFile(ff.files[0]);
+  const mf = $("#motifFile"); if (mf) mf.onchange = () => mf.files[0] && importMotif(mf.files[0]);
   const rc = $("#recenter"); if (rc) rc.onclick = e => { e.preventDefault(); const cur = state.values[state.tab] || {}; for (const k of ["tx1", "ty1", "tx2", "ty2"]) delete cur[k]; save(); render(); };
   if (state.tab === "tray") bindLayers();
 }
@@ -1304,27 +1639,226 @@ const GUIDE = {
     ${gCall(334, 240, 380, 240, tt("guide.tray.layer1"), [tt("guide.tray.layer1Sub")])}
     <text x="40" y="326" class="gm">${tt("guide.tray.footnote")}</text>`}),
   lantern: v => ({title: tt("guide.lantern.title"), svg: `
-    ${v.dessus === "cadre" ? `<rect x="80" y="40" width="240" height="12" rx="2" class="gw"/><rect x="112" y="40" width="176" height="12" class="gghost"/>` : ""}
-    <rect x="80" y="${v.dessus === "cadre" ? 52 : 40}" width="12" height="${v.dessus === "cadre" ? 198 : 210}" class="gw"/><rect x="308" y="${v.dessus === "cadre" ? 52 : 40}" width="12" height="${v.dessus === "cadre" ? 198 : 210}" class="gw"/>
+    ${v.dessus !== "ouvert" ? `<rect x="80" y="40" width="240" height="12" rx="2" class="gw"/><rect x="112" y="40" width="176" height="12" class="gghost"/>` : ""}
+    ${v.dessus === "toit" ? `<path d="M68 40L200 6L332 40Z" class="gw"/>${gCall(150, 22, 400, 18, tt("guide.lantern.roof"), [tt("guide.lantern.roofSub")], true)}` : ""}
+    <rect x="80" y="${v.dessus !== "ouvert" ? 52 : 40}" width="12" height="${v.dessus !== "ouvert" ? 198 : 210}" class="gw"/><rect x="308" y="${v.dessus !== "ouvert" ? 52 : 40}" width="12" height="${v.dessus !== "ouvert" ? 198 : 210}" class="gw"/>
     <rect x="92" y="60" width="216" height="186" class="gpanel"/>
     <path d="M165 112l13 20h-26zM235 112l13 20h-26zM200 146l8 13h-16zM150 172l12 6 9-7 10 7 9-7 10 7 9-7 10 7 9-7 12-6c-12 34-88 34-100 0z" class="gslot"/>
     <rect x="80" y="250" width="240" height="12" class="gbt"/>
     ${v.socle ? `<rect x="168" y="240" width="64" height="10" rx="2" class="gac"/><rect x="184" y="210" width="32" height="30" rx="5" class="gdk"/>` : ""}
-    ${v.dessus === "cadre" ? gCall(300, 46, 400, 50, tt("guide.lantern.top"), [tt("guide.lantern.topSub")], true) : ""}
+    ${v.dessus !== "ouvert" ? gCall(300, 46, 400, 60, tt("guide.lantern.top"), [tt("guide.lantern.topSub")], true) : ""}
     ${gCall(250, 150, 400, 112, tt("guide.lantern.walls"), [tt("guide.lantern.wallsSub")])}
     ${v.socle ? gCall(228, 245, 400, 196, tt("guide.lantern.ring"), [tt("guide.lantern.ringSub")], true) : ""}
     ${gCall(300, 256, 400, 262, tt("guide.box.bottomFinger"))}
     <text x="40" y="318" class="gm">${tt("guide.lantern.vellum")}</text>`}),
+  hexa: v => ({title: tt("guide.hexa.title"), svg: `
+    ${v.anneau ? `<circle cx="200" cy="${v.lant ? 22 : 62}" r="11" class="gw"/><circle cx="200" cy="${v.lant ? 22 : 62}" r="6" class="gghost"/>` : ""}
+    ${v.lant ? `<rect x="164" y="34" width="72" height="9" rx="2" class="gw"/><rect x="172" y="43" width="56" height="30" class="gpanel"/><path d="M190 43v30M210 43v30" class="gdkline"/>` : ""}
+    <rect x="90" y="73" width="220" height="11" rx="2" class="gw"/>
+    <rect x="104" y="84" width="192" height="196" class="gpanel"/><path d="M152 84v196M248 84v196" class="gdkline"/>
+    <rect x="96" y="280" width="208" height="11" rx="2" class="gbt"/>
+    ${gCall(290, 78, 400, 70, tt("guide.hexa.top"), [tt("guide.hexa.topSub")], true)}
+    ${gCall(270, 180, 400, 170, tt("guide.hexa.body"), [tt("guide.hexa.bodySub")])}
+    ${gCall(300, 286, 400, 270, tt("guide.box.bottomFinger"))}
+    <text x="40" y="318" class="gm">${tt("notice.hexa.corners")}</text>`}),
+  lightbox: v => {
+    const win = v.fenetres === "arche" ? `<path d="M140 232V140A60 60 0 0 1 260 140V232Z" class="gslot"/>`
+      : v.fenetres === "feston" ? `<path d="M152 92H248A12 12 0 0 0 260 104V220A12 12 0 0 0 248 232H152A12 12 0 0 0 140 220V104A12 12 0 0 0 152 92Z" class="gslot"/>`
+      : v.fenetres === "rect" ? `<rect x="140" y="92" width="120" height="140" rx="8" class="gslot"/>` : "";
+    const tree = win ? `<path d="M200 118l26 40h-12l20 32h-16l18 26h-72l18-26h-16l20-32h-12z" class="gdk"/>` : "";
+    return {title: tt("guide.lightbox.title"), svg: `
+      <rect x="70" y="34" width="260" height="12" rx="3" class="gw"/><rect x="70" y="46" width="260" height="12" rx="3" class="gbt"/>
+      <rect x="78" y="58" width="244" height="188" rx="24" class="gpanel"/>
+      ${[0, 1, 2, 3, 4, 5].map(i => `<line x1="${84 + i * 4}" y1="${i % 2 ? 62 : 70}" x2="${84 + i * 4}" y2="${i % 2 ? 242 : 234}" class="ghg"/><line x1="${316 - i * 4}" y1="${i % 2 ? 62 : 70}" x2="${316 - i * 4}" y2="${i % 2 ? 242 : 234}" class="ghg"/>`).join("")}
+      ${win}${tree}
+      <rect x="66" y="246" width="268" height="12" class="gbt"/>
+      ${v.socle ? `<rect x="250" y="236" width="40" height="10" rx="2" class="gac"/><rect x="260" y="212" width="20" height="24" rx="4" class="gdk"/>` : ""}
+      ${gCall(300, 41, 400, 40, tt("guide.lightbox.lid"), [tt("guide.lightbox.lidSub")], true)}
+      ${win ? gCall(240, 130, 400, 110, tt("guide.lightbox.window"), [tt("guide.lightbox.windowSub")]) : ""}
+      ${gCall(312, 180, 400, 180, tt("guide.lightbox.corner"), [tt("guide.lightbox.cornerSub")], true)}
+      ${gCall(300, 52, 400, 70, tt("piece.topFrame"), [tt("guide.lightbox.frameSub")])}
+      ${v.porte ? `<text x="40" y="300" class="gm">${tt("guide.lightbox.door")}</text>` : ""}
+      ${gCall(300, 252, 400, 252, tt("piece.bottom"))}
+      <text x="40" y="318" class="gm">${tt("guide.lightbox.note")}</text>`};
+  },
+  tense: v => ({title: tt("guide.tense.title"), svg: `
+    <path d="M60 290H290A22 22 0 0 0 312 268V182A22 22 0 0 0 290 160H190" class="gstrip" fill="none" stroke-width="9"/>
+    <path d="M330 40H100A22 22 0 0 0 78 62V188A22 22 0 0 0 100 210H210" class="gstrip" fill="none" stroke-width="9"/>
+    <path d="M200 160V210M110 210V290M280 160V40" class="gar2" stroke-dasharray="3 3"/>
+    ${v.socle ? `<rect x="185" y="22" width="50" height="10" rx="2" class="gac"/><rect x="198" y="2" width="24" height="20" rx="4" class="gdk"/>` : ""}
+    ${gCall(200, 185, 400, 180, tt("guide.tense.center"), [tt("guide.tense.centerSub")], true)}
+    ${gCall(280, 100, 400, 100, tt("guide.tense.side"), [tt("guide.tense.sideSub")])}
+    ${gCall(110, 250, 400, 250, tt("guide.tense.side"), [tt("guide.tense.sideSub")])}
+    ${tenseCuts.map(({part, f}) => {
+      // Jonction de bande : trait en travers de la bande sur les deux C (même position, le C du haut est retourné)
+      const [a, b] = part === "a" ? [[290 - 100 * f, 160], [100 + 110 * f, 210]] : part === "w" ? [[312, 268 - 86 * f], [78, 62 + 126 * f]] : [[60 + 230 * f, 290], [330 - 230 * f, 40]];
+      return [a, b].map(([x, y]) => part === "w" ? `<path d="M${f3(x - 11)} ${f3(y)}h22" stroke="var(--accent)" stroke-width="3"/>` : `<path d="M${f3(x)} ${f3(y - 11)}v22" stroke="var(--accent)" stroke-width="3"/>`).join("")
+        + (part === "a" ? `<text x="${f3(100 + 110 * f)}" y="232" class="go" text-anchor="middle">2/2</text><text x="${f3(290 - 100 * f)}" y="148" class="go" text-anchor="middle">2/2</text>` : "");
+    }).join("")}
+    <text x="40" y="318" class="gm">${tt("guide.tense.note")}</text>
+    ${tenseCuts.length ? `<text x="40" y="336" class="gm">${tt(tenseCuts.some(c => c.part === "a") ? "guide.tense.joinArm" : "guide.tense.join")}</text>` : ""}`}),
+  tissue: v => ({title: tt("guide.tissue.title"), svg: `
+    <rect x="70" y="60" width="260" height="11" rx="3" class="gw"/><rect x="70" y="71" width="260" height="11" rx="3" class="gbt"/>
+    <rect x="${v.ouvTop === "fente" ? 130 : 160}" y="60" width="${v.ouvTop === "fente" ? 140 : 80}" height="11" rx="5" class="gghost"/>
+    <path d="M175 62c5-30 45-30 50 0" class="gpanel"/>
+    <rect x="78" y="82" width="244" height="150" rx="20" class="gpanel"/>
+    ${[0, 1, 2, 3, 4, 5].map(i => `<line x1="${84 + i * 4}" y1="${i % 2 ? 86 : 94}" x2="${84 + i * 4}" y2="${i % 2 ? 228 : 220}" class="ghg"/><line x1="${316 - i * 4}" y1="${i % 2 ? 86 : 94}" x2="${316 - i * 4}" y2="${i % 2 ? 228 : 220}" class="ghg"/>`).join("")}
+    <rect x="98" y="92" width="204" height="140" rx="3" class="gghost"/>
+    <path d="M70 250h260" class="gar2" stroke-dasharray="4 3"/>
+    ${gCall(300, 64, 400, 50, tt("guide.lightbox.lid"), [tt("guide.lightbox.lidSub")], true)}
+    ${gCall(300, 77, 400, 95, tt("piece.topFrame"), [tt("guide.lightbox.frameSub")])}
+    ${gCall(250, 160, 400, 150, tt("guide.tissue.box"), [tt("guide.tissue.boxSub")])}
+    ${gCall(312, 200, 400, 205, tt("guide.lightbox.corner"), [tt("guide.lightbox.cornerSub")], true)}
+    <text x="40" y="300" class="gm">${tt("guide.tissue.note")}</text>`}),
   advent: v => {
     const g = GUIDE.orga({...v, type: "tiroirs", etiquettes: adventNumbers(v).join(",")});
     return {title: tt("guide.advent.title"), svg: g.svg + (v.fronton ? `<text x="40" y="318" class="gm">${tt("guide.advent.pediment")}</text>` : "")};
   },
 };
+// Schéma des chaînes en bois, à l'échelle (mêmes cotes que genTense)
+function chainGuideSvg(v) {
+  const t = v.t, {cb, Wi, Wo, gap, Li, Lo, tcw, aeMin, fit} = chainDims(t), Sc = v.ecart - 2 * t;
+  const {n, ae} = fit(Sc);
+  const A = "#ecd2a2", B = "#c98f4e", LN = "#7a4a1c", PL = "#a89b86", HOLE = "var(--panel2)", out = [];
+  const P = (pts, S, ox, oy) => "M" + pts.map(([x, y]) => `${f3(ox + x * S)},${f3(oy + y * S)}`).join("L") + "Z";
+  const path = (pts, S, ox, oy, fill, op = 1) => out.push(`<path d="${P(pts, S, ox, oy)}" fill="${fill}" fill-opacity="${op}" stroke="${LN}" stroke-width="1.3" stroke-linejoin="round"/>`);
+  const rect = (x, y, w, h, fill, extra = "") => out.push(`<rect x="${f3(x)}" y="${f3(y)}" width="${f3(w)}" height="${f3(h)}" fill="${fill}" stroke="${LN}" stroke-width="1.2" ${extra}/>`);
+  const T = (x, y, s, cls = "gm", anchor = "start") => out.push(`<text x="${f3(x)}" y="${f3(y)}" class="${cls}" text-anchor="${anchor}">${esc(s)}</text>`);
+  const ar = (x1, y1, x2, y2, col = "var(--accent)") => {
+    const a = Math.atan2(y2 - y1, x2 - x1), h = 7;
+    out.push(`<line x1="${f3(x1)}" y1="${f3(y1)}" x2="${f3(x2)}" y2="${f3(y2)}" stroke="${col}" stroke-width="1.8"/><path d="M${f3(x2)},${f3(y2)}L${f3(x2 - h * Math.cos(a - .45))},${f3(y2 - h * Math.sin(a - .45))}L${f3(x2 - h * Math.cos(a + .45))},${f3(y2 - h * Math.sin(a + .45))}Z" fill="${col}"/>`);
+  };
+  const dimV = (x, y1, y2, s) => { out.push(`<line x1="${f3(x)}" y1="${f3(y1)}" x2="${f3(x)}" y2="${f3(y2)}" stroke="var(--muted)" stroke-dasharray="3 2"/>`); T(x + 6, (y1 + y2) / 2 + 4, s); };
+  const dimH = (x1, x2, y, s) => { out.push(`<line x1="${f3(x1)}" y1="${f3(y)}" x2="${f3(x2)}" y2="${f3(y)}" stroke="var(--muted)" stroke-dasharray="3 2"/>`); T((x1 + x2) / 2, y + 14, s, "gm", "middle"); };
+  const mm = x => f1(x) + " mm";
+  // Demi-maillon ouvert à gauche (side 1) ou à droite (-1)
+  const half = side => {
+    const r = Wo / 2, rr = Wi / 2, cT = r, cB = Lo - r, ym = Lo / 2, p = [[0, ym - gap / 2], [0, cT]];
+    arc(r, cT, r, Math.PI, 2 * Math.PI, p); p.push([Wo, cB]); arc(r, cB, r, 0, Math.PI, p);
+    p.push([0, ym + gap / 2], [cb, ym + gap / 2], [cb, cB]); arc(r, cB, rr, Math.PI, 0, p);
+    p.push([Wo - cb, cT]); arc(r, cT, rr, 2 * Math.PI, Math.PI, p); p.push([cb, ym - gap / 2]);
+    return side > 0 ? p : p.map(([x, y]) => [Wo - x, y]);
+  };
+  // Embout de face, y vers le bas, épaulement en y = 0, chaîne vers le haut (dir = 1) ou le bas (-1)
+  const endP = (dir, aa = ae, pin = true) => {
+    const ub = pin ? -2 * t - 2.55 : -(t - 0.2), top = aa + cb, uc = top - Wo / 2, p = [[-tcw / 2, ub], [-tcw / 2, 0], [-Wo / 2, 0], [-Wo / 2, uc]];
+    arc(0, uc, Wo / 2, Math.PI, 0, p); p.push([Wo / 2, 0], [tcw / 2, 0], [tcw / 2, ub]);
+    const ri = Wi / 2, h = arc(0, cb + ri, ri, Math.PI, 2 * Math.PI, []); arc(0, aa - ri, ri, 0, Math.PI, h);
+    const q = (t + .15) / 2, ph = [[-q, -t + .5], [q, -t + .5], [q, -2 * t - .05], [-q, -2 * t - .05]];
+    const f = pts => pts.map(([x, u]) => [x, -dir * u]);
+    return {p: f(p), h: f(h), ph: pin ? f(ph) : null};
+  };
+  const endFace = (S, cx, y, dir, aa = ae, pin = true) => {
+    const e = endP(dir, aa, pin); path(e.p, S, cx, y, A); path(e.h, S, cx, y, HOLE);
+    if (pin) { path(e.ph, S, cx, y, HOLE); rect(cx - t / 2 * S, y + (dir > 0 ? t : -2 * t) * S, t * S, t * S, "var(--accent)"); }
+  };
+  out.push(`<path d="M480 10V630M10 320H950M10 650H950" stroke="var(--line)" stroke-width="1"/>`);
+  // 1. Le maillon
+  { const S = 6.5, ox = 170, oy = 60; out.push(`<g transform="translate(0,0)">`);
+    T(10, 24, tt("guide.chain.p1"), "gt");
+    path(half(1), S, ox, oy, A);
+    ar(20, oy + Lo / 2 * S, ox - 5, oy + Lo / 2 * S); T(20, oy + Lo / 2 * S - 10, tt("guide.chain.opening", {g: f1(gap)}), "go");
+    T(ox + Wo / 2 * S, oy + Wo / 2 * S + 4, tt("guide.chain.hole"), "gm", "middle");
+    dimH(ox, ox + Wo * S, oy + Lo * S + 12, mm(Wo)); dimV(ox + Wo * S + 12, oy, oy + Lo * S, mm(Lo));
+    T(10, 280, tt("guide.chain.p1a")); T(10, 296, tt("guide.chain.p1b")); out.push("</g>"); }
+  // 2. Le voisin entre à plat : vu de face, il est couché (son épaisseur t passe dans la fente)
+  { const S = 6, x0 = 10, ox = 250, oy = 80, ym = Lo / 2; out.push(`<g transform="translate(480,0)">`);
+    T(x0, 24, tt("guide.chain.p2"), "gt");
+    path(half(1), S, ox, oy, A);
+    rect(ox - (Lo - cb - 1) * S, oy + (ym - t / 2) * S, Lo * S, t * S, B, `rx="4"`);
+    ar(ox - (Lo - cb - 1) * S - 40, oy + ym * S, ox - (Lo - cb - 1) * S - 6, oy + ym * S); T(ox - (Lo - cb - 1) * S - 40, oy + ym * S - 10, "①", "go");
+    T(ox + Wo * S + 10, oy + 14, tt("guide.chain.flat"));
+    T(x0, 280, tt("guide.chain.p2a")); T(x0, 296, tt("guide.chain.p2b")); out.push("</g>"); }
+  // 3. Quart de tour puis au bout du trou
+  { const S = 6, x0 = 10, ox = 210, oy = 110; out.push(`<g transform="translate(0,330)">`);
+    T(x0, 24, tt("guide.chain.p3"), "gt");
+    path(half(1), S, ox, oy, A);
+    rect(ox + (Wo / 2 - t / 2) * S, oy + (2 * cb - Lo) * S, t * S, Lo * S, B, `rx="4"`);
+    out.push(`<path d="M${f3(ox - 30)} ${f3(oy + Lo * S * .62)}a26 26 0 0 1 22 -30" fill="none" stroke="var(--accent)" stroke-width="1.8"/>`);
+    T(ox - 46, oy + Lo * S * .62 + 14, "②", "go");
+    ar(ox + Wo * S + 16, oy + (Lo / 2 + 3) * S, ox + Wo * S + 16, oy + (cb + 2) * S); T(ox + Wo * S + 24, oy + Lo / 2 * S, "③", "go");
+    T(x0, 264, tt("guide.chain.p3a")); T(x0, 280, tt("guide.chain.p3b")); T(x0, 296, tt("guide.chain.p3c")); out.push("</g>"); }
+  // 4. L'embout
+  { const S = 6, x0 = 10, cx = 170, y = 205; out.push(`<g transform="translate(480,330)">`);
+    T(x0, 24, tt("guide.chain.p4"), "gt");
+    rect(x0, y, cx - tcw / 2 * S - x0, t * S, PL); rect(cx + tcw / 2 * S, y, x0 + 420 - cx - tcw / 2 * S, t * S, PL);
+    endFace(S, cx, y, 1);
+    const xl = cx + Wo / 2 * S + 8;
+    T(xl, y - (ae - Wi / 2) * S, tt("guide.chain.eye")); T(xl, y - 6, tt("guide.chain.shoulder"));
+    T(x0 + 420, y + t * S + 16, tt("guide.chain.strip"), "gm", "end"); T(cx - tcw / 2 * S - 8, y + 2 * t * S + 4, tt("guide.chain.pin"), "go", "end");
+    T(x0, 280, tt("guide.chain.p4a")); T(x0, 296, tt("guide.chain.p4b")); out.push("</g>"); }
+  // 5. Chaîne du centre montée
+  { const S = 5, cx = 480, yTop = 740, yBot = yTop + Sc * S;
+    T(10, 680, tt("guide.chain.p5", {n}), "gt");
+    const plate = (y, lbl) => { rect(cx - 220, y, 440, t * S, PL); out.push(`<rect x="${f3(cx - (tcw / 2 + .15) * S)}" y="${f3(y)}" width="${f3((tcw + .3) * S)}" height="${f3(t * S)}" fill="${HOLE}"/>`); T(cx + 228, y + t * S / 2 + 4, lbl); };
+    plate(yTop - t * S, tt("guide.chain.armBot")); plate(yBot, tt("guide.chain.armTop"));
+    endFace(S, cx, yTop, -1);
+    // Embout du bas : de face si le nombre de maillons est impair, de profil sinon
+    if (n % 2) endFace(S, cx, yBot, 1);
+    else { rect(cx - t / 2 * S, yBot - (ae + cb) * S, t * S, (ae + cb + 2 * t + 2.55) * S, A); rect(cx - 7 * S, yBot + t * S, 14 * S, t * S, "var(--accent)"); }
+    for (let i = 0; i < n; i++) {
+      const c = ae + i * Li, y0 = yTop + (c - cb) * S;
+      if (i % 2 === 0) rect(cx - t / 2 * S, y0, t * S, Lo * S, B, `fill-opacity=".9"`);
+      else path(half(1), S, cx - Wo / 2 * S, y0, B);
+    }
+    const ym = yTop + (ae + Li / 2) * S;
+    ar(cx + 130, ym, cx + t * S + 4, ym, "var(--muted)"); T(cx + 136, ym + 4, tt("guide.chain.linkSide"));
+    ar(cx - 130, yTop + 28, cx - Wo / 2 * S - 4, yTop + 28, "var(--muted)"); T(cx - 136, yTop + 32, tt("guide.chain.endFace"), "gm", "end");
+    ar(cx + 70, yTop - 1.5 * t * S, cx + t * S, yTop - 1.5 * t * S); T(cx + 76, yTop - 1.5 * t * S + 4, tt("guide.chain.pinShort"), "go");
+    ar(cx + 70, yBot + 2.5 * t * S, cx + t * S, yBot + 2.5 * t * S); T(cx + 76, yBot + 2.5 * t * S + 4, tt("guide.chain.pinShort"), "go");
+    dimV(cx - 260, yTop, yBot, mm(Sc));
+    T(cx - 60, yTop - 2 * t * S - 4, tt("guide.chain.hollowTop"), "gm", "end"); T(cx - 60, yBot + 3 * t * S + 12, tt("guide.chain.hollowBot"), "gm", "end");
+    T(10, yBot + 3 * t * S + 44, tt("guide.chain.note1")); T(10, yBot + 3 * t * S + 60, tt("guide.chain.note2")); }
+  // 6. Table montée, vue de côté à l'échelle, avec le nombre de maillons par chaîne
+  let hTot;
+  { const y0 = 740 + Sc * 5 + 15 * t + 100, W = v.W, H = v.H, e = v.depasse, bord = v.bordC, m = v.rebord;
+    const Hc = (H + v.ecart) / 2, La = W / 2 + e, R = Math.max(t + 2, Math.min(v.rayon, (Hc - 4) / 2, La - 12)), rho = R - t / 2;
+    const Ss = H - Hc - t, {n: nS, ae: aeS} = fit(Ss);
+    const S = Math.min(3, 420 / H, 440 / W), ox = 60, oy = y0 + 40 + H * S, X = x => ox + x * S, Y = y => oy - y * S;
+    out.push(`<path d="M10 ${f3(y0 - 24)}H950" stroke="var(--line)" stroke-width="1"/>`);
+    T(10, y0, tt("guide.chain.p6"), "gt");
+    // Flancs (ce qu'on voit de côté) : bande épaisse le long du C, le C du haut retourné
+    const d0 = (t / 2 + m - bord) / 2, Tw = t / 2 + m + bord;
+    const cP = (d, flip) => { const r = rho + d, p = [[0, t / 2 - d]]; arc(W - R, R, r, -Math.PI / 2, 0, p); arc(W - R, Hc - R, r, 0, Math.PI / 2, p); p.push([W - La, Hc - t / 2 + d]); return flip ? p.map(([x, y]) => [W - x, H - y]) : p; };
+    for (const flip of [false, true]) {
+      const pts = cP(d0, flip).map(([x, y]) => `${f3(X(x))},${f3(Y(y))}`).join(" ");
+      out.push(`<polyline points="${pts}" fill="none" stroke="${LN}" stroke-width="${f3(Tw * S + 2)}" stroke-linejoin="round"/><polyline points="${pts}" fill="none" stroke="${A}" stroke-width="${f3(Tw * S)}" stroke-linejoin="round"/>`);
+    }
+    // Chaîne entre la surface yA (C du bas, embout de face) et yB (C du haut)
+    const chainAt = (x, yA, yB, nn, aa, flushA, flushB, lbl) => {
+      const dir = yB > yA ? 1 : -1, cx = X(x), at = u => Y(yA + dir * u), L = Math.abs(yB - yA);
+      for (let i = 0; i < nn; i++) {
+        const c = aa + i * Li, ya = Math.min(at(c - cb), at(c + Li + cb)), yb = Math.max(at(c - cb), at(c + Li + cb));
+        if (i % 2 === 0) rect(cx - t / 2 * S, ya, t * S, yb - ya, B);
+        else path(half(1), S, cx - Wo / 2 * S, ya, B);
+      }
+      endFace(S, cx, Y(yA), dir, aa, !flushA);
+      if (nn % 2) endFace(S, cx, Y(yB), -dir, aa, !flushB);
+      else {
+        const ya = Math.min(Y(yB), at(L - aa - cb)), yb = Math.max(Y(yB), at(L - aa - cb)); rect(cx - t / 2 * S, ya, t * S, yb - ya, A);
+        if (!flushB) rect(cx - 7 * S, Math.min(Y(yB + dir * t), Y(yB + dir * 2 * t)), 14 * S, t * S, "var(--accent)");
+      }
+      T(cx + Wo / 2 * S + 6, (Y(yA) + Y(yB)) / 2 + 4, lbl, "go");
+    };
+    chainAt(W / 2, Hc - t, H - Hc + t, n, ae, false, false, "①");
+    chainAt(W - R - 8, Hc, H - t, nS, aeS, false, true, "②");
+    chainAt(R + 8, t, H - Hc, nS, aeS, true, false, "③");
+    // Légende : nombre de maillons par partie
+    const lx = ox + W * S + 70, N = 2 * n + 4 * nS;
+    [[tt("guide.chain.legC", {n, l: f1(Sc)}), "go"], [tt("guide.chain.legR", {n: nS, l: f1(Ss)}), "go"], [tt("guide.chain.legL", {n: nS, l: f1(Ss)}), "go"],
+     ["", ""], [tt("guide.chain.legTot", {N, h: 2 * N}), "gt"], [tt("guide.chain.legEnds"), "gm"], [tt("guide.chain.legPins"), "gm"], ["", ""], [tt("guide.chain.legView"), "gm"]]
+      .forEach(([str, c], i) => { if (str) T(lx, y0 + 60 + i * 22, str, c); });
+    hTot = oy + 30; }
+  return {svg: out.join(""), h: hTot};
+}
 function openGuide() {
   modalRefresh = openGuide;
   const v = vals(), g = GUIDE[state.tab](v);
+  let extra = "";
+  if (state.tab === "tense" && v.lien === "chaine") try { const c = chainGuideSvg(v);
+    extra = `<h3 class="gd-h">${tt("guide.chain.title")}</h3><div class="gd"><svg viewBox="0 0 960 ${f3(c.h)}" role="img" aria-label="${esc(tt("guide.chain.title"))}">${c.svg}</svg></div>`; } catch (e) { extra = ""; }
   openModal(`<h2>${g.title}</h2><p>${tt("guide.heading")}</p>
-    <div class="gd"><svg viewBox="0 0 640 345" role="img" aria-label="${esc(g.title)}">${G_DEFS}${g.svg}</svg></div>
+    <div class="gd"><svg viewBox="0 0 640 345" role="img" aria-label="${esc(g.title)}">${G_DEFS}${g.svg}</svg></div>${extra}
     <h3 class="gd-h">${tt("guide.notice")}</h3><ul class="notice">${lastInfo.map(i => `<li>${esc(i)}</li>`).join("")}</ul>`, true);
 }
 const MATERIALS = [
@@ -1559,15 +2093,17 @@ function rectPiece(name, w, h) { return {name, w, h, els: [{k: "cut", d: polyD([
 
 // Charnière flexible : colonnes de coupes décalées, bord plein conservé en haut et en bas
 // Une colonne sur deux débouche sur les bords y0 / y1 (sinon la bande pleine le long du bord raidit le cintrage
-// et casse), sauf au droit d'un tenon (centres tabsTop / tabsBot, largeur tw) qui garde son pont plein
+// et casse). Au droit d'un tenon (centres tabsTop / tabsBot, largeur tw), elle traverse aussi le tenon jusqu'à son bout :
+// un tenon plein dans un coin ne plie pas et casse la bande (testé en vrai sur la table tensegrity)
 function hinge(x0, x1, y0, y1, v, tabsTop = [], tabsBot = [], tw = 0) {
   const p = v.hCut + v.hBridge; let d = "";
-  const top = y0 + v.hBridge, bot = y1 - v.hBridge, near = (cs, x) => cs.some(c => Math.abs(x - c) < tw / 2 + 1.5);
+  const top = y0 + v.hBridge, bot = y1 - v.hBridge, inTab = (cs, x) => cs.some(c => Math.abs(x - c) < tw / 2 - 0.3), tip = v.t + 0.2;
   let col = 0;
   for (let x = x0; x <= x1 + 1e-6; x += v.hSpace, col++) {
     const off = col % 2 ? p / 2 : 0, open = col % 2 === 1;
-    const lo = open && !near(tabsTop, x) ? y0 : top, hi = open && !near(tabsBot, x) ? y1 : bot;
-    for (let s = top - p + off; s < hi; s += p) {
+    const lo = open ? (inTab(tabsTop, x) ? y0 - tip : y0) : top, hi = open ? (inTab(tabsBot, x) ? y1 + tip : y1) : bot;
+    let s0 = top - p + off; while (s0 > lo) s0 -= p;
+    for (let s = s0; s < hi; s += p) {
       const a = Math.max(s, lo), b = Math.min(s + v.hCut, hi);
       if (b - a > 1) d += `M${f3(x)},${f3(a)}V${f3(b)}`;
     }
@@ -1753,6 +2289,9 @@ function genBox(v) {
     }
     info.unshift(tt("notice.box.dims", {L, W, H, iL: f1(L - 2 * t), iW: f1(W - 2 * t), iH: f1(H - t)}));
   }
+  // Texture : faces visibles de l'extérieur (parois et couvercle)
+  const texNames = new Set(["piece.front", "piece.frontLow", "piece.back", "piece.sideLeft", "piece.sideRight", "piece.lid", "piece.top", "piece.slidingLid"].map(k => tt(k)));
+  for (const p of pieces) if (texNames.has(p.name)) p.tex = true;
   const deco = [1, 2, 3, 4].flatMap(i => decorRect(v, pieces[i].name.replace(/ \(.*\)/, ""), pieces[i].w, pieces[i].h, pieces[i]));
   if (deco.length) info.push(tt("notice.decor.plates"));
   pieces.push(...deco);
@@ -1760,6 +2299,7 @@ function genBox(v) {
   const ih = {coulissant: H - 4 * t - 0.4, ferme: H - 2 * t, pose: H - 2 * t, aucun: H - t}[mode];
   const comp = compartments(tt("piece.cellPrefix"), L - 2 * t, W - 2 * t, ih, Math.round(v.compX || 1), Math.round(v.compY || 1), v);
   if (comp.length) { pieces.push(...comp); info.push(tt("notice.box.compartments", {cx: Math.round(v.compX), cy: Math.round(v.compY), h: f1(ih - 1)})); }
+  applyTexture(pieces, v);
   return {pieces, info, warns};
 }
 const f1 = n => (Math.round(n * 10) / 10).toString().replace(".", ",");
@@ -1833,6 +2373,7 @@ function genChest(v) {
       {name: tt("piece.sideRight"), w: W, h: H, els: [{k: "cut", d: polyD(circleEdit(side, ax, he, nr, "cut"))}]},
     ];
   } else pieces = fingerBox(L, W, H, t, kerf, v.doigt);
+  for (const i of [1, 2, 3, 4]) pieces[i].tex = true; // texture : faces du corps (flancs et couvercle marqués plus bas)
   // Arc extérieur du panneau : corde W, flèche S, posé sur les parties droites de hauteur hb
   const Rc = (W * W / 4 + S * S) / (2 * S), cy = hb + S - Rc;
   // Fibre neutre du panneau (à t/2 de l'extérieur) : montant, arc, montant
@@ -1858,17 +2399,30 @@ function genChest(v) {
   const fw0 = b[2] - b[0], mirX = d => hinges ? mapD(d, (x, y) => [fw0 - x, y]) : d;
   for (const [nm, left] of [[tt("piece.flankLeft"), true], [tt("piece.flankRight"), false]]) {
     const els = [{k: "cut", d: polyD(sh(F))}, {k: "cut", d: slots + pinHole}];
-    pieces.push({name: nm, w: fw0, h: b[3] - b[1], els: left ? els.map(e => ({...e, d: mirX(e.d)})) : els});
+    pieces.push({name: nm, w: fw0, h: b[3] - b[1], tex: true, els: left ? els.map(e => ({...e, d: mirX(e.d)})) : els});
   }
   const s = stripPoly(Lp, L - 2 * t, t, tabs, tabs, v.tabW + kerf);
-  pieces.push({name: tt("piece.flexLid"), w: Lp, h: s.h, els: [{k: "cut", d: polyD(s.pts)}, {k: "cut", d: hinge(Math.max(3, yN - 2), Math.min(Lp - 3, yN + arcLen + 2), s.y0, s.y1, v, tabs, tabs, v.tabW + kerf)}]});
+  pieces.push({name: tt("piece.flexLid"), w: Lp, h: s.h, tex: true, texRot: 90, els: [{k: "cut", d: polyD(s.pts)}, {k: "cut", d: hinge(Math.max(3, yN - 2), Math.min(Lp - 3, yN + arcLen + 2), s.y0, s.y1, v, tabs, tabs, v.tabW + kerf)}]});
   info.push(tt("notice.chest.dims", {L, W, H, hs: f1(hb + S), Lp: f1(Lp), tabs: tabs.length * 2}));
   info.push(tt(hinges ? "notice.chest.assemblyWood" : "notice.chest.assembly", {m: f1(m)}));
   if (hinges) info.push(tt("notice.chest.hinges"));
 
   // --- Habillage ---
   // Côtés avec charnière : même arrondi creusé autour de la languette du flanc
-  const deco = [1, 2].flatMap(i => decorRect(v, pieces[i].name, pieces[i].w, pieces[i].h, pieces[i]));
+  const deco = decorRect(v, pieces[1].name, pieces[1].w, pieces[1].h, pieces[1]);
+  // Dos avec charnière : la languette du flanc pivote en passant derrière le dos, dans l'épaisseur de la plaque
+  // de décor ; encoche à ses deux coins du haut (largeur de la languette + jeu, hauteur du cercle qu'elle balaie)
+  const dBack = decorRect(v, pieces[2].name, pieces[2].w, pieces[2].h, pieces[2]);
+  if (hinges) {
+    const nx = t + 0.5, ny = he + Math.sqrt(nr * nr - (t / 2) ** 2) + 0.5, Lb = pieces[2].w, Hb = pieces[2].h;
+    // Haut de la plaque abaissé : le coin bas arrière du couvercle tourne autour de l'axe (rayon rc) et traverse
+    // l'épaisseur de la plaque (à t/2..3t/2 derrière l'axe) jusqu'à zMin sous l'axe ; + 0,3 mm de jeu
+    const rc = Math.hypot(t / 2, he), yOut = 1.5 * t, top = (yOut < rc ? he - Math.sqrt(rc * rc - yOut * yOut) : he) + 0.3;
+    if (v.deco === "coins") dBack.splice(0, 2); // pas de coins en haut : la languette y passe
+    else for (const p of dBack) p.els[0] = {k: "cut", d: polyD([[nx, top], [Lb - nx, top], [Lb - nx, ny], [Lb, ny], [Lb, Hb], [0, Hb], [0, ny], [nx, ny]])};
+    if (dBack.length && v.deco !== "coins") info.push(tt("notice.chest.backDecor", {top: f1(top)}));
+  }
+  deco.push(...dBack);
   for (const [i, mir] of [[3, true], [4, false]]) {
     if (!hinges) { deco.push(...decorRect(v, pieces[i].name, pieces[i].w, pieces[i].h, pieces[i])); continue; }
     const dr = decorRect(v, pieces[i].name, W, H, pieces[i]);
@@ -1884,13 +2438,15 @@ function genChest(v) {
     const bd = v.bord, xl = -m + bd, xr = W + m - bd, yb = bd, ri = ro - bd, hx = W / 2 + m - bd;
     const flOuter = polyD(sh(F)), fw = b[2] - b[0], fh = b[3] - b[1];
     const cxM = W / 2, cyM = (yb + cy + ri) / 2, sM = Math.min(xr - xl, cy + ri - yb) * 0.5;
+    // Plaques du flanc gauche en miroir, comme le flanc lui-même : face du dessus dehors des deux côtés
+    const mirG = (nm, els) => nm === "G" ? els.map(e => ({...e, d: mapD(e.d, (x, y) => [fw - x, y])})) : els;
     for (const nm of ["G", "D"]) {
       const side = tt(nm === "G" ? "side.left" : "side.right");
       if (v.deco === "coins") { deco.push(cornerPiece(v, tt("piece.cornerFlank", {side})), cornerPiece(v, tt("piece.cornerFlank", {side}))); continue; }
       if (v.deco === "ajoure") {
         const [mx, my] = sh(flip([[cxM, cyM]]))[0];
         const mo2 = motif(v.motif, mx, my, sM);
-        deco.push({name: tt("piece.plateFlank", {side}), w: fw, h: fh, decor: true, els: [{k: "cut", d: flOuter}, ...mo2.cuts.map(d => ({k: "cut", d}))]});
+        deco.push({name: tt("piece.plateFlank", {side}), w: fw, h: fh, decor: true, els: mirG(nm, [{k: "cut", d: flOuter}, ...mo2.cuts.map(d => ({k: "cut", d}))])});
         continue;
       }
       if (ri < hx - 1e-6) continue;
@@ -1899,7 +2455,7 @@ function genChest(v) {
       if (rcc > 0.2) arc(xr, yb, rcc, Math.PI, Math.PI / 2, op);
       op.push([xr, yv]); arc(W / 2, cy, ri, thv, Math.PI - thv, op); op.push([xl, yb + rcc]);
       if (rcc > 0.2) arc(xl, yb, rcc, Math.PI / 2, 0, op);
-      deco.push({name: tt("piece.frameFlank", {side}), w: fw, h: fh, decor: true, els: [{k: "cut", d: flOuter}, {k: "cut", d: polyD(sh(flip(op)))}]});
+      deco.push({name: tt("piece.frameFlank", {side}), w: fw, h: fh, decor: true, els: mirG(nm, [{k: "cut", d: flOuter}, {k: "cut", d: polyD(sh(flip(op)))}])});
       if (v.deco === "cadreMotif") { const [mx, my] = sh(flip([[cxM, cyM]]))[0]; pieces[nm === "G" ? 5 : 6].els.push({k: "line", d: motif(v.motif, mx, my, sM * 0.9).lines}); }
     }
   }
@@ -1924,6 +2480,24 @@ function genChest(v) {
   if (deco.length) info.push(tt("notice.chest.decor"));
   pieces.push(...deco);
   if (Rc - t < 12) warns.push(tt("warn.chest.radius"));
+  // Feutrine intérieure (planches à part) : fond, puis façade et dos posés dessus, côtés coincés entre eux ;
+  // couvercle : bande sur la face intérieure du panneau cintré et demi-lunes des flancs (rayon intérieur - e)
+  if (v.feutrine) {
+    const e = v.feltE, iL = L - 2 * t, iW = W - 2 * t, fh = H - t - e - 0.5;
+    const felt = (key, w, h) => ({...rectPiece(tt(key), w, h), felt: true});
+    pieces.push(felt("piece.feltBottom", iL - 0.6, iW - 0.6), felt("piece.feltFront", iL - 0.6, fh), felt("piece.feltBack", iL - 0.6, fh),
+                felt("piece.feltSide", iW - 2 * e - 0.6, fh), felt("piece.feltSide", iW - 2 * e - 0.6, fh));
+    const ri = rn - t / 2 - e, hxi = W / 2 - t - e;
+    if (v.feltLid && ri >= hxi - 0.05) { // couvercle en demi-cercle : l'arc intérieur touche les montants (ri = hxi)
+      const yI = cy + Math.sqrt(Math.max(0, ri * ri - hxi * hxi)), thI = Math.atan2(yI - cy, hxi);
+      const inner = [[t + e, 0], [t + e, yI]]; arc(W / 2, cy, ri, Math.PI - thI, thI, inner); inner.push([W - t - e, yI], [W - t - e, 0]);
+      pieces.push(felt("piece.feltLid", iL - 0.6, pathLen(inner, false) - 0.5));
+      const fl = flip(inner), fb = bbox(fl), fp = shift(fl, -fb[0], -fb[1]);
+      for (let i = 0; i < 2; i++) pieces.push({name: tt("piece.feltFlank"), w: fb[2] - fb[0], h: fb[3] - fb[1], felt: true, els: [{k: "cut", d: polyD(fp)}]});
+    }
+    info.push(tt("notice.chest.felt", {e: f1(e)}));
+  }
+  applyTexture(pieces, v);
   return {pieces, info, warns};
 }
 // ---------- Organiseur ----------
@@ -2234,7 +2808,7 @@ function hmotif(kind, cx, cy, s) {
   return {cuts: [npath(HPATHS[kind], cx, cy, s)], lines: ""};
 }
 function genLantern(v) {
-  const {L, W, H, t, kerf} = v, m = v.marge, top = v.dessus === "cadre", info = [], warns = [];
+  const {L, W, H, t, kerf} = v, m = v.marge, roof = v.dessus === "toit", top = v.dessus === "cadre" || roof, info = [], warns = [];
   if (Math.min(L, W, H) < 2 * (t + m) + 20) throw new Error(tt("err.lantern.tooSmall"));
   const e = (len, s) => fpat(len, s, v.doigt);
   const mk = (name, w, h, edges) => ({name, w, h, els: [{k: "cut", d: polyD(fingerPoly(w, h, edges, t, kerf))}]});
@@ -2253,9 +2827,25 @@ function genLantern(v) {
     p.els.push(...mo.cuts.map(d => ({k: "cut", d})));
   });
   if (top) {
+    // Avec toit : ouverture à coins droits, les ergots des pignons viennent se caler dans ses angles
     const c = v.cadreL, tp = mk(tt("piece.topFrame"), L, W, [e(L, false), e(W, false), e(L, false), e(W, false)]);
-    if (Math.min(L, W) - 2 * c >= 15) tp.els.push({k: "cut", d: polyD(festoonRect(c, c, L - c, W - c, Math.min(6, (Math.min(L, W) - 2 * c) / 4)))});
+    if (Math.min(L, W) - 2 * c >= 15) tp.els.push({k: "cut", d: polyD(festoonRect(c, c, L - c, W - c, roof ? 0 : Math.min(6, (Math.min(L, W) - 2 * c) / 4)))});
     pieces.push(tp);
+  }
+  // Toit à deux pentes amovible : 2 pignons triangulaires posés sur le cadre (au ras de l'ouverture, côté gauche et
+  // côté droit), calés par 2 ergots qui tombent dans l'ouverture ; 2 pans collés sur les pentes des pignons.
+  if (roof) {
+    const c = v.cadreL, hg = v.hToit, ov = v.debordToit, tw = 6;
+    if (W - 2 * c < 2 * tw + 6 || L - 2 * c < 2 * t + 6) throw new Error(tt("err.lantern.roofNoRoom"));
+    const gab = [[0, hg], [W / 2, 0], [W, hg], [W - c, hg], [W - c, hg + t], [W - c - tw, hg + t], [W - c - tw, hg], [c + tw, hg], [c + tw, hg + t], [c, hg + t], [c, hg]];
+    for (let i = 0; i < 2; i++) {
+      const g = {name: tt("piece.gable"), w: W, h: hg + t, els: [{k: "cut", d: polyD(gab)}]};
+      if (hg * 0.35 > 8) g.els.push({k: "cut", d: polyD(arc(W / 2, hg * 0.38, 2.5, 0, 2 * Math.PI, []))});
+      pieces.push(g);
+    }
+    const slope = Math.hypot(W / 2, hg);
+    for (let i = 0; i < 2; i++) pieces.push(rectPiece(tt("piece.roofPanel"), L + 2 * ov, slope + ov));
+    info.push(tt("notice.lantern.roof", {Lr: f1(L + 2 * ov), s: f1(slope + ov), c: f1(c)}));
   }
   info.push(tt("notice.lantern.dims", {L, W, H, iL: f1(L - 2 * t), iW: f1(W - 2 * t)}));
   if (v.socle) {
@@ -2267,6 +2857,259 @@ function genLantern(v) {
   }
   if (kinds.includes("citrouille")) info.push(tt("notice.lantern.order"));
   info.push(tt("notice.lantern.assembly"), tt("notice.lantern.led"), tt("notice.lantern.vellum"));
+  return {pieces, info, warns};
+}
+
+// ---------- Motifs de panneaux : SVG offerts (motifs.js, open source) ou importés sur ce PC ----------
+// Un motif est soit le panneau complet vectorisé (son contour extérieur, le plus grand sous-tracé, sert à le caler
+// pile sur la pièce puis n'est pas découpé : le panneau généré a déjà ses tenons exacts), soit le motif seul
+// (sa viewBox est calée sur la zone pleine du panneau, sans les tenons). Les tracés sont gardés tels quels.
+const MOTIFKEY = "neoprodfx-motifs";
+let userMotifs = [];
+try { userMotifs = JSON.parse(localStorage.getItem(MOTIFKEY)) || []; } catch (e) {}
+const allMotifs = () => [...(window.LTFX_MOTIFS || []), ...userMotifs];
+const motifOptions = extra => { const o = {...extra}; for (const m of allMotifs()) o[m.id] = typeof m.name === "string" ? m.name : (m.name[ui.lang] || m.name.fr); return o; };
+// Découpe un tracé SVG en sous-tracés absolus (M L C Q A Z) avec leur boîte englobante (points de contrôle inclus)
+function pathSubs(d) {
+  const tk = d.match(/[a-zA-Z]|-?(?:\d+\.?\d*|\.\d+)(?:e[-+]?\d+)?/gi) || [], subs = [];
+  let i = 0, cmd = "", x = 0, y = 0, sx = 0, sy = 0, px = 0, py = 0, prev = "", cur = null;
+  const n = () => parseFloat(tk[i++]), isCmd = s => /^[a-zA-Z]$/.test(s);
+  const pt = (a, b) => { const B = cur.b; B[0] = Math.min(B[0], a); B[1] = Math.min(B[1], b); B[2] = Math.max(B[2], a); B[3] = Math.max(B[3], b); };
+  const P = (a, b) => `${a.toFixed(3)},${b.toFixed(3)}`;
+  while (i < tk.length) {
+    if (isCmd(tk[i])) cmd = tk[i++]; else if (!cmd) { i++; continue; }
+    const C = cmd.toUpperCase(), r = cmd !== C;
+    if (C === "Z") { if (cur) cur.d += "Z"; x = sx; y = sy; prev = "Z"; cmd = ""; continue; }
+    if (C === "M") { let a = n(), b = n(); if (r) { a += x; b += y; } x = sx = a; y = sy = b; cur = {d: "M" + P(x, y), b: [x, y, x, y], p: [[x, y]]}; subs.push(cur); cmd = r ? "l" : "L"; prev = "M"; continue; }
+    if (!cur) { i++; continue; }
+    if (C === "L" || C === "H" || C === "V") {
+      let a = C === "V" ? x : n(), b = C === "H" ? y : n();
+      if (r) { if (C !== "V") a += x; if (C !== "H") b += y; }
+      cur.d += "L" + P(a, b); pt(a, b); x = a; y = b;
+    } else if (C === "C" || C === "S") {
+      const v = C === "C" ? [n(), n(), n(), n(), n(), n()] : [0, 0, n(), n(), n(), n()];
+      if (r) for (let k = C === "C" ? 0 : 2; k < 6; k += 2) { v[k] += x; v[k + 1] += y; }
+      if (C === "S") { if (prev === "C" || prev === "S") { v[0] = 2 * x - px; v[1] = 2 * y - py; } else { v[0] = x; v[1] = y; } }
+      cur.d += `C${P(v[0], v[1])} ${P(v[2], v[3])} ${P(v[4], v[5])}`; pt(v[0], v[1]); pt(v[2], v[3]); pt(v[4], v[5]);
+      px = v[2]; py = v[3]; x = v[4]; y = v[5];
+    } else if (C === "Q" || C === "T") {
+      const v = C === "Q" ? [n(), n(), n(), n()] : [0, 0, n(), n()];
+      if (r) for (let k = C === "Q" ? 0 : 2; k < 4; k += 2) { v[k] += x; v[k + 1] += y; }
+      if (C === "T") { if (prev === "Q" || prev === "T") { v[0] = 2 * x - px; v[1] = 2 * y - py; } else { v[0] = x; v[1] = y; } }
+      cur.d += `Q${P(v[0], v[1])} ${P(v[2], v[3])}`; pt(v[0], v[1]); pt(v[2], v[3]);
+      px = v[0]; py = v[1]; x = v[2]; y = v[3];
+    } else if (C === "A") {
+      const rx = n(), ry = n(), rot = n(), la = n(), sw = n(); let a = n(), b = n();
+      if (r) { a += x; b += y; }
+      cur.d += `A${rx} ${ry} ${rot} ${la} ${sw} ${P(a, b)}`; pt(a, b); x = a; y = b;
+    } else { i++; continue; }
+    cur.p.push([x, y]); // points de passage (sans les points de contrôle)
+    prev = C;
+  }
+  return subs;
+}
+const motifCache = new Map();
+function motifData(m) {
+  if (motifCache.has(m.id)) return motifCache.get(m.id);
+  const subs = m.paths.flatMap(pathSubs), [vx, vy, vw, vh] = m.vb;
+  let big = -1, area = 0;
+  subs.forEach((s, k) => { const a = (s.b[2] - s.b[0]) * (s.b[3] - s.b[1]); if (a > area) { area = a; big = k; } });
+  const full = big >= 0 && area >= 0.8 * vw * vh;
+  let box = [vx, vy, vx + vw, vy + vh];
+  if (full) {
+    // Zone pleine du panneau tracé : toute la largeur du contour, et en hauteur l'étendue de son bord gauche
+    // (les tenons sont en haut et en bas, jamais dans les coins) : les tenons du dessin ne servent pas au calage
+    const [x0, y0, x1, y1] = subs[big].b, eps = (x1 - x0) * 0.01, ys = subs[big].p.filter(q => q[0] <= x0 + eps).map(q => q[1]);
+    box = ys.length >= 2 ? [x0, Math.min(...ys), x1, Math.max(...ys)] : [x0, y0, x1, y1];
+  }
+  const res = {full, box, d: subs.filter((_, k) => !full || k !== big).map(s => s.d).join("")};
+  motifCache.set(m.id, res);
+  return res;
+}
+// Élément de découpe du motif id sur la pièce p : sa zone pleine (ou sa viewBox) calée sur body [x0,y0,x1,y1]
+function motifEl(id, p, body) {
+  const m = allMotifs().find(q => q.id === id);
+  if (!m) return null;
+  const md = motifData(m), [bx0, by0, bx1, by1] = md.box, [x0, y0, x1, y1] = body;
+  const sx = (x1 - x0) / (bx1 - bx0), sy = (y1 - y0) / (by1 - by0);
+  return {k: "cutT", d: md.d, tf: `translate(${(x0 - bx0 * sx).toFixed(4)},${(y0 - by0 * sy).toFixed(4)}) scale(${sx.toFixed(7)},${sy.toFixed(7)})`, sw: 0.1 / Math.min(sx, sy)};
+}
+function importMotif(file) {
+  const r = new FileReader();
+  r.onload = () => {
+    const doc = new DOMParser().parseFromString(r.result, "image/svg+xml"), svg = doc.querySelector("svg");
+    const paths = svg ? [...doc.querySelectorAll("path")].map(e => e.getAttribute("d")).filter(Boolean) : [];
+    if (!paths.length) { toast(tt("toast.motifBad")); return; }
+    let vb = (svg.getAttribute("viewBox") || "").trim().split(/[\s,]+/).map(Number);
+    if (vb.length !== 4 || vb.some(isNaN)) vb = [0, 0, parseFloat(svg.getAttribute("width")) || 100, parseFloat(svg.getAttribute("height")) || 100];
+    const name = file.name.replace(/\.svg$/i, ""), id = "u:" + name;
+    userMotifs = userMotifs.filter(m => m.id !== id).concat([{id, name, vb, paths}]);
+    try { localStorage.setItem(MOTIFKEY, JSON.stringify(userMotifs)); } catch (e) { toast(tt("toast.motifNotSaved")); }
+    motifCache.delete(id); buildForm(); schedule();
+    toast(doc.querySelector("[transform]") ? tt("toast.motifTransform") : tt("toast.motifLoaded", {name}));
+  };
+  r.readAsText(file);
+}
+const motifHtml = () => `<div class="fontbtns"><label class="btn ghost sm">${tt("motif.importBtn")}<input type="file" id="motifFile" accept=".svg,image/svg+xml" hidden></label></div><p class="hint">${tt("hint.motifs")}</p>`;
+
+// ---------- Texture vectorielle gravée (textures.js : contours fermés, remplissage pair-impair) ----------
+// La texture est répétée en mosaïque sur chaque pièce marquée tex (texRot 90 : planches tournées), puis
+// découpée au contour de la pièce : chaque contour est gardé tel quel s'il est entièrement dedans, sinon
+// intersecté avec le contour (polygon-clipping). Pair-impair conservé : un point de la pièce reste couvert
+// par le même nombre de contours. Rendu : formes noires pleines, à graver en remplissage avant la découpe.
+const allTextures = () => window.LTFX_TEXTURES || [];
+const textureOptions = extra => { const o = {...extra}; for (const x of allTextures()) o[x.id] = x.name[ui.lang] || x.name.fr; return o; };
+const texDecoded = new Map(), texFillCache = new Map();
+function textureRings(tex) {
+  if (texDecoded.has(tex.id)) return texDecoded.get(tex.id);
+  const rings = tex.rings.map(e => {
+    let x = e[0], y = e[1]; const pts = [[x / 10, y / 10]], b = [x, y, x, y];
+    for (let k = 2; k < e.length; k += 2) { x += e[k]; y += e[k + 1]; pts.push([x / 10, y / 10]); b[0] = Math.min(b[0], x); b[1] = Math.min(b[1], y); b[2] = Math.max(b[2], x); b[3] = Math.max(b[3], y); }
+    return {pts, b: b.map(q => q / 10)};
+  });
+  texDecoded.set(tex.id, rings);
+  return rings;
+}
+const polyPts = d => (d.match(/-?\d*\.?\d+/g) || []).map(Number).reduce((a, q, k) => (k % 2 ? a[a.length - 1].push(q) : a.push([q]), a), []);
+function textureFill(p, v) {
+  const tex = allTextures().find(x => x.id === v.texture);
+  if (!tex || !p.tex || !window.polygonClipping) return null;
+  const outline = p.els[0].d, rot = p.texRot || 0, key = [tex.id, v.texH, rot, p.w, p.h, outline].join("|");
+  if (texFillCache.has(key)) return texFillCache.get(key);
+  const piece = polyPts(outline), s = v.texH / tex.h, rings = textureRings(tex);
+  const tw = (rot ? tex.h : tex.w) * s, th = (rot ? tex.w : tex.h) * s; // taille d'une tuile sur la pièce
+  const map = rot ? (ox, oy) => q => [ox + q[1] * s, oy + q[0] * s] : (ox, oy) => q => [ox + q[0] * s, oy + q[1] * s];
+  const inside = (b) => { // boîte du contour entièrement dans la pièce : ses 4 coins dedans et aucun sommet de la pièce dans la boîte
+    if (![[b[0], b[1]], [b[2], b[1]], [b[2], b[3]], [b[0], b[3]]].every(c => inPoly(c, piece))) return false;
+    return !piece.some(([x, y]) => x > b[0] && x < b[2] && y > b[1] && y < b[3]);
+  };
+  const F = q => `${q[0].toFixed(2)},${q[1].toFixed(2)}`;
+  let d = "";
+  for (let i = 0; i * tw < p.w; i++) for (let j = 0; j * th < p.h; j++) {
+    const M = map(i * tw, j * th);
+    for (const r of rings) {
+      const [ax, ay] = M([r.b[0], r.b[1]]), [bx, by] = M([r.b[2], r.b[3]]);
+      const b = [Math.min(ax, bx), Math.min(ay, by), Math.max(ax, bx), Math.max(ay, by)];
+      if (b[2] < 0 || b[3] < 0 || b[0] > p.w || b[1] > p.h) continue;
+      const pts = r.pts.map(M);
+      if (inside(b)) { d += "M" + pts.map(F).join("L") + "Z"; continue; }
+      try {
+        for (const poly of polygonClipping.intersection([pts], [piece])) for (const ring of poly) d += "M" + ring.slice(0, -1).map(F).join("L") + "Z";
+      } catch (e) { /* contour dégénéré : ignoré */ }
+    }
+  }
+  texFillCache.set(key, d);
+  if (texFillCache.size > 40) texFillCache.delete(texFillCache.keys().next().value);
+  return d;
+}
+const applyTexture = (pieces, v) => { if (!v.texture || v.texture === "aucune") return; for (const p of pieces) { const d = textureFill(p, v); if (d) p.els.unshift({k: "fill", d}); } };
+
+// ---------- Lanterne hexagonale (panneaux pleins à décorer, toit en gradins, lanternon, anneau) ----------
+// Hexagone « à plat » de rayon R (= côté) centré en (cx, cy), y vers le bas
+const hexPts = (cx, cy, R) => Array.from({length: 6}, (_, k) => [cx + R * Math.cos(k * Math.PI / 3), cy + R * Math.sin(k * Math.PI / 3)]);
+// Panneaux posés face extérieure sur un hexagone de côté s : à 120° ils ne peuvent pas s'emboîter, chacun est
+// raccourci de d = t/√3 à chaque bout pour que deux voisins se touchent par l'intérieur (petit V dehors)
+const hexPanelW = (s, t) => s - 2 * t / Math.sqrt(3);
+const hexTabs = (wp, tw) => wp >= 4 * tw ? [wp / 4, 3 * wp / 4] : [wp / 2];
+// Point du plan au milieu de l'épaisseur du panneau k, à la distance p du sommet k le long de sa face
+function hexEdgePoint(cx, cy, s, t, k, p) {
+  const V = hexPts(cx, cy, s), A = V[k], B = V[(k + 1) % 6], ang = Math.atan2(B[1] - A[1], B[0] - A[0]), ux = Math.cos(ang), uy = Math.sin(ang);
+  let nx = -uy, ny = ux; if ((cx - (A[0] + B[0]) / 2) * nx + (cy - (A[1] + B[1]) / 2) * ny < 0) { nx = -nx; ny = -ny; } // normale vers l'intérieur
+  return [A[0] + ux * p + nx * t / 2, A[1] + uy * p + ny * t / 2, ang];
+}
+// Mortaises des 6 panneaux d'un hexagone de côté s dans un plateau centré en (cx, cy) (sauf le panneau skip : la porte)
+function hexSlots(cx, cy, s, t, kerf, tw, skip = -1) {
+  const d = t / Math.sqrt(3), tabs = hexTabs(hexPanelW(s, t), tw);
+  let out = "";
+  for (let k = 0; k < 6; k++) if (k !== skip) for (const c of tabs) { const [x, y, ang] = hexEdgePoint(cx, cy, s, t, k, d + c); out += slotD(x, y, ang, tw - kerf, t - kerf); }
+  return out;
+}
+// Plateau hexagonal de côté s, débord ov (perpendiculaire aux faces) : contour + centre
+function hexPlate(name, s, ov) {
+  const R = s + ov / Math.cos(Math.PI / 6), cx = R, cy = R * Math.sqrt(3) / 2;
+  return {p: {name, w: 2 * R, h: R * Math.sqrt(3), els: [{k: "cut", d: polyD(hexPts(cx, cy, R))}]}, cx, cy};
+}
+function genHexa(v) {
+  const {a, H, t, kerf, tabW} = v, info = [], warns = [], pieces = [];
+  const wp = hexPanelW(a, t);
+  if (wp < 2 * tabW + 6 || H < 4 * t) throw new Error(tt("err.hexa.tooSmall"));
+  // Corps : 6 panneaux pleins, tenons en haut et en bas
+  const panel = (name, w, h, tw) => { const tabs = hexTabs(w, tw), s = tabbedRect(w, h, t, tw + kerf, {top: tabs, bottom: tabs}); return {name, w: s.W, h: s.H, els: [{k: "cut", d: polyD(s.pts)}]}; };
+  // Porte (panneau 1, face k = 0) : 0,8 mm de jeu à chaque bout ; à la place des tenons, 2 tourillons carrés t×t
+  // (haut et bas) côté charnière, qui tournent dans un trou rond de la base et du plateau. Axe à ep du bout de la
+  // porte : assez près pour que son coin intérieur ne rentre pas dans le panneau voisin en s'ouvrant vers l'extérieur.
+  // Vue de dehors, la charnière est à droite (bout x = wd de la pièce, côté sommet 0) ; encoche pour le doigt à gauche.
+  const door = !!v.porte, dg = 0.8, ep = t / 2 + 0.6, wd = wp - 2 * dg, d = t / Math.sqrt(3);
+  const holeR = (t * Math.SQRT2 + 0.5 - kerf) / 2;
+  const doorHole = (cx, cy) => { const [x, y] = hexEdgePoint(cx, cy, a, t, 0, d + dg + ep); return polyD(arc(x, y, holeR, 0, 2 * Math.PI, [])); };
+  // Motifs : A et B en alternance autour du corps (porte : A, B ou un autre), zone pleine = sous les tenons du haut
+  const pick = id => (id && id !== "aucun" ? id : null), doorMotif = pick(v.motifPorte === "A" ? v.motifA : v.motifPorte === "B" ? v.motifB : v.motifPorte);
+  const addMotif = (p, id, w, h) => { const el = id ? motifEl(id, p, [0, t, w, t + h]) : null; if (el) p.els.push(el); return p; };
+  for (let i = 0; i < 6; i++) {
+    if (i === 0 && door) {
+      const s = tabbedRect(wd, H, t, t, {top: [wd - ep], bottom: [wd - ep]});
+      const pts = circleEdit(s.pts, 0, s.oy + H / 2, 6, "cut");
+      pieces.push(addMotif({name: tt("piece.hexDoor"), w: s.W, h: s.H, els: [{k: "cut", d: polyD(pts)}]}, doorMotif, wd, H));
+    } else pieces.push(addMotif(panel(tt("piece.hexPanel", {n: i + 1}), wp, H, tabW), pick(i % 2 === 0 ? v.motifA : v.motifB), wp, H));
+  }
+  // Base (+ anneau pour bougie LED)
+  const base = hexPlate(tt("piece.hexBase"), a, v.ovB);
+  base.p.els.push({k: "cut", d: hexSlots(base.cx, base.cy, a, t, kerf, tabW, door ? 0 : -1) + (door ? doorHole(base.cx, base.cy) : "")});
+  pieces.push(base.p);
+  if (v.socle) {
+    const ri = v.socleD / 2 + 0.3, ro = ri + 5;
+    if (2 * ro <= a * Math.sqrt(3) - 2 * t - 2) pieces.push({name: tt("piece.ledRing"), w: 2 * ro, h: 2 * ro, els: [{k: "cut", d: polyD(arc(ro, ro, ri, 0, 2 * Math.PI, []))}, {k: "cut", d: polyD(arc(ro, ro, ro, 0, 2 * Math.PI, []))}]});
+    else warns.push(tt("notice.lantern.ringTooBig"));
+  }
+  // Plateau : mortaises du corps (+ lanternon et ouverture pour que la lumière y monte)
+  const top = hexPlate(tt("piece.hexTop"), a, v.ovT);
+  top.p.els.push({k: "cut", d: hexSlots(top.cx, top.cy, a, t, kerf, tabW, door ? 0 : -1) + (door ? doorHole(top.cx, top.cy) : "")});
+  pieces.push(top.p);
+  // Anneau : couronne avec un tenon en bas, planté debout dans le chapeau (ou le plateau)
+  const ringTw = 6, ringSlot = (cx, cy) => slotD(cx, cy, 0, ringTw - kerf, t - kerf);
+  let ringOn = top;
+  if (v.lant) {
+    const a2 = v.a2, wp2 = hexPanelW(a2, t), tw2 = Math.min(tabW, wp2 / 4);
+    if (a2 + 2 * t > a - t || wp2 < 2 * tw2 + 2) throw new Error(tt("err.hexa.lantTooBig"));
+    top.p.els.push({k: "cut", d: hexSlots(top.cx, top.cy, a2, t, kerf, tw2)});
+    const ro = a2 - 2 * t - 1.5; // ouverture : à l'intérieur du lanternon, en dehors de ses mortaises
+    if (ro > 5) top.p.els.push({k: "cut", d: polyD(hexPts(top.cx, top.cy, ro))});
+    for (let i = 0; i < 6; i++) pieces.push(addMotif(panel(tt("piece.lantPanel", {n: i + 1}), wp2, v.h2, tw2), pick(v.motifLant), wp2, v.h2));
+    const cap = hexPlate(tt("piece.cap"), a2, v.ov2);
+    cap.p.els.push({k: "cut", d: hexSlots(cap.cx, cap.cy, a2, t, kerf, tw2)});
+    pieces.push(cap.p);
+    ringOn = cap;
+  }
+  if (v.anneau) {
+    const Ro = 11, Ri = 7, hw = ringTw / 2, dl = Math.asin(hw / Ro), cx = Ro, cy = Ro;
+    const pts = arc(cx, cy, Ro, Math.PI / 2 + dl, Math.PI / 2 - dl + 2 * Math.PI, []);
+    pts.push([cx + hw, cy + Ro + t], [cx - hw, cy + Ro + t]);
+    pieces.push({name: tt("piece.hangRing"), w: 2 * Ro, h: 2 * Ro + t, els: [{k: "cut", d: polyD(pts)}, {k: "cut", d: polyD(arc(cx, cy, Ri, 0, 2 * Math.PI, []))}]});
+    ringOn.p.els.push({k: "cut", d: ringSlot(ringOn.cx, ringOn.cy)});
+  }
+  // Calque intérieur (planches papier à part) : bande rainurée qui se plie en hexagone contre les faces
+  // intérieures des panneaux (qui se touchent par l'intérieur : un segment = largeur d'un panneau). Avec porte :
+  // bande des 5 panneaux fixes + morceau de porte à part ; sans porte : anneau en 2 bandes de 3 (une A4 trop courte).
+  if (v.calque) {
+    const strip = (name, segs, h, tab) => {
+      const Wb = segs.reduce((x, y) => x + y, 0), c = Math.min(4, h / 4), folds = [];
+      let x = 0; for (const s of segs.slice(0, -1)) { x += s; folds.push(x); }
+      if (tab) folds.push(Wb);
+      const pts = tab ? [[0, 0], [Wb, 0], [Wb + tab, c], [Wb + tab, h - c], [Wb, h], [0, h]] : [[0, 0], [Wb, 0], [Wb, h], [0, h]];
+      const els = [{k: "cut", d: polyD(pts)}];
+      if (folds.length) els.push({k: "line", d: folds.map(f => `M${f3(f)},0V${f3(h)}`).join("")});
+      return {name, w: Wb + tab, h, paper: true, els};
+    };
+    const sw = wp - 0.5, hh = H - 1;
+    if (door) pieces.push(strip(tt("piece.paperStrip", {n: 5}), Array(5).fill(sw), hh, 0), {...rectPiece(tt("piece.paperDoor"), wd - 1, hh), paper: true});
+    else for (let i = 0; i < 2; i++) pieces.push(strip(tt("piece.paperStrip", {n: 3}), Array(3).fill(sw), hh, 8));
+    if (v.lant) pieces.push(strip(tt("piece.paperLant"), Array(6).fill(hexPanelW(v.a2, t) - 0.5), v.h2 - 1, 6));
+    info.push(tt(door ? "notice.hexa.paperDoor" : "notice.hexa.paper"));
+  }
+  info.push(tt("notice.hexa.dims", {flat: f1(a * Math.sqrt(3)), H, wp: f1(wp)}), tt("notice.hexa.corners"), tt(door ? "notice.hexa.assemblyDoor" : "notice.hexa.assembly"));
+  if (door) info.push(tt("notice.hexa.door", {wd: f1(wd)}));
+  if (v.socle) info.push(tt("notice.lantern.ring"));
+  info.push(tt("notice.lantern.led"));
   return {pieces, info, warns};
 }
 
@@ -2306,15 +3149,380 @@ function genAdvent(v) {
   return res;
 }
 
-const GEN = {box: genBox, shape: genShape, chest: genChest, orga: genOrga, tray: genTray, lantern: genLantern, advent: genAdvent};
+// ---------- Boîte lumineuse : rectangle aux coins arrondis, bande flexible seulement dans les coins ----------
+// Rectangle aux coins arrondis, y vers le bas (fenêtres, ouvertures, plaques)
+function roundRectPts(x0, y0, x1, y1, rr) {
+  const r = Math.max(0.01, Math.min(rr, (x1 - x0) / 2, (y1 - y0) / 2)), p = [];
+  arc(x1 - r, y0 + r, r, -Math.PI / 2, 0, p); arc(x1 - r, y1 - r, r, 0, Math.PI / 2, p);
+  arc(x0 + r, y1 - r, r, Math.PI / 2, Math.PI, p); arc(x0 + r, y0 + r, r, Math.PI, 3 * Math.PI / 2, p);
+  return p;
+}
+function windowPts(kind, x0, y0, x1, y1, rr) {
+  const w = x1 - x0, R = w / 2;
+  if (kind === "arche" && y1 - y0 >= R + 8) { const p = [[x0, y1], [x0, y0 + R]]; arc(x0 + R, y0 + R, R, Math.PI, 2 * Math.PI, p); p.push([x1, y1]); return p; }
+  if (kind === "feston") return festoonRect(x0, y0, x1, y1, Math.min(rr, Math.min(w, y1 - y0) / 3));
+  return roundRectPts(x0, y0, x1, y1, rr);
+}
+function genLightbox(v) {
+  const t = v.t, k = v.kerf, m = v.rebord, tw = v.tabW, info = [], warns = [];
+  // Housse (boîte à mouchoirs) : pas de fond, tenons seulement en haut. Hauteur H = bande + cadre + dessus déco (+ fond)
+  // Fond coulissant (housse fermée) : cadre-glissière à tenons + cadre-rebord dessous, le fond glisse par l'arrière
+  const cover = !!v.housse, slide = cover && v.fondT === "coulissant";
+  const Wf = v.W - 2 * t, Df = v.D - 2 * t, Hb = v.H - (slide ? 4 : cover ? 2 : 3) * t;
+  if (Math.min(v.W, v.D) < 6 * t + 20) throw new Error(tt("err.dimsTooSmall"));
+  if (Hb < 25) throw new Error(tt("err.lightbox.tooLow"));
+  const r = Math.min(v.rayon, Wf / 2 - 0.5, Df / 2 - 0.5), sv = {...v, forme: "rect", rayon: r};
+  const neutral = shapePts(sv, t / 2), outline = shapePts(sv, t + m);
+  // Parcours de la fibre neutre (sens de shapePts, vu de dessus) : coin avant-gauche, face avant, coin, côté droit,
+  // coin, arrière, coin, côté gauche. Abscisses curvilignes « S » sur ce parcours, de 0 à P.
+  const rho = r + t / 2, q = Math.PI / 2 * rho, Fl = [Wf - 2 * r, Df - 2 * r, Wf - 2 * r, Df - 2 * r];
+  const arcS = []; let P = 0;
+  for (let i = 0; i < 4; i++) { arcS.push(P); P += q + Fl[i]; }
+  const sc = perimeter(neutral) / P, mod = s => ((s % P) + P) % P;
+  // Jonctions possibles des morceaux de bande : J mm avant chaque coin, sur la partie plane ; la charnière déborde de ext
+  const J = Math.min(3, Math.min(...Fl) / 3), ext = Math.min(1.5, J / 2);
+  // Porte pivotante dans la face arrière : montants de dj mm de bande de chaque côté, jeu dg, tourillons t×t
+  // (haut et bas) côté droit vu de dehors, axe à ep du bout (comme la porte de la lanterne hexa)
+  const dj = tw + 6, dg = 0.8, ep = t / 2 + 0.6;
+  let door = !!v.porte;
+  const wd = Fl[2] - 2 * dj - 2 * dg;
+  if (door && wd < 30) { door = false; warns.push(tt("warn.lightbox.noDoor")); }
+  const dS = arcS[2] + q + dj + dg, pinS = dS + wd - ep;
+  // Tenons haut et bas : faces planes + coins (fentes du coin élargies de la flèche du tenon sur l'arc)
+  const tabs = [];
+  for (let i = 0; i < 4; i++) {
+    for (const c of tabCenters(q, v)) tabs.push({S: arcS[i] + c, arc: true});
+    if (i === 2 && door) tabs.push({S: arcS[2] + q + dj / 2}, {S: arcS[3] - dj / 2});
+    else for (const c of tabCenters(Fl[i], v)) tabs.push({S: arcS[i] + q + c});
+  }
+  const backFlat = S => S > arcS[2] + q - 1e-6 && S < arcS[3] + 1e-6;
+  const tabsBot = cover && !slide ? [] : slide ? tabs.filter(tb => !backFlat(tb.S)) : tabs;
+  // Morceaux de bande : coupes aux jonctions possibles, le moins de morceaux qui tiennent sur le plateau
+  const [bw, bh] = bedOf(v), maxLen = Math.max(bw, bh) - 4, cuts0 = arcS.map(s => mod(s - J));
+  const split = (start, L) => {
+    const cs = cuts0.map(c => { let x = c; while (x <= start + 1e-6) x += P; return x; }).filter(x => x > start + 5 && x < start + L - 5).sort((a, b) => a - b);
+    const segs = []; let pos = start;
+    while (start + L - pos > maxLen) {
+      const nx = cs.filter(c => c > pos + 1e-6 && c <= pos + maxLen).pop();
+      if (nx === undefined) return null;
+      segs.push([pos, nx]); pos = nx;
+    }
+    segs.push([pos, start + L]);
+    return segs;
+  };
+  let segs = null;
+  if (door) segs = split(arcS[3] - dj, P - Fl[2] + 2 * dj);
+  else for (const c of cuts0) { const s = split(c, P); if (s && (!segs || s.length < segs.length)) segs = s; }
+  if (!segs) throw new Error(tt("err.lightbox.tooLong", {len: f1(Math.max(...Fl) + q)}));
+  // Fenêtres des faces (face arrière : sur la porte)
+  const mw = Math.max(v.margeF, J + 2), wins = [];
+  let missing = false;
+  for (let i = 0; i < 4; i++) {
+    const w = (i === 2 && door ? wd : Fl[i]) - 2 * mw, h = Hb - 2 * mw;
+    if (v.fenetres === "aucune") { wins.push(null); continue; }
+    if (w < 15 || h < 15) { wins.push(null); missing = true; continue; }
+    wins.push({s0: arcS[i] + q + mw, w, h});
+  }
+  if (missing) warns.push(tt("warn.lightbox.noWindow"));
+  const pieces = [];
+  // Fond et cadre du dessus : mêmes mortaises (posés tous les deux face gravée vers le haut) + trou des tourillons
+  const b = bbox(outline), sh = p => shift(p, -b[0], -b[1]), neu = sh(neutral);
+  const slotsOf = list => list.map(tb => { const [x, y, a] = pointAt(neu, tb.S * sc, true); return slotD(x, y, a, tw - k, t - k + (tb.arc ? tw * tw / (8 * rho) : 0)); }).join("");
+  const slots = slotsOf(tabs);
+  const hole = door ? (() => { const [x, y] = pointAt(neu, pinS * sc, true); return polyD(arc(x, y, (t * Math.SQRT2 + 0.5 - k) / 2, 0, 2 * Math.PI, [])); })() : "";
+  const plate = name => ({name, w: b[2] - b[0], h: b[3] - b[1], els: [{k: "cut", d: polyD(sh(outline))}]});
+  const fond = plate(tt("piece.bottom")); fond.els.push({k: "cut", d: slots + hole});
+  if (slide) {
+    // Glissière : ouverture en U sur toute la face arrière plane (la bande passe au-dessus), jusqu'à 3 mm de la paroi avant
+    const [cx, cy] = [-b[0], -b[1]], uw = Fl[2] - 2, uy1 = cy + Df / 2 - 3, jf = 0.3, led = 5;
+    const g = plate(tt("piece.slideFrame"));
+    g.els.push({k: "cut", d: slotsOf(tabsBot)}, {k: "cut", d: polyD([[cx - uw / 2, -1], [cx + uw / 2, -1], [cx + uw / 2, uy1], [cx - uw / 2, uy1]])});
+    const rb = plate(tt("piece.slideLedge"));
+    rb.els.push({k: "cut", d: polyD(roundRectPts(cx - uw / 2 + led, cy - Df / 2 + led, cx + uw / 2 - led, uy1 - led, 4))});
+    const pw = uw - 2 * jf, pd = uy1 - jf, panel = rectPiece(tt("piece.slidePanel"), pw, pd);
+    panel.els = [{k: "cut", d: polyD(circleEdit([[0, 0], [pw, 0], [pw, pd], [0, pd]], pw / 2, 0, 9, "cut"))}];
+    pieces.push(g, rb, panel);
+    info.push(tt("notice.tissue.slide", {w: f1(pw), d: f1(pd)}));
+  }
+  // Cadre du dessus : ouvert au centre (à hm mm de la paroi) pour la lumière et la plaque de scène du dessus
+  const hm = 4, frame = plate(tt("piece.topFrame")); frame.els.push({k: "cut", d: slots + hole}, {k: "cut", d: polyD(sh(shapePts(sv, -hm)))});
+  pieces.push(...(cover ? [] : [fond]), frame);
+  // Plaque déco du dessus : collée sur le cadre, cache les tenons, porte la découpe déco
+  const deco = plate(tt("piece.topDeco")), [ox, oy] = [-b[0], -b[1]], rec = v.plaques ? v.recouv : 0, extra = [];
+  const hx0 = Wf / 2 - hm - 0.5, hy0 = Df / 2 - hm - 0.5;
+  if (v.ouvTop === "cercle") {
+    let R = Math.min(Wf, Df) / 2 * v.ouvPct / 100;
+    if (R + rec > Math.min(hx0, hy0)) { R = Math.min(hx0, hy0) - rec; warns.push(tt("warn.lightbox.lidOpening")); }
+    if (R >= 7.5) {
+      deco.els.push({k: "cut", d: polyD(arc(ox, oy, R, 0, 2 * Math.PI, []))});
+      if (v.plaques) { const Rp = R + rec; extra.push({name: tt("piece.sceneTop"), w: 2 * Rp, h: 2 * Rp, els: [{k: "cut", d: polyD(arc(Rp, Rp, Rp, 0, 2 * Math.PI, []))}]}); }
+    }
+  } else if (v.ouvTop === "fente") {
+    // Fente arrondie dans le sens de la longueur (bouts en demi-cercle)
+    const along = Wf >= Df, L2 = (along ? Wf : Df) / 2 * v.ouvPct / 100, w2 = v.ouvW / 2;
+    const lx = Math.min(along ? L2 : w2, hx0), ly = Math.min(along ? w2 : L2, hy0);
+    if (lx < (along ? L2 : w2) - 1e-6 || ly < (along ? w2 : L2) - 1e-6) warns.push(tt("warn.lightbox.lidOpening"));
+    if (Math.min(lx, ly) >= 5) deco.els.push({k: "cut", d: polyD(roundRectPts(ox - lx, oy - ly, ox + lx, oy + ly, Math.min(lx, ly)))});
+  } else if (v.ouvTop === "rect") {
+    const want = [Wf / 2 * v.ouvPct / 100, Df / 2 * v.ouvPct / 100], hx = Math.min(want[0], hx0 - rec), hy = Math.min(want[1], hy0 - rec);
+    if (hx < want[0] - 1e-6 || hy < want[1] - 1e-6) warns.push(tt("warn.lightbox.lidOpening"));
+    if (Math.min(hx, hy) >= 7.5) {
+      const rr = Math.max(2, r * v.ouvPct / 100);
+      deco.els.push({k: "cut", d: polyD(roundRectPts(ox - hx, oy - hy, ox + hx, oy + hy, rr))});
+      if (v.plaques) { const px = 2 * (hx + rec), py = 2 * (hy + rec), rp = Math.max(rr + rec, r - hm); extra.push({name: tt("piece.sceneTop"), w: px, h: py, els: [{k: "cut", d: polyD(roundRectPts(0, 0, px, py, rp))}]}); }
+    }
+  }
+  pieces.push(deco);
+  // Bandes : tenons en haut et en bas, charnière seulement dans les coins, fenêtres sur les faces planes
+  segs.forEach(([s0, s1], gi) => {
+    const len = s1 - s0, xOf = S => mod(S - s0);
+    const tx = tabs.map(tb => xOf(tb.S)).filter(x => x - tw / 2 > 0.3 && x + tw / 2 < len - 0.3).sort((a, c) => a - c);
+    const bx = tabsBot.map(tb => xOf(tb.S)).filter(x => x - tw / 2 > 0.3 && x + tw / 2 < len - 0.3).sort((a, c) => a - c);
+    const s = stripPoly(len, Hb, t, tx, bx, tw + k), els = [{k: "cut", d: polyD(s.pts)}];
+    for (let i = 0; i < 4; i++) { const x0 = xOf(arcS[i]); if (x0 + q <= len + 1e-6) els.push({k: "cut", d: hinge(Math.max(1, x0 - ext), Math.min(len - 1, x0 + q + ext), s.y0, s.y1, v, tx, bx, tw + k)}); }
+    for (let i = 0; i < 4; i++) if (wins[i] && !(i === 2 && door)) { const x0 = xOf(wins[i].s0); if (x0 + wins[i].w <= len + 1e-6) els.push({k: "cut", d: polyD(windowPts(v.fenetres, x0, s.y0 + mw, x0 + wins[i].w, s.y0 + mw + wins[i].h, v.rayonF))}); }
+    pieces.push({name: segs.length > 1 ? tt("piece.stripN", {i: gi + 1, n: segs.length}) : tt("piece.strip"), w: len, h: s.h, els});
+  });
+  // Porte : tourillons t×t en haut et en bas côté charnière, encoche pour le doigt de l'autre côté, sa fenêtre
+  if (door) {
+    const s = tabbedRect(wd, Hb, t, t, {top: [wd - ep], bottom: [wd - ep]});
+    const els = [{k: "cut", d: polyD(circleEdit(s.pts, 0, s.oy + Hb / 2, 6, "cut"))}];
+    if (wins[2]) els.push({k: "cut", d: polyD(windowPts(v.fenetres, mw, s.oy + mw, mw + wins[2].w, s.oy + mw + wins[2].h, v.rayonF))});
+    pieces.push({name: tt("piece.hexDoor"), w: s.W, h: s.H, els});
+    for (let i = 0; i < 2; i++) pieces.push(rectPiece(tt("piece.doorStop"), dj - 2 + dg + 3, 12));
+  }
+  // Plaques de scène vierges, collées à l'intérieur derrière chaque fenêtre (sur la porte : sans toucher les butées)
+  const names = ["piece.sceneFront", "piece.sceneRight", "piece.sceneDoor", "piece.sceneLeft"], plates = [];
+  if (v.plaques) wins.forEach((wn, i) => {
+    if (!wn) return;
+    const room = i === 2 && door ? wd - 8 : Fl[i] - 2;
+    const pw = Math.min(wn.w + 2 * rec, room), ph = Math.min(wn.h + 2 * rec, Hb - 2 * (t + 1));
+    if (pw >= wn.w + 2 && ph >= wn.h + 2) plates.push(rectPiece(tt(i === 2 && !door ? "piece.sceneBack" : names[i]), pw, ph));
+  });
+  pieces.push(...plates, ...extra);
+  if (v.socle) {
+    const ri = v.socleD / 2 + 0.3, ro = ri + 5;
+    if (2 * ro <= Math.min(Wf, Df) - 2) pieces.push({name: tt("piece.ledRing"), w: 2 * ro, h: 2 * ro, els: [{k: "cut", d: polyD(arc(ro, ro, ri, 0, 2 * Math.PI, []))}, {k: "cut", d: polyD(arc(ro, ro, ro, 0, 2 * Math.PI, []))}]});
+    else warns.push(tt("notice.lantern.ringTooBig"));
+  }
+  if (v.calque) for (const p of [...plates, ...extra]) pieces.push({...rectPiece(tt("piece.paperScene", {name: p.name}), p.w - 1, p.h - 1), paper: true});
+  const Ptot = f1(segs.reduce((a, [s0, s1]) => a + s1 - s0, 0));
+  if (cover) {
+    info.unshift(tt(slide ? "notice.tissue.dimsClosed" : "notice.tissue.dims", {L: v.boxL, W: v.boxW, H: v.boxH, oL: f1(v.W), oW: f1(v.D), oH: f1(v.H), r: f1(r), P: Ptot, n: segs.length}));
+    info.push(tt("notice.tissue.assembly"));
+    if (v.hSpace > t * 0.9) warns.push(tt("warn.shape.hingeSpacing"));
+    return {pieces, info, warns};
+  }
+  info.push(tt("notice.lightbox.dims", {W: v.W, D: v.D, H: v.H, r: f1(r), P: Ptot, n: segs.length, Hb: f1(Hb)}));
+  if (wins.some(Boolean)) {
+    const wf = wins[0] || wins[2], ws = wins[1] || wins[3];
+    info.push(tt("notice.lightbox.windows", {wf: wf ? f1(wf.w) : "–", ws: ws ? f1(ws.w) : "–", hf: f1((wf || ws).h)}));
+    if (plates.length) info.push(tt("notice.lightbox.plates"));
+  }
+  info.push(tt(door ? "notice.lightbox.assemblyDoor" : "notice.lightbox.assembly"), tt("notice.lightbox.top"));
+  if (door) info.push(tt("notice.lightbox.door", {wd: f1(wd)}));
+  if (v.socle) info.push(tt("notice.lantern.ring"));
+  info.push(tt("notice.lantern.led"));
+  if (v.hSpace > t * 0.9) warns.push(tt("warn.shape.hingeSpacing"));
+  return {pieces, info, warns};
+}
+
+// Boîte à mouchoirs : housse sans fond posée sur la boîte en carton du commerce
+function genTissue(v) {
+  const t = v.t, j = v.jeuBox;
+  return genLightbox({...v, housse: true, W: v.boxL + 2 * (j + t), D: v.boxW + 2 * (j + t), H: v.boxH + j + (v.fondT === "coulissant" ? 4 : 2) * t,
+    fenetres: "aucune", plaques: false, calque: false, porte: false, socle: false, margeF: 12, rayonF: 0});
+}
+
+// ---------- Table tensegrity : deux C identiques (le haut = le bas retourné), tenus par 3 paires de ficelles ----------
+// Un C (vue de côté, y vers le haut) : plateau du bas, coin, paroi droite, coin, bras qui revient vers la gauche.
+// Bande flexible pliée entre deux flancs en C (tenons des deux côtés), charnière seulement dans les coins.
+// Triangle rétréci : le côté i (sommets i -> i+1) recule de o[i] vers l'intérieur
+function insetTri(A, B, C, o) {
+  const P = [A, B, C], cx = (A[0] + B[0] + C[0]) / 3, cy = (A[1] + B[1] + C[1]) / 3;
+  const lines = P.map((p, i) => {
+    const q = P[(i + 1) % 3], dx = q[0] - p[0], dy = q[1] - p[1], l = Math.hypot(dx, dy);
+    let nx = -dy / l, ny = dx / l; if ((cx - p[0]) * nx + (cy - p[1]) * ny < 0) { nx = -nx; ny = -ny; }
+    return [p[0] + nx * o[i], p[1] + ny * o[i], dx, dy];
+  });
+  // Sommet i = intersection des côtés i-1 et i
+  return lines.map((L1, i) => {
+    const [x1, y1, dx1, dy1] = lines[(i + 2) % 3], [x2, y2, dx2, dy2] = L1, u = ((x2 - x1) * dy2 - (y2 - y1) * dx2) / (dx1 * dy2 - dy1 * dx2);
+    return [x1 + dx1 * u, y1 + dy1 * u];
+  });
+}
+
+// Cotes des chaînes en bois (partagées avec le schéma de montage) : barre cb, trou Wi × Li (pas), ouverture gap, tenon tcw
+function chainDims(t) {
+  // Maillon d'une seule couche ouvert par une fente de l'épaisseur du bois : le voisin entre à plat (son épaisseur t passe),
+  // puis tourne d'un quart de tour dans le trou -> trou large de la diagonale de la barre (cb × t) + jeu
+  const cb = 4.5, Wi = Math.hypot(cb, t) + 0.5, Wo = Wi + 2 * cb, gap = t + 0.05, Li = Math.max(2 * cb + 2, Wi + gap + 2), aeMin = cb + Wi;
+  // Les bouts des trous sont des demi-cercles (rayon Wi/2) : une barre de demi-épaisseur h n'atteint pas le fond, elle s'arrête
+  // r - √(r² - h²) avant. Chaque jonction croise deux barres d'épaisseur t : perte 2 × loss(t/2)
+  // (oubli constaté sur la 1re table montée : chaînes trop courtes)
+  const r = Wi / 2, loss = h => r - Math.sqrt(Math.max(0, r * r - h * h)), lj = 2 * loss(t / 2);
+  // Chaîne de longueur S entre les épaulements : n maillons (n + 1 jonctions), embouts de longueur ae (épaulement -> fond de l'œil)
+  const fit = S => {
+    const n = Math.floor((S - 2 * aeMin) / Li); if (n < 1) return null;
+    return {n, ae: (S - n * Li + (n + 1) * lj) / 2};
+  };
+  return {cb, Wi, Wo, gap, Li, Lo: Li + 2 * cb, tcw: t + 4.5, aeMin, fit};
+}
+
+// Jonctions de bande du dernier rendu (pour le schéma) : partie b = plateau, w = paroi, a = bras ; f = position relative
+let tenseCuts = [];
+function genTense(v) {
+  const {W, H, D, t, kerf: k, tabW: tw} = v, m = v.rebord, bord = v.bordC, e = v.depasse, info = [], warns = [];
+  const Hc = (H + v.ecart) / 2, La = W / 2 + e, Dw = D - 2 * t;
+  const R = Math.max(t + 2, Math.min(v.rayon, (Hc - 4) / 2, La - 12)), rho = R - t / 2, q = Math.PI / 2 * rho;
+  const gapFl = v.ecart - t - 2 * bord;
+  if (Dw < 3 * tw || W < 4 * R + 20) throw new Error(tt("err.tense.tooSmall"));
+  if (gapFl < 4) throw new Error(tt("err.tense.gap", {min: f1(t + 2 * bord + 4)}));
+  if (W / 2 - e - R - 8 < 6) throw new Error(tt("err.tense.overlap"));
+  // Courbe du C décalée de d (d > 0 vers l'extérieur), y vers le haut
+  const cPts = d => {
+    const r = Math.max(0.3, rho + d), p = [[0, t / 2 - d]];
+    arc(W - R, R, r, -Math.PI / 2, 0, p); arc(W - R, Hc - R, r, 0, Math.PI / 2, p);
+    p.push([W - La, Hc - t / 2 + d]);
+    return p;
+  };
+  // Abscisses sur la fibre neutre : plateau, coin 1, paroi, coin 2, bras
+  const Lb = W - R, Lw = Hc - 2 * R, Lr = La - R, sA1 = Lb, sW0 = Lb + q, sA2 = sW0 + Lw, sR0 = sA2 + q, total = sR0 + Lr;
+  // Coupes éventuelles (bande trop longue pour le plateau) : au milieu des parties planes
+  const [bw, bh] = bedOf(v), maxLen = Math.max(bw, bh) - 4, mids = [Lb / 2, sW0 + Lw / 2, sR0 + Lr / 2].filter((x, i) => [Lb, Lw, Lr][i] > 2 * tw + 12);
+  const cuts = []; let pos = 0;
+  while (total - pos > maxLen) { const nx = mids.filter(c => c > pos + 1 && c <= pos + maxLen).pop(); if (nx === undefined) throw new Error(tt("err.tense.tooLong")); cuts.push(nx); pos = nx; }
+  // Tenons : parties planes (découpées aux coupes) + un ou deux par coin (fentes élargies de la flèche)
+  const flats = [[0, Lb], [sW0, sA2], [sR0, total]], tabs = [];
+  for (const [a, b] of flats) { const pts = [a, ...cuts.filter(c => c > a && c < b), b]; for (let i = 0; i < pts.length - 1; i++) for (const c of tabCenters(pts[i + 1] - pts[i], v)) tabs.push({S: pts[i] + c}); }
+  for (const a of [sA1, sA2]) for (const c of tabCenters(q, v)) tabs.push({S: a + c, arc: true});
+  // Trous de ficelle (x vue de côté -> abscisse) : plateau à R+8, bras à W-R-8 et au centre W/2
+  const holes = [R + 8, sR0 + 8, sR0 + W / 2 - R];
+  // Chaînes (option) : maillons de 2 demi-maillons ouverts collés à plat (épaisseur 2t), pas fixe ;
+  // embouts sur mesure qui rattrapent le reste : tenon + goupille côté bras (caché dans le C), tenon affleurant collé côté plateau
+  const chain = v.lien === "chaine", {cb, Wi, Wo, gap, Li, Lo, tcw, aeMin, fit} = chainDims(t), cy0 = chain ? Math.max(6, Wo / 2 + 2) : 6;
+  const Sc = v.ecart - 2 * t, Ss = H - Hc - t;
+  const chainOf = S => { const c = fit(S); if (!c) throw new Error(tt("err.tense.chainShort", {min: f1(2 * aeMin + Li)})); return c; };
+  const chC = chain ? chainOf(Sc) : null, chS = chain ? chainOf(Ss) : null;
+  if (chain && Dw - 2 * cy0 < Wo + 4) throw new Error(tt("err.tense.chainDepth", {min: f1(4 * cy0 + 4 + 2 * t)}));
+  // Trou i -> chaîne : 0 = plateau (côté), 1 = bras (côté), 2 = bras (centre). Nombre pair de maillons : l'autre bout est tourné de 90°
+  const chainAt = [chS, chS, chC];
+  // Flancs : C plein entre l'extérieur de la bande (+ rebord) et un bord intérieur de bordC
+  tenseCuts = cuts.map(c => c < Lb ? {part: "b", f: c / Lb} : c < sR0 ? {part: "w", f: (c - sW0) / Lw} : {part: "a", f: (c - sR0) / Lr});
+  // Bouts des flancs arrondis : petit congé (rebord) côté extérieur, la bande reste soutenue ; grand congé côté intérieur
+  const outer = cPts(t / 2 + m), inner = cPts(-bord).reverse(), xa = W - La, ri = Math.max(0, bord - t / 2 - 0.5);
+  const fil = (cx, cy, r, a0, a1) => r > 0.2 ? arc(cx, cy, r, a0, a1, []) : [[cx + r * Math.cos(a0), cy + r * Math.sin(a0)]];
+  outer.splice(0, 1, ...fil(m, 0, m, Math.PI, 1.5 * Math.PI)); outer.splice(-1, 1, ...fil(xa + m, Hc, m, Math.PI / 2, Math.PI));
+  inner.splice(0, 1, ...fil(xa + ri, Hc - t / 2 - bord + ri, ri, Math.PI, 1.5 * Math.PI)); inner.splice(-1, 1, ...fil(ri, t / 2 + bord - ri, ri, Math.PI / 2, Math.PI));
+  const all = [...outer, ...inner], bb = bbox(all);
+  const toP = ([x, y]) => [x - bb[0], bb[3] - y], neu = cPts(0).map(toP);
+  // Motif treillis (option) : triangles alternés dans la partie pleine des flancs, entre les mortaises et le bord intérieur,
+  // sur les parties droites seulement (plateau, paroi, bras) ; barres de 2,5 mm
+  const truss = [];
+  if (v.motif === "treillis") {
+    const w = 2.5, d1 = t / 2 + w, h = bord - w - d1;
+    if (h < 4) warns.push(tt("warn.tense.truss", {min: f1(t / 2 + 4 + 2 * w)}));
+    else for (const [a, b, nI] of [[[ri + w, t / 2], [W - R - w, t / 2], [0, 1]], [[W - t / 2, R + w], [W - t / 2, Hc - R - w], [-1, 0]], [[W - R - w, Hc - t / 2], [xa + ri + w, Hc - t / 2], [0, -1]]]) {
+      const L = Math.hypot(b[0] - a[0], b[1] - a[1]), u = [(b[0] - a[0]) / L, (b[1] - a[1]) / L], N = Math.floor(L / (1.15 * h));
+      if (N < 1) continue;
+      const P = L / N, pt = ([sx, y]) => [a[0] + u[0] * sx + nI[0] * (d1 + y), a[1] + u[1] * sx + nI[1] * (d1 + y)];
+      for (let i = 0; i < N; i++) truss.push(insetTri([i * P, 0], [(i + 1) * P, 0], [(i + .5) * P, h], [0, w / 2, w / 2]).map(pt));
+      for (let i = 0; i < N - 1; i++) truss.push(insetTri([(i + 1.5) * P, h], [(i + .5) * P, h], [(i + 1) * P, 0], [0, w / 2, w / 2]).map(pt));
+    }
+  }
+  const trussC = truss.map(tr => tr.map(toP));
+  let acc = 0; for (let i = 0; i < neu.length - 1; i++) { acc += Math.hypot(neu[i + 1][0] - neu[i][0], neu[i + 1][1] - neu[i][1]); }
+  const sc = acc / total;
+  const fw = bb[2] - bb[0], fh = bb[3] - bb[1], outline = all.map(toP);
+  const slotXY = tabs.map(tb => [...pointAt(neu, tb.S * sc, false), tb.arc]);
+  const flankEls = f => [{k: "cut", d: polyD(outline.map(f))},
+    {k: "cut", d: slotXY.map(([x, y, a, ar]) => { const [X, Y] = f([x, y]); return slotD(X, Y, a, tw - k, t - k + (ar ? tw * tw / (8 * rho) : 0)); }).join("")},
+    ...(trussC.length ? [{k: "cut", d: trussC.map(tr => polyD(tr.map(f))).join("")}] : [])];
+  // Paire imbriquée : le 2e flanc retourné (180°) glisse son bras dans le creux du premier, ça économise presque un flanc de bois
+  const T = t / 2 + m + bord, Gp = 3, nest = 3 * T + 2 * Gp <= fh && W / 2 - e - T - t / 2 >= Gp;
+  const flank = () => ({name: tt("piece.tenseFlank"), w: fw, h: fh, els: flankEls(p => p)});
+  // Creux de la paire (pour y ranger les petites pièces) : entre les deux bras, et de part et d'autre des bras
+  const dy = T + Gp, xw = fw - T - t / 2, g = 2.5;
+  const pair = c => ({name: tt("piece.tenseFlankPair", {c: c + 1}), w: fw, h: fh + dy,
+    els: [...flankEls(([x, y]) => [x, y + dy]), ...flankEls(([x, y]) => [fw - x, fh - y])],
+    free: [[T + t / 2 + g, dy + T + g, xw - T - t / 2 - 2 * g, fh - 2 * T - dy - 2 * g],
+      [T + t / 2 + g, T + g, xa - T - t / 2 - 2 * g, dy - g], [fw - xa + g, fh - T + g, xw - fw + xa - 2 * g, dy - 2 * g]]});
+  const pieces = [];
+  for (let c = 0; c < 2; c++) {
+    if (nest) pieces.push(pair(c)); else pieces.push(flank(), flank());
+    const bounds = [0, ...cuts, total];
+    for (let i = 0; i < bounds.length - 1; i++) {
+      const s0 = bounds[i], len = bounds[i + 1] - s0, xs = tabs.map(tb => tb.S - s0).filter(x => x - tw / 2 > 0.3 && x + tw / 2 < len - 0.3).sort((a, b) => a - b);
+      const st = stripPoly(len, Dw, t, xs, xs, tw + k), els = [{k: "cut", d: polyD(st.pts)}];
+      for (const a of [sA1, sA2]) if (a - s0 >= 0 && a + q - s0 <= len) els.push({k: "cut", d: hinge(Math.max(1, a - s0 - 1.5), Math.min(len - 1, a + q - s0 + 1.5), st.y0, st.y1, v, xs, xs, tw + k)});
+      const mg = chain ? tcw / 2 + 2 : 2;
+      holes.forEach((h, hi) => {
+        if (h - s0 > mg && h - s0 < len - mg) for (const y of [st.y0 + cy0, st.y1 - cy0]) els.push({k: "cut", d: chain
+          ? slotD(h - s0, y, c && chainAt[hi].n % 2 === 0 ? Math.PI / 2 : 0, tcw + 0.3 - k, t + 0.3 - k)
+          : polyD(arc(h - s0, y, v.trou / 2, 0, 2 * Math.PI, []))});
+      });
+      const nm = bounds.length > 2 ? tt("piece.tenseStripN", {c: c + 1, i: i + 1, n: bounds.length - 1}) : tt("piece.tenseStrip", {c: c + 1});
+      pieces.push({name: nm, w: len, h: st.h, els});
+    }
+  }
+  if (chain) {
+    const kk = k / 2, We = Wo + k, tc = tcw + k, ri = (Wi - k) / 2;
+    const stadium = (cx, yT, yB, r) => { const p = arc(cx, yT, r, Math.PI, 2 * Math.PI, []); return arc(cx, yB, r, 0, Math.PI, p); };
+    // Embout : u = 0 à l'épaulement (posé sur la bande), u > 0 vers la chaîne, u < 0 le tenon qui traverse
+    const endPiece = (name, ae, pin) => {
+      const ub = pin ? -2 * t - 2.55 - kk : -(t - 0.2) - kk, top = ae + cb + kk, ucen = top - We / 2;
+      const X = x => x + We / 2, Y = u => top - u;
+      const p = [[X(-tc / 2), Y(ub)], [X(-tc / 2), Y(-kk)], [X(-We / 2), Y(-kk)], [X(-We / 2), Y(ucen)]];
+      arc(X(0), Y(ucen), We / 2, Math.PI, 2 * Math.PI, p);
+      p.push([X(We / 2), Y(-kk)], [X(tc / 2), Y(-kk)], [X(tc / 2), Y(ub)]);
+      const els = [{k: "cut", d: polyD(p)}, {k: "cut", d: polyD(stadium(X(0), Y(ae - kk - ri), Y(cb + kk + ri), ri))}];
+      if (pin) { const hw = (t + 0.15 - k) / 2; els.push({k: "cut", d: polyD([[X(-hw), Y(-t + 0.5 - kk)], [X(hw), Y(-t + 0.5 - kk)], [X(hw), Y(-2 * t - 0.05 + kk)], [X(-hw), Y(-2 * t - 0.05 + kk)]])}); }
+      return {name, w: We, h: top - ub, els};
+    };
+    // Maillon : anneau oblong ouvert sur un grand côté par une fente de l'épaisseur du bois (après kerf)
+    const linkLayer = name => {
+      const g = gap - k, r = Wo / 2, rr = Wi / 2, cT = r, cB = Lo - r, ym = Lo / 2, p = [[0, ym - g / 2], [0, cT]];
+      arc(r, cT, r, Math.PI, 2 * Math.PI, p); p.push([Wo, cB]); arc(r, cB, r, 0, Math.PI, p);
+      p.push([0, ym + g / 2], [cb, ym + g / 2], [cb, cB]); arc(r, cB, rr, Math.PI, 0, p);
+      p.push([Wo - cb, cT]); arc(r, cT, rr, 2 * Math.PI, Math.PI, p); p.push([cb, ym - g / 2]);
+      return {name, w: Wo, h: Lo, els: [{k: "cut", d: polyD(p)}]};
+    };
+    const wc = tt("chain.center"), ws = tt("chain.side");
+    for (let i = 0; i < 2 * chC.n; i++) pieces.push(linkLayer(tt("piece.chainLink", {w: wc})));
+    for (let i = 0; i < 4 * chS.n; i++) pieces.push(linkLayer(tt("piece.chainLink", {w: ws})));
+    for (let i = 0; i < 4; i++) pieces.push(endPiece(tt("piece.chainEnd", {w: wc}), chC.ae, true), endPiece(tt("piece.chainEnd", {w: ws}), chS.ae, true), endPiece(tt("piece.chainEndFlush", {w: ws}), chS.ae, false));
+    for (let i = 0; i < 8; i++) pieces.push(rectPiece(tt("piece.chainPin"), 14, t - 0.05 + k));
+  }
+  if (v.socle) {
+    const ri = v.socleD / 2 + 0.3, ro = ri + 5;
+    if (2 * ro <= Math.min(Dw - 4, W - 2 * (R + 8) - 8)) pieces.push({name: tt("piece.ledRing"), w: 2 * ro, h: 2 * ro, els: [{k: "cut", d: polyD(arc(ro, ro, ri, 0, 2 * Math.PI, []))}, {k: "cut", d: polyD(arc(ro, ro, ro, 0, 2 * Math.PI, []))}]});
+    else warns.push(tt("notice.lantern.ringTooBig"));
+  }
+  info.push(tt("notice.tense.dims", {W, H, D, Hc: f1(Hc), g: v.ecart, L: f1(total), n: cuts.length + 1}));
+  info.push(tt("notice.tense.assembly"));
+  if (tenseCuts.some(c => c.part === "a")) info.push(tt("notice.tense.joinArm"));
+  if (chain) info.push(tt("notice.tense.chains", {nc: chC.n, lc: f1(Sc), ns: chS.n, ls: f1(Ss), p: f1(Li), ac: f1(chC.ae), as: f1(chS.ae)}), tt("notice.tense.chainAssembly"));
+  else info.push(tt("notice.tense.strings", {g: f1(Sc), a: f1(Ss), b: f1(Ss)}));
+  if (v.socle) info.push(tt("notice.tense.led"));
+  info.push(tt("notice.lantern.led"));
+  if (v.hSpace > t * 0.9) warns.push(tt("warn.shape.hingeSpacing"));
+  return {pieces, info, warns};
+}
+
+const GEN = {box: genBox, shape: genShape, chest: genChest, orga: genOrga, tray: genTray, lantern: genLantern, hexa: genHexa, advent: genAdvent, lightbox: genLightbox, tissue: genTissue, tense: genTense};
 
 // ---------- Placement ----------
 // Rangées « first fit » : chaque pièce (la plus basse des deux orientations d'abord) va dans la première rangée
 // déjà ouverte où elle tient, sur n'importe quelle planche, avant d'ouvrir une nouvelle rangée ou planche.
+// Deux essais (pièces couchées d'abord, puis debout d'abord) : on garde celui qui prend le moins de planches.
 function layout(pieces, bw, bh) {
+  const low = layoutPass(pieces, bw, bh, false), tall = layoutPass(pieces, bw, bh, true);
+  return tall.length < low.length ? tall : low;
+}
+function layoutPass(pieces, bw, bh, tallFirst) {
   const M = 2, G = 2.5, eps = 1e-6, sheets = [], rows = [];
   const items = pieces.map(p => {
-    const o = [[p.w, p.h, false], [p.h, p.w, true]].filter(([w, h]) => w <= bw - 2 * M + eps && h <= bh - 2 * M + eps).sort((a, b) => a[1] - b[1]);
+    const o = [[p.w, p.h, false], [p.h, p.w, true]].filter(([w, h]) => w <= bw - 2 * M + eps && h <= bh - 2 * M + eps).sort((a, b) => tallFirst ? b[1] - a[1] : a[1] - b[1]);
     if (!o.length) throw new Error(tt("err.layout.pieceTooBig", {name: p.name, w: f1(p.w), h: f1(p.h), bw, bh}));
     return {p, o};
   }).sort((a, b) => b.o[0][1] - a.o[0][1] || b.o[0][0] - a.o[0][0]);
@@ -2326,12 +3534,38 @@ function layout(pieces, bw, bh) {
       if (f) { sheets[r.s].push({p, w: f[0], h: f[1], rot: f[2], x: r.x, y: r.y}); r.x += f[0] + G; done = true; break; }
     }
     if (done) continue;
-    const [w, h, rot] = o[0];
-    let s = sheets.findIndex((_, i) => nextY(i) + h <= bh - M + eps);
+    // Nouvelle rangée : première planche où l'une des orientations tient (dans l'ordre de préférence), sinon nouvelle planche
+    let s = -1, f = o[0];
+    for (let i = 0; i < sheets.length && s < 0; i++) { const g = o.find(([, gh]) => nextY(i) + gh <= bh - M + eps); if (g) { s = i; f = g; } }
     if (s < 0) { sheets.push([]); s = sheets.length - 1; }
+    const [w, h, rot] = f;
     const y = nextY(s);
     rows.push({s, y, h, x: M + w + G});
     sheets[s].push({p, w, h, rot, x: M, y});
+  }
+  // Compactage : les pièces des dernières planches vont dans les vides des premières
+  // (bout des rangées, bas de planche, creux déclarés par une pièce dans p.free = [[x, y, w, h], ...])
+  const free = sheets.map((sh, s) => {
+    const f = rows.filter(r => r.s === s).map(r => [r.x, r.y, bw - M - r.x, r.h]), y = nextY(s);
+    f.push([M, y, bw - 2 * M, bh - M - y]);
+    for (const it of sh) for (const [rx, ry, rw, rh] of it.p.free || []) f.push(it.rot ? [it.x + it.w - ry - rh, it.y + rx, rh, rw] : [it.x + rx, it.y + ry, rw, rh]);
+    return f.filter(r => r[2] > 1 && r[3] > 1);
+  });
+  const put = (s, p) => {
+    const F = free[s].map((r, i) => [r, i]).sort((a, b) => a[0][2] * a[0][3] - b[0][2] * b[0][3]); // le plus petit vide qui convient
+    for (const [f, i] of F) for (const [w, h, rot] of [[p.w, p.h, false], [p.h, p.w, true]]) {
+      if (w > f[2] + eps || h > f[3] + eps) continue;
+      free[s].splice(i, 1, [f[0] + w + G, f[1], f[2] - w - G, h], [f[0], f[1] + h + G, f[2], f[3] - h - G]);
+      free[s] = free[s].filter(r => r[2] > 1 && r[3] > 1);
+      return {p, w, h, rot, x: f[0], y: f[1]};
+    }
+    return null;
+  };
+  for (let s = sheets.length - 1; s > 0; s--) {
+    for (const it of [...sheets[s]].sort((a, b) => b.w * b.h - a.w * a.h)) {
+      for (let d = 0; d < s; d++) { const n = put(d, it.p); if (n) { sheets[d].push(n); sheets[s].splice(sheets[s].indexOf(it), 1); break; } }
+    }
+    if (!sheets[s].length) { sheets.splice(s, 1); free.splice(s, 1); }
   }
   if (!sheets.length) sheets.push([]);
   return sheets;
@@ -2397,10 +3631,12 @@ function sheetSvg(sheet, bw, bh, v, font, idx, total, preview) {
     let g = "";
     for (const el of it.p.els) {
       if (el.k === "cut") g += `<path class="cut" d="${el.d}" fill="none" stroke="#ff0000" stroke-width="0.1"/>`;
+      else if (el.k === "fill") g += `<path class="engrave-fill" d="${el.d}" fill="#000000" fill-rule="evenodd" stroke="none"/>`;
+      else if (el.k === "cutT") g += `<path class="cut" d="${el.d}" transform="${el.tf}" fill="none" stroke="#ff0000" stroke-width="${f3(el.sw)}"/>`;
       else if (el.k === "line") g += `<path class="engrave-line" d="${el.d}" fill="none" stroke="#000000" stroke-width="0.3"/>`;
       else if (el.k === "text") g += textSvg(el, font, v.police, preview);
     }
-    if (v.reperes) g += `<text x="${f3(it.p.w / 2)}" y="${f3(Math.min(it.p.h - 2, it.p.h * 0.18 + 3))}" font-size="3.2" text-anchor="middle" fill="#0000ff" font-family="Arial">${esc(it.p.name)}</text>`;
+    if (v.reperes && preview) g += `<text x="${f3(it.p.w / 2)}" y="${f3(Math.min(it.p.h - 2, it.p.h * 0.18 + 3))}" font-size="3.2" text-anchor="middle" fill="#0000ff" font-family="Arial">${esc(it.p.name)}</text>`;
     body += `<g transform="${tf}">${g}</g>`;
   }
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${bw}mm" height="${bh}mm" viewBox="0 0 ${bw} ${bh}">\n<!-- ${tt("export.svgComment", {name: esc(state.name), idx, total})} -->\n${body}\n</svg>`;
@@ -2456,9 +3692,10 @@ async function render() {
   try {
     res = GEN[state.tab](v);
     // les pièces de décor vont sur leurs propres planches (autre bois)
-    const main = layout(res.pieces.filter(p => !p.decor), bw, bh), dec = res.pieces.some(p => p.decor) ? layout(res.pieces.filter(p => p.decor), bw, bh) : [];
-    dec.forEach(s => s.decor = true);
-    sheets = [...main, ...dec];
+    const group = f => res.pieces.some(f) ? layout(res.pieces.filter(f), bw, bh) : [];
+    const main = layout(res.pieces.filter(p => !p.decor && !p.felt && !p.paper), bw, bh), dec = group(p => p.decor), felt = group(p => p.felt), paper = group(p => p.paper);
+    dec.forEach(s => s.decor = true); felt.forEach(s => s.felt = true); paper.forEach(s => s.paper = true);
+    sheets = [...main, ...dec, ...felt, ...paper];
   } catch (e) {
     $("#warns").innerHTML = `<div class="warn err">⚠️ ${esc(e.message)}</div>`;
     $("#status").innerHTML = `<span class="bad">${tt("status.toFix", {msg: esc(e.message)})}</span>`;
@@ -2469,23 +3706,23 @@ async function render() {
   const warns = [...res.warns];
   if (needsText && !font) warns.push(String(v.police).startsWith("local:") ? tt("warn.fontLocal") : tt("warn.fontMissing"));
   $("#warns").innerHTML = warns.map(w => `<div class="warn">⚠️ ${esc(w)}</div>`).join("");
-  const base = slug(state.name) + "_" + ({box: `boite_${v.L}x${v.W}x${v.H}`, shape: `${v.forme}_${v.W}x${v.H}`, chest: `coffre_${v.L}x${v.W}x${v.H}`, orga: `organiseur_${v.W}x${v.D}`, tray: `casier_${v.W}x${v.D}`, lantern: `lanterne_${v.L}x${v.W}x${v.H}`, advent: `calendrier_${v.W}x${v.D}`}[state.tab]);
-  lastFiles = sheets.map((s, i) => ({name: sheets.length > 1 ? `${base}_planche${i + 1}${s.decor ? "_decor" : ""}.svg` : `${base}.svg`, svg: sheetSvg(s, bw, bh, v, font, i + 1, sheets.length, false)}));
+  const base = slug(state.name) + "_" + ({box: `boite_${v.L}x${v.W}x${v.H}`, shape: `${v.forme}_${v.W}x${v.H}`, chest: `coffre_${v.L}x${v.W}x${v.H}`, orga: `organiseur_${v.W}x${v.D}`, tray: `casier_${v.W}x${v.D}`, lantern: `lanterne_${v.L}x${v.W}x${v.H}`, hexa: `lanterne-hexa_${v.a}x${v.H}`, advent: `calendrier_${v.W}x${v.D}`, lightbox: `boite-lumineuse_${v.W}x${v.D}x${v.H}`, tissue: `boite-mouchoirs_${v.boxL}x${v.boxW}x${v.boxH}`, tense: `tensegrity_${v.W}x${v.H}x${v.D}`}[state.tab]);
+  lastFiles = sheets.map((s, i) => ({name: sheets.length > 1 ? `${base}_planche${i + 1}${s.paper ? "_calque" : s.felt ? "_feutrine" : s.decor ? "_decor" : ""}.svg` : `${base}.svg`, svg: sheetSvg(s, bw, bh, v, font, i + 1, sheets.length, false)}));
   lastInfo = res.info;
   const cols = Math.min(2, sheets.length), c = $("#canvas");
   c.style.width = (cols * bw * PX + (cols - 1) * 48) + "px";
   const isTray = state.tab === "tray", td = isTray ? trayData() : null;
   const plan = isTray ? `<div class="sheet plan-card" data-si="-2" style="width:${bw * PX}px"><div class="lbl"><span><b>${tt("sheet.topView")}</b> · ${tt("sheet.layerOf", {cur: td.cur + 1, total: td.layers.length})}</span><span>${tt("sheet.planHelp")}</span></div>${planSvg(v)}</div>` : "";
-  c.innerHTML = plan + sheets.map((s, i) => `<div class="sheet${s.decor ? " decor" : ""}" data-si="${i}" style="width:${bw * PX}px"><div class="lbl"><span><b>${tt("sheet.card", {n: i + 1})}</b> · ${tt("sheet.pieceCount", {n: s.length, s: s.length > 1 ? "s" : ""})}${s.decor ? `<span class="tag">${tt("sheet.decorTag")}</span>` : ""}</span><button class="mini" data-dl="${i}">${icon("download", 14)}${tt("sheet.svgBtn")}</button></div>${sheetSvg(s, bw, bh, v, font, i + 1, sheets.length, true)}</div>`).join("");
+  c.innerHTML = plan + sheets.map((s, i) => `<div class="sheet${s.decor || s.felt || s.paper ? " decor" : ""}" data-si="${i}" style="width:${bw * PX}px"><div class="lbl"><span><b>${tt("sheet.card", {n: i + 1})}</b> · ${tt("sheet.pieceCount", {n: s.length, s: s.length > 1 ? "s" : ""})}${s.decor || s.felt || s.paper ? `<span class="tag">${tt(s.paper ? "sheet.paperTag" : s.felt ? "sheet.feltTag" : "sheet.decorTag")}</span>` : ""}</span><button class="mini" data-dl="${i}">${icon("download", 14)}${tt("sheet.svgBtn")}</button></div>${sheetSvg(s, bw, bh, v, font, i + 1, sheets.length, true)}</div>`).join("");
   c.querySelectorAll("[data-dl]").forEach(b => b.onclick = () => { const f = lastFiles[+b.dataset.dl]; downloadBlob(f.name, new Blob([f.svg], {type: "image/svg+xml"})); });
   c.querySelectorAll("[data-ti]").forEach(g => bindTextDrag(g, v));
   if (isTray) bindPlan(c.querySelector("svg.plan"), v);
   if (currentSheet >= sheets.length || (currentSheet === -2 && !isTray)) currentSheet = 0;
-  $("#sheetTabs").innerHTML = (isTray ? `<button class="chip" data-si="-2" aria-pressed="${currentSheet === -2}">${tt("sheet.plan")}</button>` : "") + `<button class="chip" data-si="-1" aria-pressed="${currentSheet === -1}">${tt("sheet.all")}</button>` + sheets.map((s, i) => `<button class="chip" data-si="${i}" aria-pressed="${i === currentSheet}">${s.decor ? "🎨 " : ""}${tt("sheet.n", {n: i + 1})}</button>`).join("");
+  $("#sheetTabs").innerHTML = (isTray ? `<button class="chip" data-si="-2" aria-pressed="${currentSheet === -2}">${tt("sheet.plan")}</button>` : "") + `<button class="chip" data-si="-1" aria-pressed="${currentSheet === -1}">${tt("sheet.all")}</button>` + sheets.map((s, i) => `<button class="chip" data-si="${i}" aria-pressed="${i === currentSheet}">${s.paper ? "📄 " : s.felt ? "🧵 " : s.decor ? "🎨 " : ""}${tt("sheet.n", {n: i + 1})}</button>`).join("");
   $("#sheetTabs").querySelectorAll("[data-si]").forEach(b => b.onclick = () => { currentSheet = +b.dataset.si; markTabs(); fit(currentSheet === -1 ? null : c.querySelector(`.sheet[data-si="${currentSheet}"]`)); });
   markTabs();
   // Barre d'état : pièces, planches, occupation du bois (boîtes englobantes, approximatif)
-  const mainSheets = sheets.filter(s => !s.decor), area = mainSheets.flat().reduce((a, it) => a + it.w * it.h, 0);
+  const mainSheets = sheets.filter(s => !s.decor && !s.felt && !s.paper), area = mainSheets.flat().reduce((a, it) => a + it.w * it.h, 0);
   const pct = mainSheets.length ? Math.round(100 * area / (mainSheets.length * bw * bh)) : 0;
   $("#status").innerHTML = `<span>${tt("status.pieces", {n: res.pieces.length})}</span><span>${tt("status.sheets", {n: sheets.length, s: sheets.length > 1 ? "s" : "", bw, bh})}</span><span>${tt("status.woodUsed", {pct})}</span>${warns.length ? `<span class="bad">${tt("status.alerts", {n: warns.length, s: warns.length > 1 ? "s" : ""})}</span>` : `<span class="ok">${tt("status.ready")}</span>`}
     <span class="legend"><span><i style="background:#ff0000"></i>${tt("status.legend.cut")}</span><span><i style="background:#000;outline:1px solid var(--line)"></i>${tt("status.legend.engrave")}</span><span><i style="background:#0000ff"></i>${tt("status.legend.marks")}</span><a href="https://www.youtube.com/@NeoProdFX" target="_blank" rel="noopener">${tt("status.offeredBy")}</a></span>`;
